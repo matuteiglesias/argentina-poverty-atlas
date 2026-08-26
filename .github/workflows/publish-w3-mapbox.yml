@@ -88,7 +88,15 @@ jobs:
 
       - name: Publish geometry-only derivative and prove 24/24 vector IDs
         shell: bash
-        run: python scripts/publish_w3_mapbox.py
+        run: |
+          # Mapbox Uploads API rejects the em dash in the human-facing upload name.
+          # Keep the immutable tileset ID unchanged; override only the display name.
+          python - <<'PY'
+          import scripts.publish_w3_mapbox as publisher
+
+          publisher.TILESET_NAME = "Argentina provinces IGN b9fcf6f90f28"
+          publisher.main()
+          PY
 
       - name: Pin exact upstream GeographySpec identity from emitted catalog
         shell: bash
