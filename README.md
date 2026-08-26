@@ -66,17 +66,35 @@ Mapbox provides rendering and geometry delivery. Scientific authority remains up
 
 ## Technology direction
 
-The initial implementation target is intentionally small:
+The W1 application seed uses the current React + TypeScript Vite template family, Tailwind CSS and local shadcn/ui-style primitives. Mapbox remains deliberately absent until the geometry transport wave.
 
 ```text
 Vite + React + TypeScript
-Tailwind + shadcn/ui components
-Mapbox GL JS 3.x
-small React chart layer
+Tailwind + shadcn/ui-style local components
+Vitest
 static/Vercel-compatible deployment
 ```
 
 No backend, database, auth or CMS is required until a concrete product need appears.
+
+## Local development
+
+Requires Node.js 22 or newer.
+
+```bash
+npm ci
+npm run dev
+```
+
+Verification is intentionally Mapbox-free:
+
+```bash
+npm run verify
+```
+
+That command runs lint, TypeScript checking, unit tests and the production build. No Mapbox token or other credential is required.
+
+The W1 UI uses an in-memory synthetic fixture to exercise public route/query state, headline metrics, a time-series placeholder, all 24 jurisdiction IDs, province selection/detail, and an accessible tabular fallback. W2 will replace that module with a deterministic fixture release artifact without changing the presentation boundary.
 
 ## First observable target
 
@@ -100,4 +118,4 @@ Do not copy credentials from legacy Poverty notebooks. A historical Mapbox write
 
 ## Status
 
-**Development seed.** Architecture, contracts and delivery waves are defined; the first implementation wave should begin at W0/W1 in `docs/DELIVERY_PLAN.md`.
+**W1 frontend application seed in progress on top of the merged W0 repository baseline.** The structural public UI remains fixture-driven and requires no Mapbox credential; W0's external account actions remain separately governed. See `docs/DELIVERY_PLAN.md` for the W0–W8 program.
