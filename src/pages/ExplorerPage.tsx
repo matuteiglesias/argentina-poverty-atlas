@@ -1,7 +1,6 @@
 import {
   DetailSheet,
   ProvinceTable,
-  TerritoryPlaceholder,
 } from "@/components/AtlasViews"
 import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
@@ -12,6 +11,8 @@ import {
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
+import { geometryTransportManifest } from "@/map/geometryTransport"
+import { ProvinceMap } from "@/map/ProvinceMap"
 
 interface ExplorerPageProps {
   state: AtlasState
@@ -68,10 +69,7 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
             </p>
           </Card>
 
-          <TerritoryPlaceholder
-            state={state}
-            onSelect={(place) => onChange({ place })}
-          />
+          <ProvinceMap onSelect={(place) => onChange({ place })} />
 
           <ProvinceTable
             state={state}
@@ -84,7 +82,7 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
         <span>release: fixture-ui-w1</span>
         <span>scientific_status: synthetic_fixture</span>
         <span>uncertainty: not_supplied</span>
-        <span>geometry: pending W3</span>
+        <span>geometry_transport: {geometryTransportManifest.status}</span>
       </div>
 
       <DetailSheet state={state} onClose={() => onChange({ place: null })} />

@@ -1,0 +1,34 @@
+name: Bootstrap W3 Mapbox dependency lock
+
+on:
+  push:
+    branches:
+      - feat/w3-province-mapbox-transport
+
+permissions:
+  contents: write
+
+jobs:
+  lock-and-verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Resolve Mapbox dependency lock
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify W3 transport boundary
+        run: npm run verify
+      - name: Commit lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: lock W3 Mapbox dependency"
+          git push
