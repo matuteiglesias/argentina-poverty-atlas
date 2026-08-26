@@ -12,6 +12,7 @@ import {
   getLegendModel,
   MAP_SOURCE_ID,
   NO_DATA_COLOR,
+  type MapLayerEventHandler,
   type MapRuntime,
   type RuntimeJoin,
 } from "@/map/runtimeJoin"
@@ -24,6 +25,7 @@ const MAPBOX_CSS = `https://api.mapbox.com/mapbox-gl-js/v${MAPBOX_GL_VERSION}/ma
 interface BrowserMap extends MapRuntime {
   getSource(id: string): unknown
   addSource(id: string, source: Record<string, unknown>): void
+  on(type: string, layerId: string, handler: MapLayerEventHandler): void
   on(type: "load", handler: () => void): void
   remove(): void
 }
