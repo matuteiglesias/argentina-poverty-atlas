@@ -29,10 +29,16 @@ const publishedManifest = {
 }
 
 describe("W3 geometry transport manifest", () => {
-  it("accepts the current fail-closed upstream blocker", () => {
-    expect(geometryTransportManifest.status).toBe("blocked_upstream")
-    expect(geometryTransportManifest.parent_release).toBeNull()
+  it("accepts the current committed transport state", () => {
     expect(geometryTransportManifest.fixture_geography_ids).toEqual(provinceGeometryIds)
+    if (geometryTransportManifest.status === "published") {
+      expect(geometryTransportManifest.parent_release).not.toBeNull()
+      expect(geometryTransportManifest.mapbox.published_feature_count).toBe(24)
+      expect(geometryTransportManifest.mapbox.feature_id_property).toBe("geography_id")
+    } else {
+      expect(geometryTransportManifest.status).toBe("blocked_upstream")
+      expect(geometryTransportManifest.parent_release).toBeNull()
+    }
   })
 
   it("accepts a fully pinned 24-feature published transport", () => {
