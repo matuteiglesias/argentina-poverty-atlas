@@ -40,6 +40,7 @@ export interface MapLayerEvent {
 }
 
 export type MapLayerEventHandler = (event: MapLayerEvent) => void
+export type RuntimeMapEventName = "mousemove" | "mouseleave" | "click"
 
 export interface MapRuntime {
   getLayer(id: string): unknown
@@ -49,8 +50,8 @@ export interface MapRuntime {
     target: FeatureStateTarget,
     state: Record<string, string | number | boolean>,
   ): void
-  on(type: string, layerId: string, handler: MapLayerEventHandler): void
-  off(type: string, layerId: string, handler: MapLayerEventHandler): void
+  on(type: RuntimeMapEventName, layerId: string, handler: MapLayerEventHandler): void
+  off(type: RuntimeMapEventName, layerId: string, handler: MapLayerEventHandler): void
 }
 
 export interface LegendModel {

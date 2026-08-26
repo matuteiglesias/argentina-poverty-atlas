@@ -56,7 +56,7 @@ The province detail sheet continues reading the same W2 fact index as the map. T
 
 ## Mapbox runtime loading
 
-W4 pins the official Mapbox GL JS CDN bundle to `3.29.0` and loads it only when W3 is published and a browser token exists. The app expects:
+W4 reuses W3's locked `mapbox-gl@3.29.0` dependency and dynamically imports the runtime only when W3 is published and a browser token exists. The app expects:
 
 ```text
 VITE_MAPBOX_PUBLIC_TOKEN
@@ -68,7 +68,7 @@ If W3 is blocked, the map surface exposes W3's blocker and issue instead of subs
 
 ## Tests
 
-The runtime join is tested through a narrow Mapbox adapter rather than a WebGL browser dependency. Tests prove:
+The runtime join is tested through a narrow adapter around the Mapbox instance rather than requiring WebGL in CI. Tests prove:
 
 - exactly four stable atlas layers are installed;
 - exact two-character IDs are used as feature identity;

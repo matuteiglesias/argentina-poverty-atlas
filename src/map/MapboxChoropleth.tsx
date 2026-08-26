@@ -1,4 +1,7 @@
+import "mapbox-gl/dist/mapbox-gl.css"
+
 import { useEffect, useMemo, useRef, useState } from "react"
+import type { AnyLayer, Map as MapboxMap, MapLayerMouseEvent } from "mapbox-gl"
 import { Card } from "@/components/ui/card"
 import { fixtureRelease, labels } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
@@ -11,6 +14,7 @@ import {
   type MapLayerEventHandler,
   type MapRuntime,
   type RuntimeJoin,
+  type RuntimeMapEventName,
 } from "@/map/runtimeJoin"
 import {
   runtimeGeometryTransport,
@@ -19,58 +23,50 @@ import {
 import { formatPercent } from "@/lib/utils"
 
 const MAPBOX_GL_VERSION = "3.29.0"
-const MAPBOX_SCRIPT = `https://api.mapbox.com/mapbox-gl-js/v${MAPBOX_GL_VERSION}/mapbox-gl.js`
-const MAPBOX_CSS = `https://api.mapbox.com/mapbox-gl-js/v${MAPBOX_GL_VERSION}/mapbox-gl.css`
 
-interface BrowserMap extends MapRuntime {
-  getSource(id: string): unknown
-  addSource(id: string, source: Record<string, unknown>): void
-  on(type: string, layerId: string, handler: MapLayerEventHandler): void
-  on(type: "load", handler: () => void): void
-  remove(): void
-}
+function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
+  const handlers = new Map<
+    MapLayerEventHandler,
+    (event: MapLayerMouseEvent) => void
+  >()
 
-interface MapboxGlobal {
-  accessToken: string
-  Map: new (options: Record<string, unknown>) => BrowserMap
-}
+  function eventHandler(handler: MapLayerEventHandler) {
+    const existing = handlers.get(handler)
+    if (existing) return existing
+    const adapted = (event: MapLayerMouseEvent) =>
+      handler({
+        features: event.features?.map((feature) => ({
+          id: feature.id,
+          properties: feature.properties ?? undefined,
+        })),
+      })
+    handlers.set(handler, adapted)
+    return adapted
+  }
 
-type MapboxWindow = Window & { mapboxgl?: MapboxGlobal }
-
-let mapboxPromise: Promise<MapboxGlobal> | null = null
-
-function loadMapboxGl() {
-  const mapboxWindow = window as MapboxWindow
-  if (mapboxWindow.mapboxgl) return Promise.resolve(mapboxWindow.mapboxgl)
-  if (mapboxPromise) return mapboxPromise
-
-  mapboxPromise = new Promise<MapboxGlobal>((resolve, reject) => {
-    if (!document.querySelector(`link[href="${MAPBOX_CSS}"]`)) {
-      const link = document.createElement("link")
-      link.rel = "stylesheet"
-      link.href = MAPBOX_CSS
-      document.head.append(link)
-    }
-
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[src="${MAPBOX_SCRIPT}"]`,
-    )
-    const script = existing ?? document.createElement("script")
-    const onLoad = () => {
-      const loaded = (window as MapboxWindow).mapboxgl
-      if (loaded) resolve(loaded)
-      else reject(new Error("Mapbox GL loaded without exposing mapboxgl"))
-    }
-    const onError = () => reject(new Error("Unable to load Mapbox GL JS"))
-    script.addEventListener("load", onLoad, { once: true })
-    script.addEventListener("error", onError, { once: true })
-    if (!existing) {
-      script.src = MAPBOX_SCRIPT
-      script.async = true
-      document.head.append(script)
-    }
-  })
-  return mapboxPromise
+  return {
+    getLayer(id) {
+      return map.getLayer(id)
+    },
+    addLayer(layer) {
+      map.addLayer(layer as AnyLayer)
+    },
+    setPaintProperty(layerId, property, value) {
+      map.setPaintProperty(layerId, property, value)
+    },
+    setFeatureState(target, state) {
+      map.setFeatureState(target, state)
+    },
+    on(type: RuntimeMapEventName, layerId, handler) {
+      map.on(type, layerId, eventHandler(handler))
+    },
+    off(type: RuntimeMapEventName, layerId, handler) {
+      const adapted = handlers.get(handler)
+      if (!adapted) return
+      map.off(type, layerId, adapted)
+      handlers.delete(handler)
+    },
+  }
 }
 
 interface MapboxChoroplethProps {
@@ -161,58 +157,60 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       return
     }
 
-    let cancelled = false
-    let map: BrowserMap | null = null
+    let disposed = false
+    let map: MapboxMap | null = null
     let runtime: RuntimeJoin | null = null
 
-    loadMapboxGl()
-      .then((mapboxgl) => {
-        if (cancelled) return
-        mapboxgl.accessToken = token
-        map = new mapboxgl.Map({
-          container,
-          style: transport.style_url,
-          center: [-64, -38],
-          zoom: 2.8,
-          minZoom: 2,
-          attributionControl: true,
-        })
+    async function mountMap() {
+      const mapboxgl = (await import("mapbox-gl")).default
+      if (disposed || !container) return
 
-        map.on("load", () => {
-          if (cancelled || !map) return
-          if (!map.getSource(MAP_SOURCE_ID)) {
-            map.addSource(MAP_SOURCE_ID, {
-              type: "vector",
-              url: transport.mapbox_source,
-              promoteId: transport.feature_id_property,
-            })
-          }
-          runtime = createRuntimeJoin(
-            map,
-            transport,
-            fixtureRelease,
-            (geographyId) => selectRef.current(geographyId),
-          )
-          runtimeRef.current = runtime
-          runtime.applyState(stateRef.current)
-          setStatus({
-            kind: "ready",
-            message: "Mapa listo",
-            transport,
+      mapboxgl.accessToken = token
+      map = new mapboxgl.Map({
+        container,
+        style: transport.style_url,
+        center: [-64, -38],
+        zoom: 2.8,
+        minZoom: 2,
+        attributionControl: true,
+      })
+
+      map.on("load", () => {
+        if (disposed || !map) return
+        if (!map.getSource(MAP_SOURCE_ID)) {
+          map.addSource(MAP_SOURCE_ID, {
+            type: "vector",
+            url: transport.mapbox_source,
+            promoteId: transport.feature_id_property,
           })
-        })
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return
-        const message = error instanceof Error ? error.message : "Error desconocido"
+        }
+        runtime = createRuntimeJoin(
+          createMapRuntimeAdapter(map),
+          transport,
+          fixtureRelease,
+          (geographyId) => selectRef.current(geographyId),
+        )
+        runtimeRef.current = runtime
+        runtime.applyState(stateRef.current)
         setStatus({
-          kind: "error",
-          message: `${message}. La tabla territorial sigue disponible.`,
+          kind: "ready",
+          message: "Mapa listo",
+          transport,
         })
       })
+    }
+
+    void mountMap().catch((error: unknown) => {
+      if (disposed) return
+      const message = error instanceof Error ? error.message : "Error desconocido"
+      setStatus({
+        kind: "error",
+        message: `${message}. La tabla territorial sigue disponible.`,
+      })
+    })
 
     return () => {
-      cancelled = true
+      disposed = true
       runtime?.destroy()
       runtimeRef.current = null
       map?.remove()
