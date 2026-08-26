@@ -11,6 +11,7 @@ import {
   getLegendModel,
   MAP_SOURCE_ID,
   NO_DATA_COLOR,
+  type MapLayerEvent,
   type MapLayerEventHandler,
   type MapRuntime,
   type RuntimeJoin,
@@ -24,21 +25,25 @@ import { formatPercent } from "@/lib/utils"
 
 const MAPBOX_GL_VERSION = "3.29.0"
 
+type RuntimeFeature = NonNullable<MapLayerEvent["features"]>[number]
+
 function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
   const handlers = new Map<
     MapLayerEventHandler,
     (event: MapLayerMouseEvent) => void
   >()
+  const setPaintProperty = map.setPaintProperty.bind(map) as (
+    layerId: string,
+    property: string,
+    value: unknown,
+  ) => void
 
   function eventHandler(handler: MapLayerEventHandler) {
     const existing = handlers.get(handler)
     if (existing) return existing
     const adapted = (event: MapLayerMouseEvent) =>
       handler({
-        features: event.features?.map((feature) => ({
-          id: feature.id,
-          properties: feature.properties ?? undefined,
-        })),
+        features: event.features as unknown as RuntimeFeature[] | undefined,
       })
     handlers.set(handler, adapted)
     return adapted
@@ -52,7 +57,7 @@ function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
       map.addLayer(layer as AnyLayer)
     },
     setPaintProperty(layerId, property, value) {
-      map.setPaintProperty(layerId, property, value)
+      setPaintProperty(layerId, property, value)
     },
     setFeatureState(target, state) {
       map.setFeatureState(target, state)
@@ -146,6 +151,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     const container = containerRef.current
     const transport = runtimeGeometryTransport
     if (!container || !transport) return
+    const publishedTransport: RuntimeGeometryTransport = transport
 
     const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN?.trim()
     if (!token) {
@@ -168,7 +174,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       mapboxgl.accessToken = token
       map = new mapboxgl.Map({
         container,
-        style: transport.style_url,
+        style: publishedTransport.style_url,
         center: [-64, -38],
         zoom: 2.8,
         minZoom: 2,
@@ -180,13 +186,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         if (!map.getSource(MAP_SOURCE_ID)) {
           map.addSource(MAP_SOURCE_ID, {
             type: "vector",
-            url: transport.mapbox_source,
-            promoteId: transport.feature_id_property,
+            url: publishedTransport.mapbox_source,
+            promoteId: publishedTransport.feature_id_property,
           })
         }
         runtime = createRuntimeJoin(
           createMapRuntimeAdapter(map),
-          transport,
+          publishedTransport,
           fixtureRelease,
           (geographyId) => selectRef.current(geographyId),
         )
@@ -195,7 +201,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         setStatus({
           kind: "ready",
           message: "Mapa listo",
-          transport,
+          transport: publishedTransport,
         })
       })
     }
