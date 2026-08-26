@@ -1,0 +1,180 @@
+name: publish-w3-mapbox-province
+
+on:
+  push:
+    branches: ["feat/w3-complete-mapbox"]
+    paths:
+      - ".github/workflows/publish-w3-mapbox.yml"
+      - "scripts/publish_w3_mapbox.py"
+      - "scripts/finalize_w3_parent_identity.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-w3-mapbox-province
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      MAPBOX_USERNAME: matuteiglesias2
+      MAPBOX_UPLOAD_TOKEN: ${{ secrets.MAPBOX_UPLOAD_TOKEN }}
+      UPSTREAM_COMMIT: ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
+    steps:
+      - name: Checkout atlas branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout exact Argentina Geography parent
+        uses: actions/checkout@v4
+        with:
+          repository: matuteiglesias/argentina-geography
+          ref: ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
+          path: upstream/argentina-geography
+
+      - name: Verify exact upstream commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          observed="$(git -C upstream/argentina-geography rev-parse HEAD)"
+          test "$observed" = "$UPSTREAM_COMMIT"
+          echo "Pinned Argentina Geography commit verified: $observed"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: upstream/argentina-geography/pyproject.toml
+
+      - name: Install upstream materializer and bounded publisher dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e "./upstream/argentina-geography[dev]" boto3 mercantile mapbox-vector-tile
+
+      - name: Materialize exact governed IGN province release
+        shell: bash
+        run: |
+          python -m argentina_geography.sources.ign_province materialize \
+            --output /tmp/ign-province-release
+
+      - name: Verify upstream release hashes before provider write
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/ign-province-release')
+          expected = {
+              'geography.parquet': '3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b',
+              'geography.geojson': 'c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3',
+          }
+          for name, wanted in expected.items():
+              observed = hashlib.sha256((root / name).read_bytes()).hexdigest()
+              if observed != wanted:
+                  raise SystemExit(f'{name} hash drift: expected {wanted}, found {observed}')
+
+          metadata = json.loads((root / 'source_metadata.json').read_text())
+          wanted_source = 'b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55'
+          if metadata['retrieved_file_sha256'] != wanted_source:
+              raise SystemExit('IGN source snapshot hash drift')
+          print('Canonical GeoParquet, display GeoJSON, and raw IGN source hashes verified.')
+          PY
+
+      - name: Publish geometry-only derivative and prove 24/24 vector IDs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import time
+          import scripts.publish_w3_mapbox as publisher
+
+          publisher.TILESET_NAME = "Argentina provinces IGN b9fcf6f90f28"
+
+          def create_and_wait_for_upload(staged_url: str) -> dict:
+              created = publisher.request_json(
+                  "POST",
+                  f"/uploads/v1/{publisher.MAPBOX_USERNAME}",
+                  payload={
+                      "tileset": publisher.TILESET_ID,
+                      "url": staged_url,
+                      "name": publisher.TILESET_NAME,
+                  },
+                  label="Mapbox upload creation",
+              )
+              upload_id = created.get("id")
+              if not isinstance(upload_id, str) or not upload_id:
+                  raise RuntimeError("Mapbox upload creation did not return an upload id")
+              if created.get("tileset") != publisher.TILESET_ID:
+                  raise RuntimeError(
+                      f"Mapbox upload targeted unexpected tileset: {created.get('tileset')!r}"
+                  )
+
+              last_progress = object()
+              for attempt in range(300):
+                  status = publisher.request_json(
+                      "GET",
+                      f"/uploads/v1/{publisher.MAPBOX_USERNAME}/{upload_id}",
+                      label="Mapbox upload status",
+                  )
+                  if status.get("error"):
+                      raise RuntimeError(f"Mapbox upload failed: {status['error']}")
+                  if status.get("complete") is True:
+                      if status.get("progress") != 1:
+                          raise RuntimeError(
+                              "Mapbox marked upload complete without progress=1"
+                          )
+                      return status
+
+                  progress = status.get("progress")
+                  if progress != last_progress or attempt % 12 == 0:
+                      print(
+                          "Mapbox upload pending: "
+                          f"id={upload_id}, progress={progress!r}, poll={attempt + 1}/300"
+                      )
+                      last_progress = progress
+                  time.sleep(5)
+
+              raise RuntimeError(
+                  "Mapbox upload did not complete within the 25-minute bounded polling window"
+              )
+
+          publisher.create_and_wait_for_upload = create_and_wait_for_upload
+          publisher.main()
+          PY
+
+      - name: Pin exact upstream GeographySpec identity from emitted catalog
+        shell: bash
+        run: python scripts/finalize_w3_parent_identity.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install atlas dependencies
+        run: npm ci
+
+      - name: Verify published atlas contract
+        run: npm run verify
+
+      - name: Commit provider proof back to bounded branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mapbox/manifests/province-w3.json mapbox/manifests/province-w3-publication-proof.json
+          if git diff --cached --quiet; then
+            echo "No publication manifest changes to commit."
+            exit 0
+          fi
+          git commit -m "feat: record live W3 Mapbox province proof"
+          git push origin HEAD:feat/w3-complete-mapbox
