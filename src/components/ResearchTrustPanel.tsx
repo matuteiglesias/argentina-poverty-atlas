@@ -86,7 +86,7 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
           <span className="mt-1 block text-xs font-normal text-slate-500">Semántica y padres</span>
         </a>
         <Button
-          variant="outline"
+          variant="secondary"
           className="h-auto min-h-14 justify-start px-4 py-3 text-left"
           onClick={() => void copy("citation", citation)}
         >
@@ -96,7 +96,7 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
           </span>
         </Button>
         <Button
-          variant="outline"
+          variant="secondary"
           className="h-auto min-h-14 justify-start px-4 py-3 text-left"
           onClick={() => void copy("url", window.location.href)}
         >
