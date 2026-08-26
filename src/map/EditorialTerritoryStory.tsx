@@ -12,6 +12,12 @@ import {
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
+import {
+  clampStoryProgress,
+  EDITORIAL_END_CAMERA,
+  EDITORIAL_START_CAMERA,
+  editorialCameraAt,
+} from "@/map/editorialCamera"
 import { geometryTransportManifest } from "@/map/geometryTransport"
 import { createMapRuntimeAdapter } from "@/map/mapRuntimeAdapter"
 import {
@@ -36,17 +42,6 @@ type StoryStatus =
   | { kind: "blocked"; message: string }
   | { kind: "unavailable"; message: string }
   | { kind: "error"; message: string }
-
-const START_CAMERA = { longitude: -63.2, latitude: -27.3, zoom: 4.05 }
-const END_CAMERA = { longitude: -64.3, latitude: -38.5, zoom: 2.72 }
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
-}
-
-function lerp(start: number, end: number, progress: number) {
-  return start + (end - start) * progress
-}
 
 function storyCopy(progress: number) {
   if (progress < 0.34) {
@@ -134,6 +129,7 @@ export function EditorialTerritoryStory({
     const container = containerRef.current
     const transport = runtimeGeometryTransport
     if (!container || !transport) return
+    const publishedTransport: RuntimeGeometryTransport = transport
 
     const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN?.trim()
     if (!token) {
@@ -156,11 +152,11 @@ export function EditorialTerritoryStory({
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
       const coarsePointer = window.matchMedia("(pointer: coarse)").matches
       const narrow = window.matchMedia("(max-width: 767px)").matches
-      const start = reducedMotion || narrow ? END_CAMERA : START_CAMERA
+      const start = reducedMotion || narrow ? EDITORIAL_END_CAMERA : EDITORIAL_START_CAMERA
 
       map = new mapboxgl.Map({
         container,
-        style: transport.style_url,
+        style: publishedTransport.style_url,
         center: [start.longitude, start.latitude],
         zoom: start.zoom,
         minZoom: 2,
@@ -181,13 +177,13 @@ export function EditorialTerritoryStory({
         if (!map.getSource(MAP_SOURCE_ID)) {
           map.addSource(MAP_SOURCE_ID, {
             type: "vector",
-            url: transport.mapbox_source,
-            promoteId: transport.feature_id_property,
+            url: publishedTransport.mapbox_source,
+            promoteId: publishedTransport.feature_id_property,
           })
         }
         runtime = createRuntimeJoin(
           createMapRuntimeAdapter(map),
-          transport,
+          publishedTransport,
           fixtureRelease,
           (geographyId) => selectRef.current(geographyId),
           (geographyId) => {
@@ -196,7 +192,7 @@ export function EditorialTerritoryStory({
         )
         runtimeRef.current = runtime
         runtime.applyState(stateRef.current)
-        setStatus({ kind: "ready", transport })
+        setStatus({ kind: "ready", transport: publishedTransport })
       })
     }
 
@@ -233,16 +229,14 @@ export function EditorialTerritoryStory({
       frame = 0
       const rect = section.getBoundingClientRect()
       const travel = Math.max(section.offsetHeight - window.innerHeight, 1)
-      const next = clamp(-rect.top / travel, 0, 1)
+      const next = clampStoryProgress(-rect.top / travel)
       setProgress(next)
       const map = mapRef.current
       if (map) {
+        const camera = editorialCameraAt(next)
         map.jumpTo({
-          center: [
-            lerp(START_CAMERA.longitude, END_CAMERA.longitude, next),
-            lerp(START_CAMERA.latitude, END_CAMERA.latitude, next),
-          ],
-          zoom: lerp(START_CAMERA.zoom, END_CAMERA.zoom, next),
+          center: [camera.longitude, camera.latitude],
+          zoom: camera.zoom,
           bearing: 0,
           pitch: 0,
         })
