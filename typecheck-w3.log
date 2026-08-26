@@ -1,0 +1,15 @@
+
+> argentina-poverty-atlas@0.1.0 typecheck
+> tsc -b --pretty false
+
+src/map/ProvinceMap.tsx(64,11): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/map/ProvinceMap.tsx(74,11): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/map/ProvinceMap.tsx(83,47): error TS2339: Property 'properties' does not exist on type 'GeoJSONFeature'.
+src/map/ProvinceMap.tsx(83,84): error TS2339: Property 'id' does not exist on type 'GeoJSONFeature'.
+src/map/ProvinceMap.tsx(99,15): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/map/ProvinceMap.tsx(101,46): error TS2339: Property 'properties' does not exist on type 'GeoJSONFeature'.
+src/map/ProvinceMap.tsx(101,82): error TS2339: Property 'id' does not exist on type 'GeoJSONFeature'.
+typecheck_exit=2
