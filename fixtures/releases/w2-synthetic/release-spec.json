@@ -1,0 +1,70 @@
+{
+  "release_id": "fixture-ar-24j-6p-v1-db7698bb2dff",
+  "schema_version": "atlas-fixture-spec/v1",
+  "scientific_status": "synthetic_fixture",
+  "not_for_interpretation": true,
+  "geography_level": "province_2010",
+  "national_geography": {
+    "id": "ARG",
+    "name": "Argentina"
+  },
+  "periods": [
+    { "id": "demo-2023-S2", "label": "Demo 2023 · S2", "adjustment": 0.045, "national_base": 0.39 },
+    { "id": "demo-2024-S1", "label": "Demo 2024 · S1", "adjustment": 0.025, "national_base": 0.375 },
+    { "id": "demo-2024-S2", "label": "Demo 2024 · S2", "adjustment": 0.012, "national_base": 0.358 },
+    { "id": "demo-2025-S1", "label": "Demo 2025 · S1", "adjustment": -0.004, "national_base": 0.342 },
+    { "id": "demo-2025-S2", "label": "Demo 2025 · S2", "adjustment": -0.018, "national_base": 0.329 },
+    { "id": "demo-2026-S1", "label": "Demo 2026 · S1", "adjustment": -0.026, "national_base": 0.318 }
+  ],
+  "universes": ["persons", "households"],
+  "concepts": ["poverty", "indigence"],
+  "estimands": ["fgt0", "fgt1", "fgt2"],
+  "parents": {
+    "population_frame": "fixture-population-frame-v1",
+    "welfare": "fixture-welfare-v1",
+    "poverty_method": "fixture-poverty-method-v1",
+    "poverty_lines": "fixture-poverty-lines-v1",
+    "geography": "fixture-province-identity-v1"
+  },
+  "comparability": {
+    "method_release": "fixture-poverty-method-v1",
+    "model_release": "fixture-welfare-v1",
+    "frame_release": "fixture-population-frame-v1",
+    "poverty_line_release": "fixture-poverty-lines-v1"
+  },
+  "algorithm": {
+    "households_multiplier": 0.91,
+    "indigence_multiplier": 0.29,
+    "fgt1_multiplier": 0.34,
+    "fgt2_multiplier": 0.16,
+    "minimum": 0.025,
+    "maximum": 0.88,
+    "round_decimals": 6
+  },
+  "geographies": [
+    { "id": "02", "name": "Ciudad Autónoma de Buenos Aires", "short_name": "CABA", "incidence_base": 0.18 },
+    { "id": "06", "name": "Buenos Aires", "short_name": "Buenos Aires", "incidence_base": 0.37 },
+    { "id": "10", "name": "Catamarca", "short_name": "Catamarca", "incidence_base": 0.41 },
+    { "id": "14", "name": "Córdoba", "short_name": "Córdoba", "incidence_base": 0.31 },
+    { "id": "18", "name": "Corrientes", "short_name": "Corrientes", "incidence_base": 0.47 },
+    { "id": "22", "name": "Chaco", "short_name": "Chaco", "incidence_base": 0.53 },
+    { "id": "26", "name": "Chubut", "short_name": "Chubut", "incidence_base": 0.26 },
+    { "id": "30", "name": "Entre Ríos", "short_name": "Entre Ríos", "incidence_base": 0.34 },
+    { "id": "34", "name": "Formosa", "short_name": "Formosa", "incidence_base": 0.51 },
+    { "id": "38", "name": "Jujuy", "short_name": "Jujuy", "incidence_base": 0.45 },
+    { "id": "42", "name": "La Pampa", "short_name": "La Pampa", "incidence_base": 0.24 },
+    { "id": "46", "name": "La Rioja", "short_name": "La Rioja", "incidence_base": 0.39 },
+    { "id": "50", "name": "Mendoza", "short_name": "Mendoza", "incidence_base": 0.33 },
+    { "id": "54", "name": "Misiones", "short_name": "Misiones", "incidence_base": 0.49 },
+    { "id": "58", "name": "Neuquén", "short_name": "Neuquén", "incidence_base": 0.28 },
+    { "id": "62", "name": "Río Negro", "short_name": "Río Negro", "incidence_base": 0.29 },
+    { "id": "66", "name": "Salta", "short_name": "Salta", "incidence_base": 0.48 },
+    { "id": "70", "name": "San Juan", "short_name": "San Juan", "incidence_base": 0.36 },
+    { "id": "74", "name": "San Luis", "short_name": "San Luis", "incidence_base": 0.27 },
+    { "id": "78", "name": "Santa Cruz", "short_name": "Santa Cruz", "incidence_base": 0.22 },
+    { "id": "82", "name": "Santa Fe", "short_name": "Santa Fe", "incidence_base": 0.32 },
+    { "id": "86", "name": "Santiago del Estero", "short_name": "Santiago del Estero", "incidence_base": 0.5 },
+    { "id": "90", "name": "Tucumán", "short_name": "Tucumán", "incidence_base": 0.46 },
+    { "id": "94", "name": "Tierra del Fuego, Antártida e Islas del Atlántico Sur", "short_name": "Tierra del Fuego", "incidence_base": 0.2 }
+  ]
+}
