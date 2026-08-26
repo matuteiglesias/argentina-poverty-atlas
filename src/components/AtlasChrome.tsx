@@ -35,7 +35,7 @@ export function Header({ route, state, onNavigate }: HeaderProps) {
             Lectura
           </Button>
           <Button
-            variant={route === "/explorar" ? "default" : "ghost"}
+            variant={route === "/explorar" ? "primary" : "ghost"}
             onClick={() => onNavigate("/explorar", state)}
           >
             Explorar
