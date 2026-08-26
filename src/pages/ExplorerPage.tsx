@@ -1,7 +1,6 @@
-import {
-  DetailSheet,
-  ProvinceTable,
-} from "@/components/AtlasViews"
+import { DetailSheet, ProvinceTable } from "@/components/AtlasViews"
+import { ProvinceLookup } from "@/components/ProvinceLookup"
+import { ResearchTrustPanel } from "@/components/ResearchTrustPanel"
 import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
 import {
@@ -12,11 +11,9 @@ import {
   labels,
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
-import { geometryTransportManifest } from "@/map/geometryTransport"
-import { MapboxChoropleth } from "@/map/MapboxChoropleth"
 import { formatPercent } from "@/lib/utils"
 import { geometryTransportManifest } from "@/map/geometryTransport"
-import { ProvinceMap } from "@/map/ProvinceMap"
+import { MapboxChoropleth } from "@/map/MapboxChoropleth"
 
 interface ExplorerPageProps {
   state: AtlasState
@@ -34,23 +31,41 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
   const selectedProvince = getProvince(state.place)
 
   return (
-    <div className="grid gap-6">
-      <section className="grid gap-5 lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <aside className="lg:sticky lg:top-5 lg:self-start">
+    <div className="mx-auto max-w-[96rem] px-4 py-6 sm:px-8 sm:py-9">
+      <header className="mb-7 flex flex-col gap-5 border-b border-slate-900/10 pb-7 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-950">Exploración libre</p>
+          <h1 className="mt-2 font-serif text-4xl font-semibold tracking-[-0.025em] text-slate-950 sm:text-5xl">
+            Atlas territorial
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            Cambiá una dimensión, navegá el mapa o elegí una jurisdicción con teclado. Período, medida y territorio quedan codificados en la URL.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 lg:justify-end">
+          <span>{fixtureRelease.metadata.scientific_status}</span>
+          <span>release {fixtureRelease.metadata.release_id}</span>
+          <span>geografía {geometryTransportManifest.status}</span>
+        </div>
+      </header>
+
+      <section className="grid gap-5 xl:grid-cols-[17rem_minmax(0,1fr)] 2xl:grid-cols-[17rem_minmax(0,1fr)_22rem] 2xl:items-start">
+        <aside className="grid gap-4 xl:sticky xl:top-[6.5rem] xl:self-start">
           <Card className="p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-              Explorar
-            </p>
-            <h1 className="mt-1 font-serif text-3xl font-semibold">
-              Atlas territorial
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Cambiá período o medida sin reconstruir el mapa. La selección territorial queda en la URL.
-            </p>
-            <div className="mt-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Medida</p>
+            <div className="mt-5">
               <Selectors state={state} onChange={onChange} />
             </div>
           </Card>
+          <Card className="p-5">
+            <ProvinceLookup
+              state={state}
+              onSelect={(place) => onChange({ place })}
+            />
+          </Card>
+          <div className="hidden rounded-2xl border border-slate-900/10 bg-white/35 p-4 text-xs leading-5 text-slate-500 xl:block">
+            <strong className="text-slate-800">Interacción del mapa.</strong> Arrastrá para moverte y usá los controles de zoom. La rueda de la página no queda atrapada por el mapa.
+          </div>
         </aside>
 
         <div className="grid min-w-0 gap-5">
@@ -59,33 +74,28 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Argentina · {getPeriodLabel(state.period)}
               </p>
-              <p className="mt-2 text-5xl font-semibold tracking-[-0.05em]">
+              <p className="mt-2 text-5xl font-semibold tracking-[-0.05em] tabular-nums sm:text-6xl">
                 {formatPercent(national)}
               </p>
-              <p className="mt-1 text-sm font-medium text-slate-700">
+              <p className="mt-2 text-sm font-medium text-slate-700">
                 {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
               </p>
             </div>
             <div className="max-w-sm text-sm leading-6 text-slate-500 sm:text-right">
-              <p>
-                Dato nacional explícito del fixture; no se agrega desde provincias en el navegador.
-              </p>
+              <p>Dato nacional explícito del release; no se agrega desde provincias en el navegador.</p>
               {selectedProvince && (
-                <p className="mt-2 font-medium text-slate-700">
-                  Seleccionado: {selectedProvince.shortName}
-                </p>
+                <p className="mt-2 font-semibold text-slate-800">Seleccionado: {selectedProvince.name}</p>
               )}
             </div>
           </Card>
 
-          <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_22rem] 2xl:items-start">
-            <MapboxChoropleth
-              state={state}
-              onSelect={(place) => onChange({ place })}
-            />
-            <div className="2xl:sticky 2xl:top-5">
-              <DetailSheet state={state} onClose={() => onChange({ place: null })} />
-            </div>
+          <MapboxChoropleth
+            state={state}
+            onSelect={(place) => onChange({ place })}
+          />
+
+          <div className="2xl:hidden">
+            <DetailSheet state={state} onClose={() => onChange({ place: null })} />
           </div>
 
           <ProvinceTable
@@ -93,15 +103,15 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
             onSelect={(place) => onChange({ place })}
           />
         </div>
+
+        <aside className="hidden 2xl:sticky 2xl:top-[6.5rem] 2xl:grid 2xl:gap-4">
+          <DetailSheet state={state} onClose={() => onChange({ place: null })} />
+        </aside>
       </section>
 
-      <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-900/10 pt-5 text-xs text-slate-500">
-        <span>release: {fixtureRelease.metadata.release_id}</span>
-        <span>scientific_status: {fixtureRelease.metadata.scientific_status}</span>
-        <span>not_for_interpretation: {String(fixtureRelease.metadata.not_for_interpretation)}</span>
-        <span>uncertainty: not_supplied</span>
-        <span>geometry: {geometryTransportManifest.transport_id}/{geometryTransportManifest.status}</span>
-      </div>
+      <section className="mt-7">
+        <ResearchTrustPanel state={state} />
+      </section>
     </div>
   )
 }
