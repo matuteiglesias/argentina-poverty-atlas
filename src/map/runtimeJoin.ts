@@ -16,13 +16,14 @@ export const MAP_LAYERS = {
 } as const
 
 export const CHOROPLETH_COLORS = [
-  "#eff6ff",
-  "#bae6fd",
-  "#38bdf8",
-  "#0369a1",
-  "#082f49",
+  "#fff7ec",
+  "#fee8c8",
+  "#fdbb84",
+  "#fc8d59",
+  "#d7301f",
+  "#7f0000",
 ] as const
-export const NO_DATA_COLOR = "#e2e8f0"
+export const NO_DATA_COLOR = "#d7dce2"
 
 interface FeatureStateTarget {
   source: string
@@ -52,6 +53,7 @@ export interface MapRuntime {
   ): void
   on(type: RuntimeMapEventName, layerId: string, handler: MapLayerEventHandler): void
   off(type: RuntimeMapEventName, layerId: string, handler: MapLayerEventHandler): void
+  setCursor?(cursor: "pointer" | ""): void
 }
 
 export interface LegendModel {
@@ -135,7 +137,16 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
       slot: "middle",
       paint: {
         "fill-color": NO_DATA_COLOR,
-        "fill-opacity": 0.82,
+        "fill-color-transition": { duration: 260, delay: 0 },
+        "fill-opacity": [
+          "case",
+          ["==", ["feature-state", "selected"], true],
+          0.94,
+          ["==", ["feature-state", "hovered"], true],
+          0.9,
+          0.82,
+        ],
+        "fill-opacity-transition": { duration: 150, delay: 0 },
       },
     },
     {
@@ -145,8 +156,8 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
       slot: "top",
       paint: {
         "line-color": "#ffffff",
-        "line-opacity": 0.9,
-        "line-width": 0.8,
+        "line-opacity": 0.88,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.65, 5, 1.1],
       },
     },
     {
@@ -155,14 +166,15 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
       ...shared,
       slot: "top",
       paint: {
-        "line-color": "#0f172a",
+        "line-color": "#334155",
         "line-opacity": [
           "case",
           ["==", ["feature-state", "hovered"], true],
           1,
           0,
         ],
-        "line-width": 2.5,
+        "line-opacity-transition": { duration: 90, delay: 0 },
+        "line-width": 2.25,
       },
     },
     {
@@ -178,6 +190,7 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
           1,
           0,
         ],
+        "line-opacity-transition": { duration: 120, delay: 0 },
         "line-width": 4,
       },
     },
@@ -208,6 +221,7 @@ export function createRuntimeJoin(
   transport: RuntimeGeometryTransport,
   release: AtlasRelease,
   onSelect: (geographyId: string) => void,
+  onHover: (geographyId: string | null) => void = () => undefined,
 ) {
   for (const layer of buildLayerSpecs(transport)) {
     if (!map.getLayer(String(layer.id))) map.addLayer(layer)
@@ -216,17 +230,25 @@ export function createRuntimeJoin(
   let hoveredId: string | null = null
 
   const setHovered = (nextId: string | null) => {
-    if (hoveredId && hoveredId !== nextId) {
+    if (hoveredId === nextId) return
+    if (hoveredId) {
       map.setFeatureState(featureTarget(transport, hoveredId), { hovered: false })
     }
     hoveredId = nextId
     if (hoveredId) {
       map.setFeatureState(featureTarget(transport, hoveredId), { hovered: true })
     }
+    map.setCursor?.(hoveredId ? "pointer" : "")
+    onHover(hoveredId)
   }
 
   const onMouseMove: MapLayerEventHandler = (event) => {
-    setHovered(eventGeographyId(event, transport))
+    const geographyId = eventGeographyId(event, transport)
+    setHovered(
+      geographyId && transport.expected_geography_ids.includes(geographyId)
+        ? geographyId
+        : null,
+    )
   }
   const onMouseLeave: MapLayerEventHandler = () => setHovered(null)
   const onClick: MapLayerEventHandler = (event) => {

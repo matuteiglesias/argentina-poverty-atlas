@@ -36,6 +36,7 @@ class MockMap implements MapRuntime {
     state: Record<string, string | number | boolean>
   }[] = []
   listeners = new Map<string, MapLayerEventHandler[]>()
+  cursor: "pointer" | "" = ""
 
   getLayer(id: string) {
     return this.layers.get(id)
@@ -67,6 +68,10 @@ class MockMap implements MapRuntime {
       key,
       (this.listeners.get(key) ?? []).filter((item) => item !== handler),
     )
+  }
+
+  setCursor(cursor: "pointer" | "") {
+    this.cursor = cursor
   }
 
   emit(type: string, layer: string, event: MapLayerEvent) {
@@ -128,11 +133,41 @@ describe("W4 runtime choropleth join", () => {
     expect(map.paintUpdates).toHaveLength(2)
   })
 
+  it("keeps hover transient and selection durable", () => {
+    const map = new MockMap()
+    const hovered: Array<string | null> = []
+    createRuntimeJoin(
+      map,
+      transport,
+      fixtureRelease,
+      () => undefined,
+      (id) => hovered.push(id),
+    )
+
+    map.emit("mousemove", MAP_LAYERS.fill, {
+      features: [{ id: "14", properties: { geography_id: "14" } }],
+    })
+    expect(map.cursor).toBe("pointer")
+    expect(hovered).toEqual(["14"])
+    expect(map.stateUpdates.at(-1)).toMatchObject({
+      target: { id: "14" },
+      state: { hovered: true },
+    })
+
+    map.emit("mouseleave", MAP_LAYERS.fill, {})
+    expect(map.cursor).toBe("")
+    expect(hovered).toEqual(["14", null])
+    expect(map.stateUpdates.at(-1)).toMatchObject({
+      target: { id: "14" },
+      state: { hovered: false },
+    })
+  })
+
   it("uses a release-wide legend domain independent of period and universe", () => {
     const poverty = getLegendModel(fixtureRelease, "poverty", "fgt0")
     expect(poverty.min).toBe(0)
     expect(poverty.max).toBeGreaterThan(0)
-    expect(poverty.stops).toHaveLength(5)
+    expect(poverty.stops).toHaveLength(6)
     expect(getLegendModel(fixtureRelease, "poverty", "fgt0")).toEqual(poverty)
   })
 
@@ -148,8 +183,23 @@ describe("W4 runtime choropleth join", () => {
     ).toThrow(/exactly 24 geography IDs|exactly match/)
   })
 
-  it("treats W3 blocked_upstream as no runtime transport", () => {
-    expect(geometryTransportManifest.status).toBe("blocked_upstream")
-    expect(runtimeTransportFromManifest(geometryTransportManifest)).toBeNull()
+  it("does not create runtime transport from an unpublished W3 manifest", () => {
+    const blockedManifest = validateGeometryTransportManifest(
+      {
+        ...geometryTransportManifest,
+        status: "blocked_upstream",
+        parent_release: null,
+        mapbox: {
+          ...geometryTransportManifest.mapbox,
+          tileset_id: null,
+          source_layer: null,
+          published_feature_count: null,
+          publication_time: null,
+          publication_job_id: null,
+        },
+      },
+      fixtureRelease.geographies.map((item) => item.id),
+    )
+    expect(runtimeTransportFromManifest(blockedManifest)).toBeNull()
   })
 })
