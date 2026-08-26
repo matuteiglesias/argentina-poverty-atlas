@@ -7,6 +7,7 @@ import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
 import {
   fixtureEstimate,
+  fixtureRelease,
   getPeriodLabel,
   labels,
 } from "@/data/fixture"
@@ -81,8 +82,9 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
       </section>
 
       <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-900/10 pt-5 text-sm text-slate-500">
-        <span>release: fixture-ui-w1</span>
-        <span>scientific_status: synthetic_fixture</span>
+        <span>release: {fixtureRelease.metadata.release_id}</span>
+        <span>scientific_status: {fixtureRelease.metadata.scientific_status}</span>
+        <span>not_for_interpretation: {String(fixtureRelease.metadata.not_for_interpretation)}</span>
         <span>uncertainty: not_supplied</span>
         <span>geometry: pending W3</span>
       </div>
