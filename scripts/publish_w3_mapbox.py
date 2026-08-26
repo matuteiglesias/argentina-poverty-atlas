@@ -32,7 +32,7 @@ ARTIFACT_SHA256 = "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6d
 DISPLAY_SHA256 = "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3"
 TILESET_SLUG = "arg-prov-ign-b9fcf6f90f28"
 TILESET_ID = f"{MAPBOX_USERNAME}.{TILESET_SLUG}"
-TILESET_NAME = "Argentina provinces — IGN b9fcf6f90f28"
+TILESET_NAME = "Argentina provinces - IGN b9fcf6f90f28"
 EXPECTED_IDS = (
     "02", "06", "10", "14", "18", "22", "26", "30",
     "34", "38", "42", "46", "50", "54", "58", "62",
