@@ -5,6 +5,8 @@ on:
     branches: ["feat/w3-complete-mapbox"]
     paths:
       - ".github/workflows/publish-w3-mapbox.yml"
+      - "scripts/publish_w3_mapbox.py"
+      - "scripts/finalize_w3_parent_identity.py"
 
 permissions:
   contents: write
@@ -89,8 +91,8 @@ jobs:
       - name: Publish geometry-only derivative and prove 24/24 vector IDs
         shell: bash
         run: |
-          # Mapbox Uploads API rejects the em dash in the human-facing upload name.
-          # Keep the immutable tileset ID unchanged; override only the display name.
+          # Keep the immutable tileset ID unchanged; the display name is ASCII-only
+          # to remain within the Uploads API's accepted metadata surface.
           python - <<'PY'
           import scripts.publish_w3_mapbox as publisher
 
