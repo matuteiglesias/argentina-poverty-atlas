@@ -1,0 +1,219 @@
+schema_version: 1
+inventory_id: legacy-poverty-mapbox-2026-08-26
+observed_on: "2026-08-26"
+status: repository_evidence_complete_live_account_unverified
+
+scope:
+  mapbox_account: matuteiglesias2
+  evidence_repository: matuteiglesias/indice-pobreza-UBA
+  evidence_commit: a31080c9adbc63d4ea46973d1bd00feef9d5fb4f
+  evidence_paths:
+    - notebooks/6. Integracion con Mapbox.ipynb
+    - data/info/mapbox_styles.csv
+    - data/recipes/
+  rule: >-
+    Asset identities below are observations preserved by the pinned repository
+    snapshot. They do not prove that the same resources still exist in the live
+    Mapbox account on 2026-08-26.
+
+credentials:
+  historical_mapbox_secret_tokens:
+    distinct_values_observed: 2
+    value_recorded_here: false
+    status: compromised_requires_revoke_or_rotate
+    evidence_path: notebooks/6. Integracion con Mapbox.ipynb
+    note: >-
+      The notebook embeds two distinct sk.* values and uses them for Mapbox API,
+      tileset and style operations. Never copy either value into this repository.
+  atlas_browser_token:
+    status: external_account_setup_required
+    requirements:
+      - dedicated to argentina-poverty-atlas
+      - public pk.* token only
+      - minimum browser scopes required by Mapbox GL JS
+      - URL restrictions for approved production and preview domains
+      - independently rotatable from scientific releases
+  atlas_publication_token:
+    status: intentionally_deferred
+    create_when: governed Mapbox write automation is first introduced
+    storage: GitHub Actions or approved secret storage only
+    requirements:
+      - minimum write scopes
+      - never available to browser builds
+      - never committed or logged
+
+recipes:
+  classification: parity_evidence_not_new_authority
+  assets:
+    - path: data/recipes/pobreza_H-recipe.json
+      blob_sha: 4d73f2aaeee68eea4386776a8c34d8024d32082c
+      universe: H
+    - path: data/recipes/pobreza_P-recipe.json
+      blob_sha: 92d88906fdc1a63a33f48395bc949b2c278e0dc1
+      universe: P
+    - path: data/recipes/pobreza_M24-recipe.json
+      blob_sha: 469e5ccc4c378dcc5cc98f3bd12f5d991a6465ea
+      universe: M24
+    - path: data/recipes/pobreza_M14-recipe.json
+      blob_sha: c70a5fdc7c29ab58ec44c30b92f6402ac05c1687
+      universe: M14
+    - path: data/recipes/pobreza_M6-recipe.json
+      blob_sha: 1e77baaf8888f447fe4835eb99b33122160271b1
+      universe: M6
+    - path: data/recipes/template-recipe.txt
+      blob_sha: 072157479d6f59437cf3a852368319f5f5850f2e
+      universe: template
+  observed_layer_pattern:
+    - layer: income-provs
+      minzoom: 0
+      maxzoom: 10
+    - layer: income-dptos
+      minzoom: 0
+      maxzoom: 10
+    - layer: income-fracs
+      minzoom: 5
+      maxzoom: 10
+  disposition: >-
+    Preserve as cartographic/zoom parity evidence. Do not reuse the
+    universe-specific poverty-data transport as the new scientific or geography
+    authority.
+
+tileset_sources:
+  classification: superseded_candidate_inspect_before_retirement
+  ids:
+    - mapbox://tileset-source/matuteiglesias2/income_provs_H
+    - mapbox://tileset-source/matuteiglesias2/income_dptos_H
+    - mapbox://tileset-source/matuteiglesias2/income_fracs_H
+    - mapbox://tileset-source/matuteiglesias2/income_provs_P
+    - mapbox://tileset-source/matuteiglesias2/income_dptos_P
+    - mapbox://tileset-source/matuteiglesias2/income_fracs_P
+    - mapbox://tileset-source/matuteiglesias2/income_provs_M24
+    - mapbox://tileset-source/matuteiglesias2/income_dptos_M24
+    - mapbox://tileset-source/matuteiglesias2/income_fracs_M24
+    - mapbox://tileset-source/matuteiglesias2/income_provs_M6
+    - mapbox://tileset-source/matuteiglesias2/income_dptos_M6
+    - mapbox://tileset-source/matuteiglesias2/income_fracs_M6
+    - mapbox://tileset-source/matuteiglesias2/income_provs_M14
+    - mapbox://tileset-source/matuteiglesias2/income_dptos_M14
+    - mapbox://tileset-source/matuteiglesias2/income_fracs_M14
+  disposition: >-
+    Legacy mutable publication inputs. The W3 target is a governed geometry-only
+    transport keyed by geography_id, with poverty facts joined at runtime.
+
+tilesets:
+  classification: superseded_candidate_inspect_before_retirement
+  last_observed_publications:
+    - id: matuteiglesias2.income_H202408_v5
+      universe: H
+      prior_versions_observed: [v0, v1, v2, v3, v4]
+      job_id: cm0cmwm9b001a08mc121tagv0
+    - id: matuteiglesias2.income_P202408_v4
+      universe: P
+      prior_versions_observed: [v0, v1, v2, v3]
+      job_id: cm0cmz5ne001g08mc91x9ezo4
+    - id: matuteiglesias2.income_M24202408_v3
+      universe: M24
+      prior_versions_observed: [v0, v1, v2]
+      job_id: cm0cn24x2000008l76t4u72yv
+    - id: matuteiglesias2.income_M6202408_v3
+      universe: M6
+      prior_versions_observed: [v0, v1, v2]
+      job_id: cm0cn4q7v004x08l73pbl1rpi
+    - id: matuteiglesias2.income_M14202408_v3
+      universe: M14
+      prior_versions_observed: [v0, v1, v2]
+      job_id: cm0cn7bkq001v08mccz5e0ywo
+  auxiliary_observed:
+    - id: matuteiglesias2.ejido
+      classification: unknown_manual_inspection_required
+      evidence: referenced by generated legacy styles
+
+styles:
+  classification: superseded_by_runtime_styling_retain_as_parity_evidence
+  template_style:
+    id: clmtqn2h705bg01p7424h77y3
+    status: legacy_template_live_existence_unverified
+  last_observed_generated:
+    - title: "Pobreza (%). Menores de 6"
+      id: cm0cn8a1a011w01qv19gr564w
+      source_tileset: matuteiglesias2.income_M6202408_v3
+      variable: Pobreza_mean
+    - title: "Pobreza (%). Menores de 14"
+      id: cm0cn8bst011x01qvfux50nwb
+      source_tileset: matuteiglesias2.income_M14202408_v3
+      variable: Pobreza_mean
+    - title: "Pobreza (%). Mayores de 24"
+      id: cm0cn8d1i011y01qvhbvo2ri9
+      source_tileset: matuteiglesias2.income_M24202408_v3
+      variable: Pobreza_mean
+    - title: "Pobreza (%). Personas"
+      id: cm0cn8gqp011z01qvacmlgi6d
+      source_tileset: matuteiglesias2.income_P202408_v4
+      variable: Pobreza_mean
+    - title: "Pobreza (%). Hogares"
+      id: cm0cn8i3g004k01qr79i3fh4z
+      source_tileset: matuteiglesias2.income_H202408_v5
+      variable: Pobreza_mean
+    - title: "Indigencia (%). Menores de 6"
+      id: cm0cn8jdx004l01qr621m0j9b
+      source_tileset: matuteiglesias2.income_M6202408_v3
+      variable: Indigencia_mean
+    - title: "Indigencia (%). Personas"
+      id: cm0cn8kvl013e01o05zdq697p
+      source_tileset: matuteiglesias2.income_P202408_v4
+      variable: Indigencia_mean
+    - title: "Indigencia (%). Mayores de 24"
+      id: cm0cn8m4e013f01o00uucdv1f
+      source_tileset: matuteiglesias2.income_M24202408_v3
+      variable: Indigencia_mean
+    - title: "Indigencia (%). Hogares"
+      id: cm0cn8naj013g01o0h12pcbbb
+      source_tileset: matuteiglesias2.income_H202408_v5
+      variable: Indigencia_mean
+    - title: "Indigencia (%). Menores de 14"
+      id: cm0cn8okh004m01qr8xs2hf4c
+      source_tileset: matuteiglesias2.income_M14202408_v3
+      variable: Indigencia_mean
+    - title: "Canasta Alimentaria mediana (AR$). Hogares"
+      id: cm0cn8rrj01fp01qrbendeskg
+      source_tileset: matuteiglesias2.income_H202408_v5
+      variable: CBA_median
+    - title: "Canasta Total mediana (AR$). Hogares"
+      id: cm0cn8trk01g001qqcp3jcva2
+      source_tileset: matuteiglesias2.income_H202408_v5
+      variable: CBT_median
+    - title: "Ingreso mediano (AR$). Mayores de 24"
+      id: cm0cn8v0q01fq01qrf7p6hs2d
+      source_tileset: matuteiglesias2.income_M24202408_v3
+      variable: P47T_persona_median
+    - title: "Ingreso Total Familiar mediano (AR$). Hogares"
+      id: cm0cn8waf01g101qqfvbn2h1x
+      source_tileset: matuteiglesias2.income_H202408_v5
+      variable: P47T_hogar_median
+  disposition: >-
+    Keep only as visual/interaction parity evidence. The atlas target is one stable
+    basemap plus runtime layers; period, universe and estimand changes must not
+    create new styles.
+
+public_surface:
+  historical_path: /Pobreza/
+  historical_url: http://matuteiglesias.link/Pobreza/
+  repository_evidence: >-
+    The legacy notebook updates HTML files under a local Documents/link/Pobreza
+    tree; the public route was also externally advertised historically.
+  live_status_2026_08_26: unverified_from_execution_environment
+  migration_decision:
+    w0: preserve_route_and_assets_no_redirect_change
+    w7: prove first real atlas release before migration
+    w8: redirect_or_replace_historical_path_intentionally
+    target: canonical argentina-poverty-atlas deployment URL, to be fixed before W8
+    preserve: historical URLs/screenshots/citation evidence where useful
+
+retirement_policy:
+  delete_in_w0: false
+  earliest_retirement_review: W8
+  preconditions:
+    - one new fixture map independently proven
+    - one real map independently proven
+    - live Mapbox account inventory reconciled against this repository evidence
+    - redirect/migration behavior verified
