@@ -118,4 +118,4 @@ Do not copy credentials from legacy Poverty notebooks. A historical Mapbox write
 
 ## Status
 
-**W1 frontend application seed in progress.** The structural public UI is fixture-driven and intentionally independent of W0 security/legacy-asset work. See `docs/DELIVERY_PLAN.md` for the W0–W8 program.
+**W1 frontend application seed in progress on top of the merged W0 repository baseline.** The structural public UI remains fixture-driven and requires no Mapbox credential; W0's external account actions remain separately governed. See `docs/DELIVERY_PLAN.md` for the W0–W8 program.
