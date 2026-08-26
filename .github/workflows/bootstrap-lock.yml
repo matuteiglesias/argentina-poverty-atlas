@@ -23,8 +23,14 @@ jobs:
         run: npm install --package-lock-only --ignore-scripts
       - name: Install locked dependencies
         run: npm ci
-      - name: Verify application
-        run: npm run verify
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
       - name: Commit lockfile
         run: |
           git config user.name "github-actions[bot]"
