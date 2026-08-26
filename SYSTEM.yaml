@@ -14,10 +14,12 @@ authority:
     - interactive map and choropleth presentation semantics
     - period/universe/measure navigation and shareable URL state
     - Mapbox geometry transport/presentation integration
+    - compatibility proof between exact poverty facts and exact geography releases
     - public lineage, methodology, quality and citation UX
     - deterministic synthetic frontend fixtures
   does_not_own:
     - poverty methodology or FGT computation
+    - scientific aggregation of released facts into new poverty estimands
     - Census sampling or population-frame estimation
     - welfare/income model training, promotion or inference
     - poverty-line production
@@ -27,6 +29,12 @@ interfaces:
   consumes:
     - artifact:poverty-estimate-release@2
     - artifact:argentina-geography-geography-release
+  poverty_consumer_profile:
+    schema: atlas-poverty-consumer-profile/v1
+    path: contracts/poverty-release-consumer-v1.json
+    capability_source: capabilities.json
+    geography_join: exact_governed_id
+    browser_scientific_aggregation: false
   produces:
     - artifact:argentina-poverty-atlas-release@1
     - application:argentina-poverty-atlas-web
@@ -48,9 +56,10 @@ security:
   secret_mapbox_credentials: CI/secret-store only
   committed_secrets_allowed: false
 verification:
-  status: seed-specified
+  status: seed-specified-contract-hardened
   next_proof:
     - deterministic 24-jurisdiction synthetic fixture
+    - consume one verified poverty-estimate-release/v2 without producer code import
     - exact-ID province geometry join
     - one runtime choropleth in browser
     - responsive atlas shell
