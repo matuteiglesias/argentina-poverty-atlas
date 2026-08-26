@@ -17,6 +17,17 @@ type ProofState =
   | { kind: "verified"; message: string }
   | { kind: "error"; message: string }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function geographyIdFromFeature(feature: unknown) {
+  if (!isRecord(feature)) return ""
+  const properties = isRecord(feature.properties) ? feature.properties : null
+  const value = properties?.geography_id ?? feature.id
+  return typeof value === "string" || typeof value === "number" ? String(value) : ""
+}
+
 export function ProvinceMap({ onSelect }: ProvinceMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [proof, setProof] = useState<ProofState>({
@@ -25,11 +36,12 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
   })
 
   const manifest = geometryTransportManifest
-  const published = isPublishedGeometryTransport(manifest)
+  const publishedManifest = isPublishedGeometryTransport(manifest) ? manifest : null
   const browserToken = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN?.trim()
 
   useEffect(() => {
-    if (!published || !browserToken || !containerRef.current) return
+    if (!publishedManifest || !browserToken || !containerRef.current) return
+    const transport = publishedManifest
 
     let disposed = false
     let map: import("mapbox-gl").Map | null = null
@@ -41,7 +53,7 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
       mapboxgl.accessToken = browserToken
       map = new mapboxgl.Map({
         container: containerRef.current,
-        style: manifest.mapbox.style_url,
+        style: transport.mapbox.style_url,
         center: [-64.2, -38.4],
         zoom: 3.15,
         minZoom: 2.4,
@@ -54,14 +66,14 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
         if (!map) return
         map.addSource("province-geometry", {
           type: "vector",
-          url: `mapbox://${manifest.mapbox.tileset_id}`,
-          promoteId: manifest.mapbox.feature_id_property,
+          url: `mapbox://${transport.mapbox.tileset_id}`,
+          promoteId: transport.mapbox.feature_id_property,
         })
         map.addLayer({
           id: "province-proof-fill",
           type: "fill",
           source: "province-geometry",
-          "source-layer": manifest.mapbox.source_layer,
+          "source-layer": transport.mapbox.source_layer,
           paint: {
             "fill-color": "#d8cbb6",
             "fill-opacity": 0.52,
@@ -71,7 +83,7 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
           id: "province-proof-border",
           type: "line",
           source: "province-geometry",
-          "source-layer": manifest.mapbox.source_layer,
+          "source-layer": transport.mapbox.source_layer,
           paint: {
             "line-color": "#334155",
             "line-width": 0.9,
@@ -79,8 +91,7 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
         })
 
         map.on("click", "province-proof-fill", (event) => {
-          const feature = event.features?.[0]
-          const geographyId = String(feature?.properties?.geography_id ?? feature?.id ?? "")
+          const geographyId = geographyIdFromFeature(event.features?.[0])
           if (provinceGeometryIds.includes(geographyId)) onSelect(geographyId)
         })
         map.on("mouseenter", "province-proof-fill", () => {
@@ -96,9 +107,9 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
         const renderedIds = new Set(
           map
             .querySourceFeatures("province-geometry", {
-              sourceLayer: manifest.mapbox.source_layer,
+              sourceLayer: transport.mapbox.source_layer,
             })
-            .map((feature) => String(feature.properties?.geography_id ?? feature.id ?? ""))
+            .map(geographyIdFromFeature)
             .filter(Boolean),
         )
         const expectedIds = new Set(provinceGeometryIds)
@@ -127,9 +138,9 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
       disposed = true
       map?.remove()
     }
-  }, [browserToken, manifest, onSelect, published])
+  }, [browserToken, onSelect, publishedManifest])
 
-  if (!published) {
+  if (!publishedManifest) {
     return (
       <Card className="p-6 sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -199,7 +210,7 @@ export function ProvinceMap({ onSelect }: ProvinceMapProps) {
             Geometría real · valores sintéticos separados
           </p>
           <p className="mt-1 text-sm font-medium text-slate-800">
-            Mapbox Standard · {manifest.mapbox.source_layer}
+            Mapbox Standard · {publishedManifest.mapbox.source_layer}
           </p>
         </div>
         <p
