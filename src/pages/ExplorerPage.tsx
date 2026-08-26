@@ -6,10 +6,13 @@ import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
 import {
   fixtureEstimate,
+  fixtureRelease,
   getPeriodLabel,
   labels,
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
+import { geometryTransportManifest } from "@/map/geometryTransport"
+import { MapboxChoropleth } from "@/map/MapboxChoropleth"
 import { formatPercent } from "@/lib/utils"
 import { geometryTransportManifest } from "@/map/geometryTransport"
 import { ProvinceMap } from "@/map/ProvinceMap"
@@ -69,7 +72,10 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
             </p>
           </Card>
 
-          <ProvinceMap onSelect={(place) => onChange({ place })} />
+          <MapboxChoropleth
+            state={state}
+            onSelect={(place) => onChange({ place })}
+          />
 
           <ProvinceTable
             state={state}
@@ -79,10 +85,11 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
       </section>
 
       <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-900/10 pt-5 text-sm text-slate-500">
-        <span>release: fixture-ui-w1</span>
-        <span>scientific_status: synthetic_fixture</span>
+        <span>release: {fixtureRelease.metadata.release_id}</span>
+        <span>scientific_status: {fixtureRelease.metadata.scientific_status}</span>
+        <span>not_for_interpretation: {String(fixtureRelease.metadata.not_for_interpretation)}</span>
         <span>uncertainty: not_supplied</span>
-        <span>geometry_transport: {geometryTransportManifest.status}</span>
+        <span>geometry: {geometryTransportManifest.transport_id}/{geometryTransportManifest.status}</span>
       </div>
 
       <DetailSheet state={state} onClose={() => onChange({ place: null })} />
