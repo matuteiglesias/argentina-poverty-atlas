@@ -14,6 +14,8 @@ import type { AtlasState } from "@/lib/atlasState"
 import { geometryTransportManifest } from "@/map/geometryTransport"
 import { MapboxChoropleth } from "@/map/MapboxChoropleth"
 import { formatPercent } from "@/lib/utils"
+import { geometryTransportManifest } from "@/map/geometryTransport"
+import { ProvinceMap } from "@/map/ProvinceMap"
 
 interface ExplorerPageProps {
   state: AtlasState
