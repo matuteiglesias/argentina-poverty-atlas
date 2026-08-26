@@ -4,26 +4,28 @@
 
 Prove that one Mapbox instance can render every W2 fixture selection by joining facts at runtime through exact governed geography IDs. W4 consumes W3 geometry transport; it does not publish, alter, repair or choose geometry.
 
-## Parent boundaries
+## Exact W3 contract
 
-Scientific facts come from the deterministic W2 fixture release. Geometry must arrive independently through:
-
-```text
-/data/geography_transport.json
-```
-
-The W4 consumer requires:
+W4 consumes W3's checked-in manifest directly:
 
 ```text
-geography_level = province_2010
-feature_id_property = geography_id
-geography_release_id = <exact governed W3 release>
-Mapbox tileset/source identity
-source_layer
-expected_geography_ids = exactly the 24 W2 jurisdiction IDs
+mapbox/manifests/province-w3.json
+schema = argentina-poverty-atlas.geometry-transport/v1
 ```
 
-The transport validator accepts either top-level Mapbox fields or a nested `mapbox` object, but it does not relax geography level, feature identity, or ID coverage.
+The authoritative W3 validator remains `src/map/geometryTransport.ts`. W4 does not maintain a second looser parser. A runtime transport exists only when that manifest has:
+
+```text
+status = published
+parent_release = exact province Geography Release
+mapbox.tileset_id = non-empty
+mapbox.source_layer = non-empty
+mapbox.feature_id_property = geography_id
+mapbox.published_feature_count = 24
+fixture_geography_ids = exactly the W2 24 IDs
+```
+
+As of 2026-08-26 the W3 manifest is intentionally `blocked_upstream`: the inspected `argentina-geography` main had exact radio releases but no independently released 24-feature province Geography Release. W3 correctly refuses to manufacture that parent by dissolving radios. Therefore W4's runtime seam is implemented and testable, but the live Mapbox/browser proof remains gated on the upstream release and W3 publication.
 
 ## Runtime model
 
@@ -54,7 +56,7 @@ The province detail sheet continues reading the same W2 fact index as the map. T
 
 ## Mapbox runtime loading
 
-W4 pins the official Mapbox GL JS CDN bundle to `3.29.0` and loads it only in the browser. The app expects:
+W4 pins the official Mapbox GL JS CDN bundle to `3.29.0` and loads it only when W3 is published and a browser token exists. The app expects:
 
 ```text
 VITE_MAPBOX_PUBLIC_TOKEN
@@ -62,7 +64,7 @@ VITE_MAPBOX_PUBLIC_TOKEN
 
 Only a dedicated, URL-restricted public `pk.*` token belongs there. No token is required for CI, unit tests, build, or the accessible table fallback.
 
-If the token or W3 transport is absent, the map fails closed with an explicit message and the table remains usable.
+If W3 is blocked, the map surface exposes W3's blocker and issue instead of substituting geometry. If W3 is published but the token is absent, the map fails closed with a token-specific message. In both cases the table remains usable.
 
 ## Tests
 
@@ -73,9 +75,10 @@ The runtime join is tested through a narrow Mapbox adapter rather than a WebGL b
 - URL-restored selection writes the exact W2 fact value;
 - period / universe / concept / estimand changes update state without adding layers;
 - legend domain is stable across periods/universes;
-- incompatible W3 geography coverage is rejected;
+- W4 inherits W3's exact 24-ID compatibility gate;
+- `blocked_upstream` cannot be converted into a runtime transport;
 - click selection returns the promoted string ID.
 
-## W3 concurrency
+## Completion gate
 
-W3 may publish and prove the governed geometry transport independently. W4 deliberately does not commit a fake transport manifest or synthetic polygon fallback. When W3 lands, reconcile its exact manifest shape and transport path if needed, then run the real browser proof before treating W4 as fully integrated.
+The code/contract portion of W4 is complete when CI is green. The full W4 DoD additionally requires W3 to become `published`, a dedicated public token to be configured, and one browser proof showing all 24 governed features with selections/recoloring on the same map instance. Until then W4 must remain explicit about the upstream block rather than calling the map end-to-end complete.

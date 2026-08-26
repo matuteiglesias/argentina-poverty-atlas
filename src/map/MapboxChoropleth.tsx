@@ -2,11 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { fixtureRelease, labels } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
-import {
-  GEOMETRY_TRANSPORT_URL,
-  loadGeometryTransport,
-  type GeometryTransport,
-} from "@/map/geometryTransport"
+import { geometryTransportManifest } from "@/map/geometryTransport"
 import {
   createRuntimeJoin,
   getLegendModel,
@@ -16,6 +12,10 @@ import {
   type MapRuntime,
   type RuntimeJoin,
 } from "@/map/runtimeJoin"
+import {
+  runtimeGeometryTransport,
+  type RuntimeGeometryTransport,
+} from "@/map/runtimeTransport"
 import { formatPercent } from "@/lib/utils"
 
 const MAPBOX_GL_VERSION = "3.29.0"
@@ -80,7 +80,8 @@ interface MapboxChoroplethProps {
 
 type RuntimeStatus =
   | { kind: "loading"; message: string }
-  | { kind: "ready"; message: string; transport: GeometryTransport }
+  | { kind: "ready"; message: string; transport: RuntimeGeometryTransport }
+  | { kind: "blocked"; message: string }
   | { kind: "unavailable"; message: string }
   | { kind: "error"; message: string }
 
@@ -127,10 +128,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const runtimeRef = useRef<RuntimeJoin | null>(null)
   const stateRef = useRef(state)
   const selectRef = useRef(onSelect)
-  const [status, setStatus] = useState<RuntimeStatus>({
-    kind: "loading",
-    message: "Preparando transporte cartográfico…",
-  })
+  const [status, setStatus] = useState<RuntimeStatus>(() =>
+    runtimeGeometryTransport
+      ? { kind: "loading", message: "Preparando transporte cartográfico…" }
+      : {
+          kind: "blocked",
+          message: geometryTransportManifest.upstream_audit.finding,
+        },
+  )
 
   useEffect(() => {
     stateRef.current = state
@@ -143,13 +148,15 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container) return
-    const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN
+    const transport = runtimeGeometryTransport
+    if (!container || !transport) return
+
+    const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN?.trim()
     if (!token) {
       setStatus({
         kind: "unavailable",
         message:
-          "Mapa no configurado: falta el token público VITE_MAPBOX_PUBLIC_TOKEN. La tabla territorial sigue disponible.",
+          "El transporte W3 está publicado, pero falta VITE_MAPBOX_PUBLIC_TOKEN. La tabla territorial sigue disponible.",
       })
       return
     }
@@ -158,13 +165,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     let map: BrowserMap | null = null
     let runtime: RuntimeJoin | null = null
 
-    Promise.all([loadMapboxGl(), loadGeometryTransport()])
-      .then(([mapboxgl, transport]) => {
+    loadMapboxGl()
+      .then((mapboxgl) => {
         if (cancelled) return
         mapboxgl.accessToken = token
         map = new mapboxgl.Map({
           container,
-          style: "mapbox://styles/mapbox/standard",
+          style: transport.style_url,
           center: [-64, -38],
           zoom: 2.8,
           minZoom: 2,
@@ -199,9 +206,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         if (cancelled) return
         const message = error instanceof Error ? error.message : "Error desconocido"
         setStatus({
-          kind: message.includes("transport unavailable")
-            ? "unavailable"
-            : "error",
+          kind: "error",
           message: `${message}. La tabla territorial sigue disponible.`,
         })
       })
@@ -238,22 +243,29 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           aria-label="Mapa coroplético de jurisdicciones argentinas"
         />
         {status.kind !== "ready" && (
-          <div className="absolute inset-0 grid place-items-center bg-slate-50/90 p-6 text-center">
-            <div className="max-w-lg">
+          <div className="absolute inset-0 grid place-items-center bg-slate-50/95 p-6 text-center">
+            <div className="max-w-2xl">
               <p className="text-sm font-semibold text-slate-800">
                 {status.kind === "loading"
                   ? "Cargando mapa"
-                  : status.kind === "unavailable"
-                    ? "Transporte cartográfico pendiente"
-                    : "No se pudo inicializar el mapa"}
+                  : status.kind === "blocked"
+                    ? "Transporte W3 bloqueado correctamente"
+                    : status.kind === "unavailable"
+                      ? "Credencial pública pendiente"
+                      : "No se pudo inicializar el mapa"}
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {status.message}
               </p>
-              {status.kind === "unavailable" && (
-                <p className="mt-2 font-mono text-xs text-slate-500">
-                  {GEOMETRY_TRANSPORT_URL}
-                </p>
+              {status.kind === "blocked" && (
+                <a
+                  className="mt-4 inline-flex text-sm font-semibold text-sky-900 underline underline-offset-4"
+                  href={geometryTransportManifest.upstream_audit.blocker_issue}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Ver prerequisite en argentina-geography
+                </a>
               )}
             </div>
           </div>
@@ -265,6 +277,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-900/10 px-5 py-3 text-xs text-slate-500 sm:px-6">
         <span>Mapbox GL JS {MAPBOX_GL_VERSION}</span>
         <span>feature identity: geography_id</span>
+        <span>W3: {geometryTransportManifest.status}</span>
         {status.kind === "ready" && (
           <span>geography: {status.transport.geography_release_id}</span>
         )}

@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest"
 import { fixtureRelease, getFact } from "@/data/fixture"
 import { parseAtlasState } from "@/lib/atlasState"
 import {
+  geometryTransportManifest,
+  validateGeometryTransportManifest,
+} from "@/map/geometryTransport"
+import {
   createRuntimeJoin,
   getLegendModel,
   MAP_LAYERS,
@@ -10,16 +14,17 @@ import {
   type MapRuntime,
 } from "@/map/runtimeJoin"
 import {
-  validateGeometryTransport,
-  type GeometryTransport,
-} from "@/map/geometryTransport"
+  runtimeTransportFromManifest,
+  type RuntimeGeometryTransport,
+} from "@/map/runtimeTransport"
 
-const transport: GeometryTransport = {
+const transport: RuntimeGeometryTransport = {
   geography_level: "province_2010",
-  geography_release_id: "geography-fixture-for-runtime-test",
+  geography_release_id: "geography-fixture-for-runtime-test@v1",
   feature_id_property: "geography_id",
   mapbox_source: "mapbox://fixture.provinces",
   source_layer: "province_2010",
+  style_url: "mapbox://styles/mapbox/standard",
   expected_geography_ids: fixtureRelease.geographies.map((item) => item.id),
 }
 
@@ -131,30 +136,20 @@ describe("W4 runtime choropleth join", () => {
     expect(getLegendModel(fixtureRelease, "poverty", "fgt0")).toEqual(poverty)
   })
 
-  it("fails closed when W3 geometry IDs do not exactly match the fixture", () => {
+  it("inherits W3's exact 24-ID compatibility gate", () => {
     expect(() =>
-      validateGeometryTransport({
-        ...transport,
-        expected_geography_ids: transport.expected_geography_ids.slice(1),
-      }),
-    ).toThrow(/exactly match the 24 fixture IDs/)
+      validateGeometryTransportManifest(
+        {
+          ...geometryTransportManifest,
+          fixture_geography_ids: geometryTransportManifest.fixture_geography_ids.slice(1),
+        },
+        fixtureRelease.geographies.map((item) => item.id),
+      ),
+    ).toThrow(/exactly 24 geography IDs|exactly match/)
   })
 
-  it("accepts a nested W3 Mapbox transport shape without weakening identity", () => {
-    expect(
-      validateGeometryTransport({
-        geography_level: "province_2010",
-        geography_release_id: "governed-release",
-        expected_geography_ids: transport.expected_geography_ids,
-        mapbox: {
-          tileset_id: "account.provinces",
-          source_layer: "provinces",
-          feature_id_property: "geography_id",
-        },
-      }),
-    ).toMatchObject({
-      mapbox_source: "mapbox://account.provinces",
-      feature_id_property: "geography_id",
-    })
+  it("treats W3 blocked_upstream as no runtime transport", () => {
+    expect(geometryTransportManifest.status).toBe("blocked_upstream")
+    expect(runtimeTransportFromManifest(geometryTransportManifest)).toBeNull()
   })
 })

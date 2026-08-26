@@ -5,7 +5,7 @@ import type {
   Estimand,
   PovertyFact,
 } from "@/data/release"
-import type { GeometryTransport } from "@/map/geometryTransport"
+import type { RuntimeGeometryTransport } from "@/map/runtimeTransport"
 
 export const MAP_SOURCE_ID = "atlas-provinces"
 export const MAP_LAYERS = {
@@ -121,7 +121,7 @@ export function factForState(
   )
 }
 
-export function buildLayerSpecs(transport: GeometryTransport) {
+export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
   const shared = {
     source: MAP_SOURCE_ID,
     "source-layer": transport.source_layer,
@@ -183,7 +183,7 @@ export function buildLayerSpecs(transport: GeometryTransport) {
   ]
 }
 
-function featureTarget(transport: GeometryTransport, id: string) {
+function featureTarget(transport: RuntimeGeometryTransport, id: string) {
   return {
     source: MAP_SOURCE_ID,
     sourceLayer: transport.source_layer,
@@ -193,7 +193,7 @@ function featureTarget(transport: GeometryTransport, id: string) {
 
 function eventGeographyId(
   event: MapLayerEvent,
-  transport: GeometryTransport,
+  transport: RuntimeGeometryTransport,
 ): string | null {
   const feature = event.features?.[0]
   if (!feature) return null
@@ -204,7 +204,7 @@ function eventGeographyId(
 
 export function createRuntimeJoin(
   map: MapRuntime,
-  transport: GeometryTransport,
+  transport: RuntimeGeometryTransport,
   release: AtlasRelease,
   onSelect: (geographyId: string) => void,
 ) {

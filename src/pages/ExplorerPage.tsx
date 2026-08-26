@@ -11,8 +11,8 @@ import {
   labels,
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
+import { geometryTransportManifest } from "@/map/geometryTransport"
 import { MapboxChoropleth } from "@/map/MapboxChoropleth"
-import { GEOMETRY_TRANSPORT_URL } from "@/map/geometryTransport"
 import { formatPercent } from "@/lib/utils"
 
 interface ExplorerPageProps {
@@ -87,7 +87,7 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
         <span>scientific_status: {fixtureRelease.metadata.scientific_status}</span>
         <span>not_for_interpretation: {String(fixtureRelease.metadata.not_for_interpretation)}</span>
         <span>uncertainty: not_supplied</span>
-        <span>geometry transport: {GEOMETRY_TRANSPORT_URL}</span>
+        <span>geometry: {geometryTransportManifest.transport_id}/{geometryTransportManifest.status}</span>
       </div>
 
       <DetailSheet state={state} onClose={() => onChange({ place: null })} />
