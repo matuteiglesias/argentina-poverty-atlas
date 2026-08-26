@@ -1,7 +1,6 @@
 import {
   DetailSheet,
   ProvinceTable,
-  TerritoryPlaceholder,
 } from "@/components/AtlasViews"
 import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
@@ -12,6 +11,8 @@ import {
   labels,
 } from "@/data/fixture"
 import type { AtlasState } from "@/lib/atlasState"
+import { geometryTransportManifest } from "@/map/geometryTransport"
+import { MapboxChoropleth } from "@/map/MapboxChoropleth"
 import { formatPercent } from "@/lib/utils"
 
 interface ExplorerPageProps {
@@ -69,7 +70,7 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
             </p>
           </Card>
 
-          <TerritoryPlaceholder
+          <MapboxChoropleth
             state={state}
             onSelect={(place) => onChange({ place })}
           />
@@ -86,7 +87,7 @@ export function ExplorerPage({ state, onChange }: ExplorerPageProps) {
         <span>scientific_status: {fixtureRelease.metadata.scientific_status}</span>
         <span>not_for_interpretation: {String(fixtureRelease.metadata.not_for_interpretation)}</span>
         <span>uncertainty: not_supplied</span>
-        <span>geometry: pending W3</span>
+        <span>geometry: {geometryTransportManifest.transport_id}/{geometryTransportManifest.status}</span>
       </div>
 
       <DetailSheet state={state} onClose={() => onChange({ place: null })} />
