@@ -143,7 +143,7 @@ export function HomePage({ state, onChange, onExplore }: HomePageProps) {
           <p className="mt-4 max-w-lg leading-7 text-slate-600">
             En el explorador, cada jurisdicción conserva su comparación con Argentina, su trayectoria temporal, el perfil FGT y sus señales de calidad.
           </p>
-          <Button className="mt-6" variant="outline" onClick={onExplore}>Ver detalle provincial →</Button>
+          <Button className="mt-6" variant="secondary" onClick={onExplore}>Ver detalle provincial →</Button>
         </div>
 
         <div className="rounded-[2rem] border border-slate-900/10 bg-white/55 p-6 sm:p-8">
