@@ -7,7 +7,10 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "data:project": "node scripts/project-fixture-release.mjs",
+    "predev": "npm run data:project",
     "dev": "vite",
+    "prebuild": "npm run data:project",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint src vite.config.ts",
