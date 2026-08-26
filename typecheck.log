@@ -1,6 +1,0 @@
-
-> argentina-poverty-atlas@0.1.0 typecheck
-> tsc -b --pretty false
-
-src/main.tsx(4,8): error TS2882: Cannot find module or type declarations for side-effect import of '@/index.css'.
-typecheck_exit=2
