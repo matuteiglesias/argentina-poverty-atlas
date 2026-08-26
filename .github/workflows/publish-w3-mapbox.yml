@@ -18,7 +18,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       MAPBOX_USERNAME: matuteiglesias2
       MAPBOX_UPLOAD_TOKEN: ${{ secrets.MAPBOX_UPLOAD_TOKEN }}
@@ -91,12 +91,61 @@ jobs:
       - name: Publish geometry-only derivative and prove 24/24 vector IDs
         shell: bash
         run: |
-          # Keep the immutable tileset ID unchanged; the display name is ASCII-only
-          # to remain within the Uploads API's accepted metadata surface.
           python - <<'PY'
+          import time
           import scripts.publish_w3_mapbox as publisher
 
           publisher.TILESET_NAME = "Argentina provinces IGN b9fcf6f90f28"
+
+          def create_and_wait_for_upload(staged_url: str) -> dict:
+              created = publisher.request_json(
+                  "POST",
+                  f"/uploads/v1/{publisher.MAPBOX_USERNAME}",
+                  payload={
+                      "tileset": publisher.TILESET_ID,
+                      "url": staged_url,
+                      "name": publisher.TILESET_NAME,
+                  },
+                  label="Mapbox upload creation",
+              )
+              upload_id = created.get("id")
+              if not isinstance(upload_id, str) or not upload_id:
+                  raise RuntimeError("Mapbox upload creation did not return an upload id")
+              if created.get("tileset") != publisher.TILESET_ID:
+                  raise RuntimeError(
+                      f"Mapbox upload targeted unexpected tileset: {created.get('tileset')!r}"
+                  )
+
+              last_progress = object()
+              for attempt in range(300):
+                  status = publisher.request_json(
+                      "GET",
+                      f"/uploads/v1/{publisher.MAPBOX_USERNAME}/{upload_id}",
+                      label="Mapbox upload status",
+                  )
+                  if status.get("error"):
+                      raise RuntimeError(f"Mapbox upload failed: {status['error']}")
+                  if status.get("complete") is True:
+                      if status.get("progress") != 1:
+                          raise RuntimeError(
+                              "Mapbox marked upload complete without progress=1"
+                          )
+                      return status
+
+                  progress = status.get("progress")
+                  if progress != last_progress or attempt % 12 == 0:
+                      print(
+                          "Mapbox upload pending: "
+                          f"id={upload_id}, progress={progress!r}, poll={attempt + 1}/300"
+                      )
+                      last_progress = progress
+                  time.sleep(5)
+
+              raise RuntimeError(
+                  "Mapbox upload did not complete within the 25-minute bounded polling window"
+              )
+
+          publisher.create_and_wait_for_upload = create_and_wait_for_upload
           publisher.main()
           PY
 
