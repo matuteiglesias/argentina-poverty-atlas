@@ -1,0 +1,58 @@
+schema_version: 1
+id: public.argentina-poverty-atlas
+repository:
+  id: repo.argentina-poverty-atlas
+  github: matuteiglesias/argentina-poverty-atlas
+domain: public-research
+system: argentina-poverty
+role: public-atlas-consumer
+lifecycle: active-seed
+authority:
+  status: current
+  owns:
+    - public poverty-atlas information architecture
+    - interactive map and choropleth presentation semantics
+    - period/universe/measure navigation and shareable URL state
+    - Mapbox geometry transport/presentation integration
+    - public lineage, methodology, quality and citation UX
+    - deterministic synthetic frontend fixtures
+  does_not_own:
+    - poverty methodology or FGT computation
+    - Census sampling or population-frame estimation
+    - welfare/income model training, promotion or inference
+    - poverty-line production
+    - geography identity, geometry authority or spatial repair
+    - official statistical publication
+interfaces:
+  consumes:
+    - artifact:poverty-estimate-release@2
+    - artifact:argentina-geography-geography-release
+  produces:
+    - artifact:argentina-poverty-atlas-release@1
+    - application:argentina-poverty-atlas-web
+upstream:
+  - repo.indice-pobreza-uba
+  - repo.argentina-geography
+downstream:
+  - public-web-users
+  - research-and-policy-users
+technology_direction:
+  frontend: Vite + React + TypeScript
+  ui: Tailwind + shadcn/ui components
+  charts: Recharts or equivalent small React chart layer
+  map: Mapbox GL JS 3.x
+  hosting: static deployment, Vercel-compatible
+  server_required: false
+security:
+  public_map_token: restricted browser token only
+  secret_mapbox_credentials: CI/secret-store only
+  committed_secrets_allowed: false
+verification:
+  status: seed-specified
+  next_proof:
+    - deterministic 24-jurisdiction synthetic fixture
+    - exact-ID province geometry join
+    - one runtime choropleth in browser
+    - responsive atlas shell
+maintenance:
+  cadence: active-development
