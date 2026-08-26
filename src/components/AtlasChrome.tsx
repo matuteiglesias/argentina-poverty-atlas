@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
+import { fixtureRelease } from "@/data/fixture"
 import type { AtlasRoute, AtlasState } from "@/lib/atlasState"
 
 interface HeaderProps {
@@ -55,8 +56,9 @@ export function FixtureBanner() {
     >
       <div className="mx-auto max-w-7xl px-5 py-2.5 text-sm text-amber-950 sm:px-8">
         <strong>Datos de demostración.</strong>{" "}
-        Valores sintéticos para desarrollar el atlas; no son estimaciones reales
-        ni estadísticas oficiales.
+        {fixtureRelease.metadata.scientific_status === "synthetic_fixture"
+          ? "Valores sintéticos para desarrollar el atlas; no son estimaciones reales ni estadísticas oficiales."
+          : "Esta superficie no debe presentarse como una publicación oficial."}
       </div>
     </div>
   )
@@ -71,7 +73,9 @@ export function Footer() {
     <footer className="mt-14 border-t border-slate-900/10">
       <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-8 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <span>Atlas de pobreza en Argentina · superficie pública de investigación</span>
-        <span>W1 · datos sintéticos · sin Mapbox</span>
+        <span>
+          W2 · {fixtureRelease.metadata.scientific_status} · sin Mapbox
+        </span>
       </div>
     </footer>
   )
