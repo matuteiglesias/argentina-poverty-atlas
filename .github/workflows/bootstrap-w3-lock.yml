@@ -24,17 +24,20 @@ jobs:
         run: npm ci
       - name: Lint
         run: npm run lint
-      - name: Typecheck
-        run: npm run typecheck
+      - name: Capture TypeScript diagnostic
+        run: |
+          set +e
+          npm run typecheck > typecheck-w3.log 2>&1
+          status=$?
+          cat typecheck-w3.log
+          echo "typecheck_exit=$status" >> typecheck-w3.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json typecheck-w3.log
+          git commit -m "chore: capture W3 lock and typecheck diagnostic"
+          git push
+          exit $status
       - name: Test
         run: npm run test
       - name: Build
         run: npm run build
-      - name: Commit lockfile
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git diff --cached --quiet && exit 0
-          git commit -m "chore: lock W3 Mapbox dependency"
-          git push
