@@ -30,11 +30,34 @@ It must:
 
 ## Historical token exposure
 
-A legacy public notebook in `indice-pobreza-UBA` contains a historical Mapbox secret token in Git history.
+A legacy public notebook in `indice-pobreza-UBA` contains historical Mapbox secret
+tokens in Git history.
 
-Treat that token as compromised. Revoke/rotate it in Mapbox before the new atlas performs write operations.
+Treat those credentials as compromised. Revoke/rotate them in Mapbox before the
+new atlas performs write operations.
 
-Removing the notebook cell is not sufficient because Git history retains the credential.
+Removing the notebook cells is not sufficient because Git history retains the
+credentials.
+
+The W0 evidence snapshot and non-secret legacy asset census live in
+`docs/W0_SECURITY_AND_LEGACY_MAPBOX.md` and
+`mapbox/legacy_asset_inventory.yaml`. Never copy the historical token values into
+this repository, including for testing whether they are still active.
+
+## Repository guard
+
+The repository runs `scripts/check_no_mapbox_secrets.py` in CI. It rejects Mapbox
+`sk.*` secret-token material and reports only file/line locations, not matched
+credential values.
+
+Run it locally with:
+
+```bash
+python scripts/check_no_mapbox_secrets.py
+```
+
+This is a prevention guard, not a substitute for provider-side revocation of a
+credential that was already exposed elsewhere.
 
 ## Repository rules
 
