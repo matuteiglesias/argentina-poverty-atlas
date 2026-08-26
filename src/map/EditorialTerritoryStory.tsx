@@ -269,11 +269,15 @@ export function EditorialTerritoryStory({
       className="relative border-y border-slate-900/10 bg-[#e9eee9] md:min-h-[225vh]"
       aria-labelledby="territory-story-title"
     >
+      <h2 id="territory-story-title" className="sr-only">
+        Lectura territorial de las provincias argentinas
+      </h2>
+
       <div className="mx-auto grid max-w-7xl gap-5 px-5 pb-8 pt-14 sm:px-8 md:hidden">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-950">Territorio</p>
-        <h2 id="territory-story-title" className="font-serif text-4xl font-semibold leading-tight tracking-[-0.025em]">
+        <h3 className="font-serif text-4xl font-semibold leading-tight tracking-[-0.025em]">
           De la cifra nacional a las provincias.
-        </h2>
+        </h3>
         <p className="max-w-2xl leading-7 text-slate-600">
           Tocá una jurisdicción para fijarla. En pantallas pequeñas mostramos el país completo y preservamos el scroll natural de la página.
         </p>
@@ -293,12 +297,9 @@ export function EditorialTerritoryStory({
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-950">
               {copy.eyebrow}
             </p>
-            <h2
-              id="territory-story-title"
-              className="mt-2 font-serif text-2xl font-semibold leading-tight tracking-[-0.02em] text-slate-950 md:text-4xl"
-            >
+            <h3 className="mt-2 font-serif text-2xl font-semibold leading-tight tracking-[-0.02em] text-slate-950 md:text-4xl">
               {copy.title}
-            </h2>
+            </h3>
             <p className="mt-3 hidden text-sm leading-6 text-slate-600 md:block">{copy.copy}</p>
             <div className="mt-4 hidden md:block">
               <div className="h-1 overflow-hidden rounded-full bg-slate-900/10">
