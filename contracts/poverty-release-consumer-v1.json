@@ -1,0 +1,66 @@
+{
+  "schema_version": "atlas-poverty-consumer-profile/v1",
+  "producer": "matuteiglesias/indice-pobreza-UBA",
+  "accepted_release_schema": "poverty-estimate-release/v2",
+  "required_files": [
+    "poverty_estimates.csv",
+    "capabilities.json",
+    "geography_join_contract.json",
+    "release_manifest.json",
+    "run_qa.json",
+    "LIMITATIONS.md",
+    "checksums.sha256"
+  ],
+  "accepted_scientific_status": [
+    "synthetic_fixture",
+    "research_estimate"
+  ],
+  "required_geometry_semantics": {
+    "geometry_embedded": false,
+    "geometry_owner": "matuteiglesias/argentina-geography",
+    "join_key": [
+      "geography_level",
+      "geography_id"
+    ],
+    "join_semantics": "exact_governed_id"
+  },
+  "required_fact_fields": [
+    "release_id",
+    "estimation_period",
+    "frame_vintage",
+    "universe",
+    "geography_level",
+    "geography_id",
+    "concept",
+    "estimand",
+    "estimate",
+    "unit",
+    "weighted_numerator",
+    "weighted_denominator",
+    "coverage",
+    "design_id",
+    "weight_semantics",
+    "uncertainty_status"
+  ],
+  "supported_units": [
+    "proportion"
+  ],
+  "supported_uncertainty_status": [
+    "not_supplied"
+  ],
+  "capability_discovery": {
+    "file": "capabilities.json",
+    "schema_version": "poverty-estimate-capabilities/v1",
+    "selector_policy": "offer_only_declared_availability_cells"
+  },
+  "scientific_rules": {
+    "browser_aggregation_allowed": false,
+    "browser_scientific_recalculation_allowed": false,
+    "fuzzy_geography_join_allowed": false,
+    "numeric_geography_coercion_allowed": false,
+    "manufacture_uncertainty_allowed": false,
+    "synthetic_fixture_requires_demo_label": true,
+    "research_estimate_requires_non_official_label": true
+  },
+  "unknown_semantics_policy": "reject_until_profile_is_versioned"
+}
