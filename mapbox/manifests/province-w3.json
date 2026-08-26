@@ -1,0 +1,62 @@
+{
+  "schema": "argentina-poverty-atlas.geometry-transport/v1",
+  "transport_id": "province-w3",
+  "status": "blocked_upstream",
+  "inspected_at": "2026-08-26",
+  "atlas_base_commit": "ba7decea82cb13965c673904fcfa9000d687e955",
+  "fixture_geography_ids": [
+    "02", "06", "10", "14", "18", "22", "26", "30",
+    "34", "38", "42", "46", "50", "54", "58", "62",
+    "66", "70", "74", "78", "82", "86", "90", "94"
+  ],
+  "upstream_audit": {
+    "repository": "matuteiglesias/argentina-geography",
+    "commit_sha": "8ff8e2200613986c70726c22a827b31d2ff400cd",
+    "required_level": "province",
+    "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/issues/34",
+    "finding": "No released 24-feature province-level Geography Release was identified on the inspected main. Atlas W3 must not manufacture province geometry by dissolving lower-level products.",
+    "candidate_evidence": [
+      {
+        "dataset_id": "arggeo.indec.census.2022.radio",
+        "release_version": "2022-national-20260320-a390c8403850",
+        "level": "radio",
+        "source_snapshot_sha256": "a390c84038509eb3e6125a5968c72f57fbfae757cda2a2344a14defb5ac18a7b",
+        "feature_count": 66515,
+        "province_id_semantics": "first two digits of authoritative zero-preserving cod_indec",
+        "eligible_as_w3_parent": false,
+        "reason": "Exact source release is radio-level, not an independently released province geography."
+      },
+      {
+        "dataset_id": "arggeo.ceur.census.2022.radio",
+        "release_version": "v2025-1-2022-d3a6f4c95102",
+        "level": "radio",
+        "source_snapshot_sha256": "d3a6f4c951022130d19a894984eb1315b0c9096314afb1fe2ac79eb9c85da3c8",
+        "artifact_sha256": "6ff1fc751585a9c94a7ed73c32b8337d05f0a31cc833b8958425fb4dbb7cb6fe",
+        "feature_count": 66502,
+        "province_id_semantics": "provider-native PROV[2] component of COD_2022",
+        "eligible_as_w3_parent": false,
+        "reason": "Exact source release is radio-level, not an independently released province geography."
+      }
+    ]
+  },
+  "parent_release": null,
+  "mapbox": {
+    "style_url": "mapbox://styles/mapbox/standard",
+    "tileset_id": null,
+    "source_layer": null,
+    "feature_id_property": "geography_id",
+    "published_feature_count": null,
+    "publication_time": null,
+    "publication_job_id": null
+  },
+  "payload_policy": {
+    "geometry_only": true,
+    "poverty_values_embedded": false,
+    "required_feature_property": "geography_id"
+  },
+  "external_gates": {
+    "dedicated_browser_token": "required_before_live_browser_proof",
+    "publication_credential": "required_only_for_governed_mapbox_write",
+    "w0_issue": "https://github.com/matuteiglesias/argentina-poverty-atlas/issues/2"
+  }
+}
