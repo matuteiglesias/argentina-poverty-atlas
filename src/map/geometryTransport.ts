@@ -4,16 +4,20 @@ import { provinces } from "@/data/fixture"
 const EXPECTED_SCHEMA = "argentina-poverty-atlas.geometry-transport/v1"
 const SHA256 = /^[a-f0-9]{64}$/
 
-export interface PublishedParentRelease {
+export interface PinnedParentRelease {
   repository: string
   commit_sha: string
   dataset_id: string
-  geography_id: string
+  geography_id: string | null
   release_version: string
   level: "province"
   source_snapshot_sha256: string
   artifact_sha256: string
   feature_count: 24
+}
+
+export interface PublishedParentRelease extends PinnedParentRelease {
+  geography_id: string
 }
 
 export interface GeometryTransportManifest {
@@ -31,7 +35,7 @@ export interface GeometryTransportManifest {
     finding: string
     candidate_evidence: unknown[]
   }
-  parent_release: PublishedParentRelease | null
+  parent_release: PinnedParentRelease | null
   mapbox: {
     style_url: string
     tileset_id: string | null
@@ -65,7 +69,11 @@ function validatePinnedParent(value: unknown): asserts value is Record<string, u
   invariant(isRecord(value), "non-blocked transport requires an exact parent release")
   invariant(value.repository === "matuteiglesias/argentina-geography", "unexpected parent repository")
   invariant(value.dataset_id === "arggeo.ign.administrative.province", "unexpected parent dataset")
-  invariant(typeof value.geography_id === "string" && value.geography_id.length > 0, "parent geography_id is required")
+  invariant(
+    value.geography_id === null ||
+      (typeof value.geography_id === "string" && value.geography_id.length > 0),
+    "parent geography_id must be null or a non-empty catalog identity",
+  )
   invariant(typeof value.release_version === "string" && value.release_version.length > 0, "parent release_version is required")
   invariant(value.level === "province", "parent must be province-level")
   invariant(value.feature_count === 24, "parent must have exactly 24 features")
@@ -135,6 +143,10 @@ export function validateGeometryTransportManifest(
     return value as unknown as GeometryTransportManifest
   }
 
+  invariant(
+    typeof value.parent_release.geography_id === "string" && value.parent_release.geography_id.length > 0,
+    "published transport requires the exact catalog geography_id",
+  )
   invariant(typeof value.mapbox.tileset_id === "string" && value.mapbox.tileset_id.length > 0, "published transport requires tileset_id")
   invariant(typeof value.mapbox.source_layer === "string" && value.mapbox.source_layer.length > 0, "published transport requires source_layer")
   invariant(value.mapbox.published_feature_count === 24, "published Mapbox transport must report 24 features")
