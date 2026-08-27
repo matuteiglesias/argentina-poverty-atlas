@@ -5,13 +5,21 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 14 * * 3"
 
 permissions:
   contents: read
 
+concurrency:
+  group: atlas-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,3 +36,11 @@ jobs:
         run: npm run test
       - name: Build
         run: npm run build
+      - name: Record consumer boundary
+        if: always()
+        run: |
+          {
+            echo "## Atlas scheduled integrity"
+            echo
+            echo "A green scheduled build proves the public consumer remains internally buildable. It does not authorize the Atlas to synthesize missing scientific facts; real data must arrive through governed Poverty/geography releases."
+          } >> "$GITHUB_STEP_SUMMARY"
