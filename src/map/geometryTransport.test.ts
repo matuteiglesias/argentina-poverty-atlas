@@ -11,6 +11,7 @@ const publishedManifest = {
   parent_release: {
     repository: "matuteiglesias/argentina-geography",
     commit_sha: "a".repeat(40),
+    dataset_id: "arggeo.ign.administrative.province",
     geography_id: "example:province",
     release_version: "example-v1",
     level: "province",
@@ -35,10 +36,33 @@ describe("W3 geometry transport manifest", () => {
       expect(geometryTransportManifest.parent_release).not.toBeNull()
       expect(geometryTransportManifest.mapbox.published_feature_count).toBe(24)
       expect(geometryTransportManifest.mapbox.feature_id_property).toBe("geography_id")
+    } else if (geometryTransportManifest.status === "ready_for_publication") {
+      expect(geometryTransportManifest.parent_release).not.toBeNull()
+      expect(geometryTransportManifest.parent_release?.feature_count).toBe(24)
+      expect(geometryTransportManifest.mapbox.tileset_id).toBeNull()
+      expect(geometryTransportManifest.mapbox.publication_job_id).toBeNull()
     } else {
       expect(geometryTransportManifest.status).toBe("blocked_upstream")
       expect(geometryTransportManifest.parent_release).toBeNull()
     }
+  })
+
+  it("accepts a pinned parent before provider publication", () => {
+    const readyManifest = {
+      ...geometryTransportManifest,
+      status: "ready_for_publication",
+      mapbox: {
+        ...geometryTransportManifest.mapbox,
+        tileset_id: null,
+        source_layer: null,
+        published_feature_count: null,
+        publication_time: null,
+        publication_job_id: null,
+      },
+    }
+    expect(
+      validateGeometryTransportManifest(readyManifest, provinceGeometryIds).status,
+    ).toBe("ready_for_publication")
   })
 
   it("accepts a fully pinned 24-feature published transport", () => {
@@ -64,6 +88,20 @@ describe("W3 geometry transport manifest", () => {
     }
     expect(() => validateGeometryTransportManifest(invalid, provinceGeometryIds)).toThrow(
       /province-level/,
+    )
+  })
+
+  it("rejects provider claims in ready state", () => {
+    const invalid = {
+      ...geometryTransportManifest,
+      status: "ready_for_publication",
+      mapbox: {
+        ...geometryTransportManifest.mapbox,
+        tileset_id: "matuteiglesias2.unproven",
+      },
+    }
+    expect(() => validateGeometryTransportManifest(invalid, provinceGeometryIds)).toThrow(
+      /cannot claim a tileset/,
     )
   })
 
