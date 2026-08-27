@@ -33,7 +33,7 @@
     "repository": "matuteiglesias/argentina-geography",
     "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
     "dataset_id": "arggeo.ign.administrative.province",
-    "geography_id": "ign:2026-08-26-b9fcf6f90f28:administrative:province",
+    "geography_id": null,
     "release_version": "snapshot-20260826-b9fcf6f90f28",
     "level": "province",
     "source_snapshot_sha256": "b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55",
