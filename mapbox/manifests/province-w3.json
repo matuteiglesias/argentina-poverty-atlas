@@ -1,9 +1,9 @@
 {
   "schema": "argentina-poverty-atlas.geometry-transport/v1",
   "transport_id": "province-w3",
-  "status": "blocked_upstream",
-  "inspected_at": "2026-08-26",
-  "atlas_base_commit": "ba7decea82cb13965c673904fcfa9000d687e955",
+  "status": "ready_for_publication",
+  "inspected_at": "2026-08-27",
+  "atlas_base_commit": "0d1d546a9b542b5b62b8ec77504023959713f7ec",
   "fixture_geography_ids": [
     "02", "06", "10", "14", "18", "22", "26", "30",
     "34", "38", "42", "46", "50", "54", "58", "62",
@@ -11,35 +11,35 @@
   ],
   "upstream_audit": {
     "repository": "matuteiglesias/argentina-geography",
-    "commit_sha": "8ff8e2200613986c70726c22a827b31d2ff400cd",
+    "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
     "required_level": "province",
     "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/issues/34",
-    "finding": "No released 24-feature province-level Geography Release was identified on the inspected main. Atlas W3 must not manufacture province geometry by dissolving lower-level products.",
+    "finding": "The former upstream blocker is complete. The exact IGN Provincia release supplies 24 fixture-compatible province features plus a deterministic geometry-only GeoJSON derivative. Remaining W3 proof is provider publication and restricted-browser verification; this manifest does not claim either has occurred.",
     "candidate_evidence": [
       {
-        "dataset_id": "arggeo.indec.census.2022.radio",
-        "release_version": "2022-national-20260320-a390c8403850",
-        "level": "radio",
-        "source_snapshot_sha256": "a390c84038509eb3e6125a5968c72f57fbfae757cda2a2344a14defb5ac18a7b",
-        "feature_count": 66515,
-        "province_id_semantics": "first two digits of authoritative zero-preserving cod_indec",
-        "eligible_as_w3_parent": false,
-        "reason": "Exact source release is radio-level, not an independently released province geography."
-      },
-      {
-        "dataset_id": "arggeo.ceur.census.2022.radio",
-        "release_version": "v2025-1-2022-d3a6f4c95102",
-        "level": "radio",
-        "source_snapshot_sha256": "d3a6f4c951022130d19a894984eb1315b0c9096314afb1fe2ac79eb9c85da3c8",
-        "artifact_sha256": "6ff1fc751585a9c94a7ed73c32b8337d05f0a31cc833b8958425fb4dbb7cb6fe",
-        "feature_count": 66502,
-        "province_id_semantics": "provider-native PROV[2] component of COD_2022",
-        "eligible_as_w3_parent": false,
-        "reason": "Exact source release is radio-level, not an independently released province geography."
+        "dataset_id": "arggeo.ign.administrative.province",
+        "release_version": "snapshot-20260826-b9fcf6f90f28",
+        "level": "province",
+        "source_snapshot_sha256": "b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55",
+        "artifact_sha256": "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b",
+        "display_geojson_sha256": "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3",
+        "feature_count": 24,
+        "eligible_as_w3_parent": true,
+        "identity_rule": "geography_id = IN1 = native_id"
       }
     ]
   },
-  "parent_release": null,
+  "parent_release": {
+    "repository": "matuteiglesias/argentina-geography",
+    "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
+    "dataset_id": "arggeo.ign.administrative.province",
+    "geography_id": "ign:2026-08-26-b9fcf6f90f28:administrative:province",
+    "release_version": "snapshot-20260826-b9fcf6f90f28",
+    "level": "province",
+    "source_snapshot_sha256": "b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55",
+    "artifact_sha256": "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b",
+    "feature_count": 24
+  },
   "mapbox": {
     "style_url": "mapbox://styles/mapbox/standard",
     "tileset_id": null,
@@ -55,8 +55,8 @@
     "required_feature_property": "geography_id"
   },
   "external_gates": {
-    "dedicated_browser_token": "required_before_live_browser_proof",
-    "publication_credential": "required_only_for_governed_mapbox_write",
+    "dedicated_browser_token": "required_for_interactive_browser_proof",
+    "publication_credential": "required_for_governed_mapbox_write",
     "w0_issue": "https://github.com/matuteiglesias/argentina-poverty-atlas/issues/2"
   }
 }
