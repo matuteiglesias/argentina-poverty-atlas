@@ -6,7 +6,7 @@ repository:
 domain: public-research
 system: argentina-poverty
 role: public-atlas-consumer
-lifecycle: active-seed
+lifecycle: active-product-development
 authority:
   status: current
   owns:
@@ -56,12 +56,18 @@ security:
   secret_mapbox_credentials: CI/secret-store only
   committed_secrets_allowed: false
 verification:
-  status: seed-specified-contract-hardened
-  next_proof:
-    - deterministic 24-jurisdiction synthetic fixture
-    - consume one verified poverty-estimate-release/v2 without producer code import
-    - exact-ID province geometry join
-    - one runtime choropleth in browser
-    - responsive atlas shell
+  status: fixture-product-proven-live-transport-pending
+  completed_proofs:
+    - W2 deterministic 24-jurisdiction synthetic poverty release and consumer projection
+    - exact IGN 24-province parent pinned from argentina-geography at ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
+    - W4 exact-ID runtime data join with one Mapbox Standard map and feature-state choropleth architecture
+    - W4 interaction and responsive map UX
+    - W5 editorial homepage, explorer and province-detail product surface
+    - build, typecheck, tests and secret-scan gates on merged product waves
+  remaining_proofs:
+    - governed Mapbox provider write and exact tileset/source-layer identity
+    - 24/24 geography_id proof from published vector tiles
+    - restricted public browser token and live browser proof
+    - consume first consequential real poverty-estimate-release@2 without producer-code import
 maintenance:
   cadence: active-development
