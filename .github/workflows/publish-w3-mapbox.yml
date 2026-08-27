@@ -1,12 +1,7 @@
 name: publish-w3-mapbox-province
 
 on:
-  push:
-    branches: ["feat/w3-complete-mapbox"]
-    paths:
-      - ".github/workflows/publish-w3-mapbox.yml"
-      - "scripts/publish_w3_mapbox.py"
-      - "scripts/finalize_w3_parent_identity.py"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,6 +19,16 @@ jobs:
       MAPBOX_UPLOAD_TOKEN: ${{ secrets.MAPBOX_UPLOAD_TOKEN }}
       UPSTREAM_COMMIT: ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
     steps:
+      - name: Require dedicated publication branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            echo "Dispatch this provider-write workflow from a dedicated branch based on current main, not directly from main."
+            exit 1
+          fi
+          echo "Publication proof will be written back to branch: $GITHUB_REF_NAME"
+
       - name: Checkout atlas branch
         uses: actions/checkout@v4
         with:
@@ -165,7 +170,7 @@ jobs:
       - name: Verify published atlas contract
         run: npm run verify
 
-      - name: Commit provider proof back to bounded branch
+      - name: Commit provider proof back to dispatched branch
         shell: bash
         run: |
           set -euo pipefail
@@ -177,4 +182,4 @@ jobs:
             exit 0
           fi
           git commit -m "feat: record live W3 Mapbox province proof"
-          git push origin HEAD:feat/w3-complete-mapbox
+          git push origin HEAD:"$GITHUB_REF_NAME"

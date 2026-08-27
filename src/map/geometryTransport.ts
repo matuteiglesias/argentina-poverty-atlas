@@ -4,10 +4,11 @@ import { provinces } from "@/data/fixture"
 const EXPECTED_SCHEMA = "argentina-poverty-atlas.geometry-transport/v1"
 const SHA256 = /^[a-f0-9]{64}$/
 
-export interface PublishedParentRelease {
+export interface PinnedParentRelease {
   repository: string
   commit_sha: string
-  geography_id: string
+  dataset_id: string
+  geography_id: string | null
   release_version: string
   level: "province"
   source_snapshot_sha256: string
@@ -15,10 +16,14 @@ export interface PublishedParentRelease {
   feature_count: 24
 }
 
+export interface PublishedParentRelease extends PinnedParentRelease {
+  geography_id: string
+}
+
 export interface GeometryTransportManifest {
   schema: string
   transport_id: string
-  status: "blocked_upstream" | "published"
+  status: "blocked_upstream" | "ready_for_publication" | "published"
   inspected_at: string
   atlas_base_commit: string
   fixture_geography_ids: string[]
@@ -30,7 +35,7 @@ export interface GeometryTransportManifest {
     finding: string
     candidate_evidence: unknown[]
   }
-  parent_release: PublishedParentRelease | null
+  parent_release: PinnedParentRelease | null
   mapbox: {
     style_url: string
     tileset_id: string | null
@@ -60,13 +65,40 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
+function validatePinnedParent(value: unknown): asserts value is Record<string, unknown> {
+  invariant(isRecord(value), "non-blocked transport requires an exact parent release")
+  invariant(value.repository === "matuteiglesias/argentina-geography", "unexpected parent repository")
+  invariant(value.dataset_id === "arggeo.ign.administrative.province", "unexpected parent dataset")
+  invariant(
+    value.geography_id === null ||
+      (typeof value.geography_id === "string" && value.geography_id.length > 0),
+    "parent geography_id must be null or a non-empty catalog identity",
+  )
+  invariant(typeof value.release_version === "string" && value.release_version.length > 0, "parent release_version is required")
+  invariant(value.level === "province", "parent must be province-level")
+  invariant(value.feature_count === 24, "parent must have exactly 24 features")
+  invariant(
+    typeof value.source_snapshot_sha256 === "string" && SHA256.test(value.source_snapshot_sha256),
+    "parent source snapshot must be SHA-256 addressed",
+  )
+  invariant(
+    typeof value.artifact_sha256 === "string" && SHA256.test(value.artifact_sha256),
+    "parent artifact must be SHA-256 addressed",
+  )
+}
+
 export function validateGeometryTransportManifest(
   value: unknown,
   expectedGeographyIds: readonly string[],
 ): GeometryTransportManifest {
   invariant(isRecord(value), "manifest must be an object")
   invariant(value.schema === EXPECTED_SCHEMA, `schema must be ${EXPECTED_SCHEMA}`)
-  invariant(value.status === "blocked_upstream" || value.status === "published", "unknown status")
+  invariant(
+    value.status === "blocked_upstream" ||
+      value.status === "ready_for_publication" ||
+      value.status === "published",
+    "unknown status",
+  )
   invariant(Array.isArray(value.fixture_geography_ids), "fixture_geography_ids must be an array")
 
   const fixtureIds = value.fixture_geography_ids
@@ -100,16 +132,20 @@ export function validateGeometryTransportManifest(
     return value as unknown as GeometryTransportManifest
   }
 
-  invariant(isRecord(value.parent_release), "published transport requires an exact parent release")
-  invariant(value.parent_release.level === "province", "published parent must be province-level")
-  invariant(value.parent_release.feature_count === 24, "published parent must have exactly 24 features")
+  validatePinnedParent(value.parent_release)
+
+  if (value.status === "ready_for_publication") {
+    invariant(value.mapbox.tileset_id === null, "ready transport cannot claim a tileset before provider proof")
+    invariant(value.mapbox.source_layer === null, "ready transport cannot claim a source layer before provider proof")
+    invariant(value.mapbox.published_feature_count === null, "ready transport cannot claim published features")
+    invariant(value.mapbox.publication_time === null, "ready transport cannot claim publication time")
+    invariant(value.mapbox.publication_job_id === null, "ready transport cannot claim publication job")
+    return value as unknown as GeometryTransportManifest
+  }
+
   invariant(
-    typeof value.parent_release.source_snapshot_sha256 === "string" && SHA256.test(value.parent_release.source_snapshot_sha256),
-    "published parent source snapshot must be SHA-256 addressed",
-  )
-  invariant(
-    typeof value.parent_release.artifact_sha256 === "string" && SHA256.test(value.parent_release.artifact_sha256),
-    "published parent artifact must be SHA-256 addressed",
+    typeof value.parent_release.geography_id === "string" && value.parent_release.geography_id.length > 0,
+    "published transport requires the exact catalog geography_id",
   )
   invariant(typeof value.mapbox.tileset_id === "string" && value.mapbox.tileset_id.length > 0, "published transport requires tileset_id")
   invariant(typeof value.mapbox.source_layer === "string" && value.mapbox.source_layer.length > 0, "published transport requires source_layer")
