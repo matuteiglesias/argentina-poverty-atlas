@@ -1,170 +1,143 @@
 # W3 — Province geometry transport and Mapbox proof
 
-Status: **transport boundary implemented; W3 DoD blocked by two explicit external prerequisites**.
+Status: **exact upstream province parent pinned; provider publication and public-browser proof remain open**.
 
-This document records the 2026-08-26 W3 inspection and the exact completion seam. It must not be read as evidence that a live Mapbox tileset already exists.
+This document records the current W3 boundary after the upstream Argentina Geography province release landed. It must not be read as evidence that a live Mapbox tileset already exists.
 
 ## Mission boundary
 
-W3 proves a presentation transport from one exact Argentina Geography **province** release into Mapbox. It does not create geography authority, choose a canonical provider, or attach poverty values to geometry.
-
-The browser contract is intentionally small:
+W3 proves a presentation transport from one exact Argentina Geography **province** release into Mapbox. It does not create geography authority, choose a canonical provider, repair boundaries, or attach poverty values to geometry.
 
 ```text
-one exact 24-feature province Geography Release
+exact 24-feature province Geography Release
         ↓
 geometry-only Mapbox vector tileset
         ↓
 feature property geography_id
         ↓
-Mapbox Standard + one atlas map module
+Mapbox Standard + atlas runtime
 ```
 
-Synthetic poverty facts remain a separate lifecycle and are not written into the vector tiles.
+Poverty facts remain a separate release lifecycle and are joined at runtime.
 
-## Upstream inspection
+## Exact upstream parent
 
-Argentina Geography was inspected at exact commit:
+The former upstream blocker is closed. The Atlas now pins:
 
 ```text
-repository  matuteiglesias/argentina-geography
-commit      8ff8e2200613986c70726c22a827b31d2ff400cd
+repository               matuteiglesias/argentina-geography
+commit                   ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
+dataset                  arggeo.ign.administrative.province
+release                  snapshot-20260826-b9fcf6f90f28
+geography version        2026-08-26-b9fcf6f90f28
+source SHA-256           b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55
+GeoParquet SHA-256       3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b
+GeoJSON SHA-256          c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3
+feature count            24
+identity rule            geography_id = IN1 = native_id
 ```
 
-Its current public product surface includes exact radio/fraction/department/circuit Geography Releases and relation products. No already-released 24-feature province Geography Release suitable for this W3 parent was identified.
+The source is the official IGN `Provincia` layer as an exact archive snapshot. `argentina-geography` applies no dissolve, clip, geometry repair, provider adjudication, or poverty decoration for this product.
 
-Two exact 2022 radio products demonstrate that the atlas fixture IDs are semantically plausible but **do not satisfy the parent-level requirement**:
-
-### INDEC Census 2022 radio
-
-```text
-dataset            arggeo.indec.census.2022.radio
-release            2022-national-20260320-a390c8403850
-source SHA-256      a390c84038509eb3e6125a5968c72f57fbfae757cda2a2344a14defb5ac18a7b
-features            66,515
-native identity     cod_indec (9-character zero-preserving string)
-province component  first two digits
-```
-
-This is official census **radio** geography. Its province component does not authorize the atlas to dissolve 66,515 radios and publish that dissolve as a province Geography Release.
-
-### CEUR-CONICET Census 2022 V2025-1 radio
-
-```text
-dataset                 arggeo.ceur.census.2022.radio
-release                 v2025-1-2022-d3a6f4c95102
-source SHA-256           d3a6f4c951022130d19a894984eb1315b0c9096314afb1fe2ac79eb9c85da3c8
-normalized artifact SHA  6ff1fc751585a9c94a7ed73c32b8337d05f0a31cc833b8958425fb4dbb7cb6fe
-features                 66,502
-native province field    PROV[2]
-```
-
-This is a redistribution-friendly curated-research **radio** release, not a province release. Choosing it and dissolving it inside the atlas would still move geography semantics into the presentation repository.
-
-The missing upstream contract is tracked as:
-
-- `matuteiglesias/argentina-geography#34` — publish one exact 24-province Geography Release.
-
-## Fixture compatibility
-
-The atlas fixture currently uses exactly these 24 zero-preserving IDs:
+The exact source IDs are:
 
 ```text
 02 06 10 14 18 22 26 30 34 38 42 46
 50 54 58 62 66 70 74 78 82 86 90 94
 ```
 
-`mapbox/manifests/province-w3.json` persists this set and the runtime validator fails closed if the manifest drifts from the fixture.
+They match the Atlas fixture exactly. Similar names or integer-equivalent IDs are not accepted as substitutes.
 
-When the upstream province release exists, its 24 feature IDs must be compared exactly against this set. Similar names or integer-equivalent values are not sufficient.
+## Current manifest state
 
-## Mapbox runtime prepared by W3
+`mapbox/manifests/province-w3.json` now distinguishes three states:
 
-The atlas now owns one isolated `ProvinceMap` module. For a `published` transport manifest it:
+```text
+blocked_upstream
+    exact province parent absent
 
-1. loads Mapbox GL JS;
-2. initializes `mapbox://styles/mapbox/standard`;
-3. adds one vector source from the manifested tileset;
-4. promotes `geography_id` as feature identity;
-5. adds only neutral geometry proof fill/border layers;
-6. checks the loaded source for the exact 24 expected IDs;
-7. lets a click return `geography_id` to the existing atlas selection state.
+ready_for_publication
+    exact parent pinned and fixture-compatible
+    provider publication not yet proven
 
-There is deliberately no feature-state estimate, choropleth expression, poverty palette or per-period data in this wave. Those are W4 responsibilities.
+published
+    exact parent + Mapbox provider identity + 24/24 vector-ID proof recorded
+```
 
-## Credential boundary
+The current checked-in state is:
 
-W0 issue #2 still records provider-side work as open. W3 therefore does not reuse historical tokens or invent a secret.
+```text
+status = ready_for_publication
+parent_release = exact IGN province release
+mapbox.tileset_id = null
+mapbox.source_layer = null
+```
 
-Browser runtime accepts only:
+This is intentionally fail-closed. The Atlas may know its exact geography parent without pretending that Mapbox accepted or published it.
+
+## Remaining provider gate
+
+A transition to `published` requires provider evidence for all of:
+
+- governed secret Mapbox write credential;
+- successful upload completion;
+- exact tileset ID;
+- exact source-layer ID;
+- `feature_id_property = geography_id`;
+- exactly 24 published features;
+- exact 24/24 `geography_id` recovery from vector tiles;
+- publication timestamp/job identity;
+- geometry-only payload with no poverty facts embedded.
+
+No tileset, source-layer, upload ID or publication timestamp may be invented or inferred from configuration alone.
+
+## Publication automation
+
+`.github/workflows/publish-w3-mapbox.yml` is an intentionally manual provider-write workflow. It must be dispatched from a dedicated non-`main` branch based on current `main`.
+
+The workflow:
+
+1. checks out the exact Argentina Geography commit;
+2. materializes the exact IGN province release;
+3. verifies raw, canonical and display hashes before any provider write;
+4. uploads only the geometry derivative;
+5. waits within a bounded polling window;
+6. inspects TileJSON/source-layer identity;
+7. recovers the exact 24 IDs from vector tiles;
+8. runs the Atlas verification suite;
+9. records provider proof back onto the same dedicated branch.
+
+Merging provider proof remains an ordinary reviewable Git operation. The workflow does not get a standing path-trigger that can accidentally republish geometry during unrelated development.
+
+## Browser gate
+
+Provider publication is necessary but is not the final public proof. The browser runtime accepts only:
 
 ```text
 VITE_MAPBOX_PUBLIC_TOKEN
 ```
 
-The committed `.env.example` contains a placeholder. A real value must be a dedicated public `pk.*` token with only the scopes needed by this app and approved URL restrictions.
+A live proof requires a dedicated restricted `pk.*` browser token and verification that:
 
-A Mapbox publication credential is needed only when the exact upstream province artifact is actually written as a governed vector transport. It belongs in secret storage and never in source, logs, fixtures, the manifest, or the browser bundle.
-
-## Transport manifest state machine
-
-`mapbox/manifests/province-w3.json` is the machine-readable authority for the atlas transport.
-
-### Current state
-
-```text
-status = blocked_upstream
-parent_release = null
-```
-
-This is intentional. The validator rejects any attempt to label the transport `published` without:
-
-- a province-level exact parent;
-- 24 parent features;
-- source snapshot SHA-256;
-- parent artifact SHA-256;
-- Mapbox tileset ID;
-- source-layer;
-- `feature_id_property = geography_id`;
-- 24 published features;
-- publication timestamp;
-- geometry-only/no-poverty payload policy.
-
-### Completion edit after prerequisites exist
-
-Change the manifest to `status = published` only after the exact parent and live Mapbox publication are proven. Fill:
-
-```text
-parent_release.repository
-parent_release.commit_sha
-parent_release.geography_id
-parent_release.release_version
-parent_release.level = province
-parent_release.source_snapshot_sha256
-parent_release.artifact_sha256
-parent_release.feature_count = 24
-
-mapbox.tileset_id
-mapbox.source_layer
-mapbox.published_feature_count = 24
-mapbox.publication_time
-mapbox.publication_job_id
-```
-
-Then run `npm run verify` and perform the browser proof with the restricted public token. The map itself reports whether the loaded vector source exposes the exact 24 fixture IDs.
+- Mapbox Standard loads;
+- the manifested vector source loads;
+- all 24 exact IDs are visible to the runtime;
+- hover/selection/runtime joins operate against `geography_id`;
+- no secret credential enters the browser bundle.
 
 ## Current DoD assessment
 
 | W3 requirement | State |
 | --- | --- |
 | inspect current Argentina Geography products | complete |
-| exact fixture ID compatibility boundary | complete |
-| pin exact province Geography Release | **blocked: upstream release absent** |
+| pin exact 24-province Geography Release | complete |
+| exact fixture ID compatibility | complete: 24/24 |
+| geometry-only display derivative | complete upstream |
 | vector transport manifest contract | complete, fail-closed |
-| every feature exposes `geography_id` | contract enforced; **live proof blocked** |
 | Mapbox Standard runtime | implemented |
-| live vector tileset/source-layer/job identity | **blocked: exact parent + write credential required** |
-| all 24 jurisdictions visible in browser | **blocked: live transport + public token required** |
-| poverty absent from geometry | enforced by manifest/runtime design |
+| live tileset/source-layer/job identity | **pending provider proof** |
+| exact 24/24 published vector-ID proof | **pending provider proof** |
+| all 24 jurisdictions visible in restricted public browser | **pending browser proof** |
+| poverty absent from geometry | enforced by upstream and transport design |
 
-W3 must remain open until the three bold live-proof rows are satisfied. The current branch is useful because those prerequisites now complete W3 by supplying artifacts and manifest values rather than by changing architecture.
+W3 should remain open until provider and browser evidence exist. W6 — consuming the first consequential real `poverty-estimate-release@2` — is a separate downstream milestone and must not be smuggled into W3.
