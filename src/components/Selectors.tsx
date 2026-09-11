@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { periods, labels, type PeriodId } from "@/data/fixture"
+import { periods, labels, type PeriodId } from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 
 interface SelectorProps {

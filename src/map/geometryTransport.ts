@@ -1,5 +1,5 @@
 import manifestJson from "../../mapbox/manifests/province-w3.json"
-import { provinces } from "@/data/fixture"
+import { provinces } from "@/data/activeRelease"
 
 const EXPECTED_SCHEMA = "argentina-poverty-atlas.geometry-transport/v1"
 const SHA256 = /^[a-f0-9]{64}$/

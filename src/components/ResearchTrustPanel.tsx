@@ -6,7 +6,7 @@ import {
   getPeriodLabel,
   getProvince,
   labels,
-} from "@/data/fixture"
+} from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 import { geometryTransportManifest } from "@/map/geometryTransport"
 
@@ -30,7 +30,9 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
       `release ${releaseId}`,
       `${place}, ${getPeriodLabel(state.period)}`,
       `${labels.concepts[state.concept]}, ${labels.universes[state.universe]}, ${labels.estimands[state.estimand]}`,
-      "datos sintéticos de demostración; no interpretar como estimación real u oficial",
+      fixtureRelease.metadata.scientific_status === "synthetic_fixture"
+        ? "datos sintéticos de demostración; no interpretar como estimación real u oficial"
+        : "estimación de investigación; no es una estadística oficial de INDEC",
     ].join(". ")
   }, [releaseId, selected, state.concept, state.estimand, state.period, state.universe])
 
@@ -50,7 +52,11 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-950">Estado científico</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            <strong className="font-semibold text-slate-900">Datos sintéticos.</strong> La estructura reproduce el contrato del atlas, pero los valores no deben interpretarse como pobreza observada o estimada.
+            {fixtureRelease.metadata.scientific_status === "synthetic_fixture" ? (
+              <><strong className="font-semibold text-slate-900">Datos sintéticos.</strong> La estructura reproduce el contrato del atlas, pero los valores no deben interpretarse como pobreza observada o estimada.</>
+            ) : (
+              <><strong className="font-semibold text-slate-900">Estimación de investigación.</strong> No es una estadística oficial de INDEC; mantiene activas las limitaciones de transporte y método.</>
+            )}
           </p>
         </div>
         <div>

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
-import { fixtureRelease } from "@/data/fixture"
+import { fixtureRelease } from "@/data/activeRelease"
 import type { AtlasRoute, AtlasState } from "@/lib/atlasState"
 
 interface HeaderProps {

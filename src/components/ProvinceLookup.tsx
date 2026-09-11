@@ -1,4 +1,4 @@
-import { provinces } from "@/data/fixture"
+import { provinces } from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 
 interface ProvinceLookupProps {
