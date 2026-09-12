@@ -9,7 +9,7 @@ import {
   getPeriodLabel,
   getProvince,
   labels,
-} from "@/data/fixture"
+} from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
 import {

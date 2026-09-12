@@ -9,7 +9,7 @@ import {
   type Estimand,
   type PeriodId,
   type Universe,
-} from "@/data/fixture"
+} from "@/data/activeRelease"
 
 export type AtlasRoute = "/" | "/explorar"
 

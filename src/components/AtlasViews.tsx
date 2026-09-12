@@ -1,13 +1,14 @@
 import { Card } from "@/components/ui/card"
 import {
   fixtureEstimate,
+  fixtureRelease,
   getFact,
   getPeriodLabel,
   getProvince,
   labels,
   periods,
   provinces,
-} from "@/data/fixture"
+} from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
 
@@ -241,7 +242,7 @@ export function DetailSheet({ state, onClose }: DetailSheetProps) {
             {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
           </p>
           <p className="mt-1 text-sm text-slate-500">
-            {getPeriodLabel(state.period)} · datos sintéticos
+            {getPeriodLabel(state.period)} · {fixtureRelease.metadata.scientific_status === "synthetic_fixture" ? "datos sintéticos" : "estimación de investigación"}
           </p>
         </div>
 

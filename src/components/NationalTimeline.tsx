@@ -3,7 +3,7 @@ import {
   labels,
   periods,
   type PeriodId,
-} from "@/data/fixture"
+} from "@/data/activeRelease"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
 
