@@ -1,0 +1,64 @@
+name: probe-mapbox-browser-token
+
+on:
+  push:
+    branches:
+      - ops/probe-mapbox-browser-token
+    paths:
+      - .github/workflows/probe-mapbox-browser-token.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      MAPBOX_USERNAME: matuteiglesias2
+      MAPBOX_UPLOAD_TOKEN: ${{ secrets.MAPBOX_UPLOAD_TOKEN }}
+    steps:
+      - name: Inspect browser-token metadata without exposing token values
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/tokens.json -w '%{http_code}'             "https://api.mapbox.com/tokens/v2/$MAPBOX_USERNAME?usage=pk&limit=100&access_token=$MAPBOX_UPLOAD_TOKEN")"
+          if [ "$status" != "200" ]; then
+            echo "Mapbox token inventory unavailable to the upload credential (HTTP $status)."
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/tokens.json')
+          if p.exists():
+              try:
+                  body=json.loads(p.read_text())
+                  print("Mapbox response code:", body.get("code") or body.get("message") or "unavailable")
+              except Exception:
+                  pass
+          PY
+            exit 2
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          items=json.loads(Path('/tmp/tokens.json').read_text())
+          required={"styles:read","fonts:read"}
+          candidates=[]
+          for item in items:
+              scopes=set(item.get("scopes") or [])
+              allowed=item.get("allowedUrls") or []
+              candidates.append({
+                  "default": bool(item.get("default")),
+                  "has_required_read_scopes": required.issubset(scopes),
+                  "has_url_restrictions": bool(allowed),
+                  "allowed_url_count": len(allowed),
+                  "scope_count": len(scopes),
+              })
+          print("Public token count:", len(items))
+          print("Candidate metadata:", json.dumps(candidates, sort_keys=True))
+          print("Restricted suitable candidate count:", sum(
+              x["has_required_read_scopes"] and x["has_url_restrictions"] for x in candidates
+          ))
+          PY
