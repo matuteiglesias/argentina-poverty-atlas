@@ -1,20 +1,41 @@
 {
   "schema": "argentina-poverty-atlas.geometry-transport/v1",
   "transport_id": "province-w3",
-  "status": "ready_for_publication",
-  "inspected_at": "2026-08-27",
+  "status": "published",
+  "inspected_at": "2026-09-24",
   "atlas_base_commit": "0d1d546a9b542b5b62b8ec77504023959713f7ec",
   "fixture_geography_ids": [
-    "02", "06", "10", "14", "18", "22", "26", "30",
-    "34", "38", "42", "46", "50", "54", "58", "62",
-    "66", "70", "74", "78", "82", "86", "90", "94"
+    "02",
+    "06",
+    "10",
+    "14",
+    "18",
+    "22",
+    "26",
+    "30",
+    "34",
+    "38",
+    "42",
+    "46",
+    "50",
+    "54",
+    "58",
+    "62",
+    "66",
+    "70",
+    "74",
+    "78",
+    "82",
+    "86",
+    "90",
+    "94"
   ],
   "upstream_audit": {
     "repository": "matuteiglesias/argentina-geography",
     "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
     "required_level": "province",
     "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/issues/34",
-    "finding": "The former upstream blocker is complete. The exact IGN Provincia release supplies 24 fixture-compatible province features plus a deterministic geometry-only GeoJSON derivative. Remaining W3 proof is provider publication and restricted-browser verification; this manifest does not claim either has occurred.",
+    "finding": "Issue #34 is complete. Exact IGN Provincia release provides 24 fixture-compatible features and a deterministic geometry-only GeoJSON derivative; the atlas re-materializes and hash-verifies that derivative before Mapbox publication.",
     "candidate_evidence": [
       {
         "dataset_id": "arggeo.ign.administrative.province",
@@ -32,21 +53,21 @@
   "parent_release": {
     "repository": "matuteiglesias/argentina-geography",
     "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
-    "dataset_id": "arggeo.ign.administrative.province",
-    "geography_id": null,
+    "geography_id": "ign:2026-08-26-b9fcf6f90f28:administrative:province",
     "release_version": "snapshot-20260826-b9fcf6f90f28",
     "level": "province",
     "source_snapshot_sha256": "b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55",
     "artifact_sha256": "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b",
-    "feature_count": 24
+    "feature_count": 24,
+    "dataset_id": "arggeo.ign.administrative.province"
   },
   "mapbox": {
     "style_url": "mapbox://styles/mapbox/standard",
-    "tileset_id": null,
-    "source_layer": null,
+    "tileset_id": "matuteiglesias2.arg-prov-ign-b9fcf6f90f28",
+    "source_layer": "Argentina provinces IGN b9fcf6f90f28",
     "feature_id_property": "geography_id",
-    "published_feature_count": null,
-    "publication_time": null,
+    "published_feature_count": 24,
+    "publication_time": "2026-09-24T21:17:47.574038+00:00",
     "publication_job_id": null
   },
   "payload_policy": {
@@ -56,7 +77,7 @@
   },
   "external_gates": {
     "dedicated_browser_token": "required_for_interactive_browser_proof",
-    "publication_credential": "required_for_governed_mapbox_write",
+    "publication_credential": "satisfied_by_github_actions_secret",
     "w0_issue": "https://github.com/matuteiglesias/argentina-poverty-atlas/issues/2"
   }
 }
