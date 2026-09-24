@@ -4,7 +4,11 @@ import gzip
 import json
 import urllib.parse
 import urllib.request
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import mapbox_vector_tile
 import mercantile
