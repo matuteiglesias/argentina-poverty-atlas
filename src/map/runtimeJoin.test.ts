@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { fixtureRelease, getFact } from "@/data/fixture"
 import { parseAtlasState } from "@/lib/atlasState"
+import type { AtlasState } from "@/lib/atlasState"
 import {
   geometryTransportManifest,
   validateGeometryTransportManifest,
@@ -88,9 +89,14 @@ describe("W4 runtime choropleth join", () => {
     const runtime = createRuntimeJoin(map, transport, fixtureRelease, (id) =>
       selected.push(id),
     )
-    const state = parseAtlasState(
-      "?period=demo-2026-S1&universe=persons&concept=poverty&estimand=fgt0&place=06",
-    )
+    const fixturePeriod = fixtureRelease.metadata.periods.at(-1)!.id
+    const state = {
+      period: fixturePeriod,
+      universe: "persons",
+      concept: "poverty",
+      estimand: "fgt0",
+      place: "06",
+    } satisfies AtlasState
 
     runtime.applyState(state)
 

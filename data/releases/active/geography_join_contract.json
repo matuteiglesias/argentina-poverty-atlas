@@ -1,0 +1,41 @@
+{
+  "frame_vintage": "2010",
+  "fuzzy_matching_allowed": false,
+  "geography_ids": [
+    "02",
+    "06",
+    "10",
+    "14",
+    "18",
+    "22",
+    "26",
+    "30",
+    "34",
+    "38",
+    "42",
+    "46",
+    "50",
+    "54",
+    "58",
+    "62",
+    "66",
+    "70",
+    "74",
+    "78",
+    "82",
+    "86",
+    "90",
+    "94"
+  ],
+  "geography_level": "province_2010",
+  "geometry_embedded": false,
+  "geometry_owner": "matuteiglesias/argentina-geography",
+  "join_key": [
+    "geography_level",
+    "geography_id"
+  ],
+  "join_semantics": "exact_governed_id",
+  "national_id": "ARG",
+  "numeric_coercion_allowed": false,
+  "schema_version": "poverty-geography-join/v1"
+}

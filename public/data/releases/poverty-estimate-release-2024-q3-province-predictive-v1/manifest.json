@@ -1,0 +1,8 @@
+{
+  "release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+  "source_release": "poverty-estimate-release-2024-q3-province-predictive-v1",
+  "files": {
+    "metadata.json": "e0414ce1eea60eff067d09de4bba3271a500e496900b3a8440d33d14ccde50bb",
+    "facts.json": "69128d416c74378b34525093e4aa9e4884dd4102fd4f45facf0f123da5b34ed5"
+  }
+}

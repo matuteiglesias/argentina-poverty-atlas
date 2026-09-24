@@ -1,0 +1,14 @@
+{
+  "schema_version": "atlas-public-catalog/v1",
+  "default_release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+  "releases": [
+    {
+      "release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+      "scientific_status": "research_estimate",
+      "not_for_interpretation": true,
+      "metadata": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/metadata.json",
+      "facts": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/facts.json",
+      "manifest": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/manifest.json"
+    }
+  ]
+}

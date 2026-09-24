@@ -1,0 +1,16 @@
+{
+  "analysis_weight": "1.0",
+  "collective_private_refinement": "deferred",
+  "duplicate_fact_keys": 0,
+  "duplicate_household_bindings": 0,
+  "estimate_domain": "[0,1]",
+  "fact_count": 300,
+  "finite_estimates": true,
+  "household_count": 141863,
+  "national_count": 1,
+  "person_count": 469172,
+  "province_count": 24,
+  "schema_version": "poverty-output-qa/v2",
+  "status": "passed",
+  "unmatched_households": 0
+}

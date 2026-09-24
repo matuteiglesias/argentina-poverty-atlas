@@ -9,11 +9,11 @@ import {
 describe("atlas URL state", () => {
   it("parses a complete supported state without coercing geography IDs", () => {
     const state = parseAtlasState(
-      "?period=demo-2026-S1&universe=households&concept=indigence&estimand=fgt2&place=06",
+      `?period=${defaultAtlasState.period}&universe=households&concept=indigence&estimand=fgt2&place=06`,
     )
 
     expect(state).toEqual({
-      period: "demo-2026-S1",
+      period: defaultAtlasState.period,
       universe: "households",
       concept: "indigence",
       estimand: "fgt2",

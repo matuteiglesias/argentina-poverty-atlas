@@ -1,0 +1,152 @@
+{
+  "concepts": [
+    "poverty",
+    "indigence"
+  ],
+  "estimands": [
+    "fgt0",
+    "fgt1",
+    "fgt2"
+  ],
+  "fact_count": 300,
+  "geographies": [
+    {
+      "id": "02",
+      "name": "Ciudad Autónoma de Buenos Aires",
+      "short_name": "Ciudad Autónoma de Buenos Aires"
+    },
+    {
+      "id": "06",
+      "name": "Buenos Aires",
+      "short_name": "Buenos Aires"
+    },
+    {
+      "id": "10",
+      "name": "Catamarca",
+      "short_name": "Catamarca"
+    },
+    {
+      "id": "14",
+      "name": "Córdoba",
+      "short_name": "Córdoba"
+    },
+    {
+      "id": "18",
+      "name": "Corrientes",
+      "short_name": "Corrientes"
+    },
+    {
+      "id": "22",
+      "name": "Chaco",
+      "short_name": "Chaco"
+    },
+    {
+      "id": "26",
+      "name": "Chubut",
+      "short_name": "Chubut"
+    },
+    {
+      "id": "30",
+      "name": "Entre Ríos",
+      "short_name": "Entre Ríos"
+    },
+    {
+      "id": "34",
+      "name": "Formosa",
+      "short_name": "Formosa"
+    },
+    {
+      "id": "38",
+      "name": "Jujuy",
+      "short_name": "Jujuy"
+    },
+    {
+      "id": "42",
+      "name": "La Pampa",
+      "short_name": "La Pampa"
+    },
+    {
+      "id": "46",
+      "name": "La Rioja",
+      "short_name": "La Rioja"
+    },
+    {
+      "id": "50",
+      "name": "Mendoza",
+      "short_name": "Mendoza"
+    },
+    {
+      "id": "54",
+      "name": "Misiones",
+      "short_name": "Misiones"
+    },
+    {
+      "id": "58",
+      "name": "Neuquén",
+      "short_name": "Neuquén"
+    },
+    {
+      "id": "62",
+      "name": "Río Negro",
+      "short_name": "Río Negro"
+    },
+    {
+      "id": "66",
+      "name": "Salta",
+      "short_name": "Salta"
+    },
+    {
+      "id": "70",
+      "name": "San Juan",
+      "short_name": "San Juan"
+    },
+    {
+      "id": "74",
+      "name": "San Luis",
+      "short_name": "San Luis"
+    },
+    {
+      "id": "78",
+      "name": "Santa Cruz",
+      "short_name": "Santa Cruz"
+    },
+    {
+      "id": "82",
+      "name": "Santa Fe",
+      "short_name": "Santa Fe"
+    },
+    {
+      "id": "86",
+      "name": "Santiago del Estero",
+      "short_name": "Santiago del Estero"
+    },
+    {
+      "id": "90",
+      "name": "Tucumán",
+      "short_name": "Tucumán"
+    },
+    {
+      "id": "94",
+      "name": "Tierra del Fuego",
+      "short_name": "Tierra del Fuego"
+    }
+  ],
+  "geography_levels": [
+    "province_2010",
+    "national"
+  ],
+  "periods": [
+    {
+      "id": "2024-Q3",
+      "label": "2024-Q3"
+    }
+  ],
+  "release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+  "schema_version": "poverty-estimate-capabilities/v1",
+  "scientific_status": "research_estimate",
+  "uncertainty_status": "not_supplied",
+  "universes": [
+    "persons",
+    "households"
+  ]
+}
