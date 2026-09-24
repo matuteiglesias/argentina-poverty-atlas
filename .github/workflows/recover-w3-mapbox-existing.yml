@@ -1,5 +1,5 @@
 name: recover-existing-w3-mapbox-province
-# recovery-probe-v2
+# recovery-probe-v3
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install bounded recovery dependencies
-        run: python -m pip install mercantile mapbox-vector-tile
+        run: python -m pip install boto3 mercantile mapbox-vector-tile
 
       - name: Recover and prove existing immutable tileset
         run: python scripts/recover_w3_mapbox_existing.py
