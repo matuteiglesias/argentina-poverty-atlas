@@ -70,8 +70,30 @@ function generatedModule({ manifest, capabilities, rows }) {
 }
 
 async function main() {
-  const source = process.env.POVERTY_RELEASE_DIR
+  const explicitSource = process.env.POVERTY_RELEASE_DIR?.trim()
+  const vendoredSource = path.join(root, "data/releases/active")
+  let source = explicitSource
+
   if (!source) {
+    try {
+      await readFile(path.join(vendoredSource, "release_manifest.json"))
+      source = vendoredSource
+    } catch {
+      source = undefined
+    }
+  }
+
+  const requireRealRelease =
+    process.env.POVERTY_RELEASE_REQUIRED === "1" ||
+    process.env.VERCEL_ENV === "production"
+
+  if (!source) {
+    if (requireRealRelease) {
+      fail(
+        "production build requires a verified real poverty-estimate-release/v2; " +
+        "set POVERTY_RELEASE_DIR or vendor it under data/releases/active",
+      )
+    }
     await writeFile(path.join(root, "src/data/activeRelease.ts"), 'export * from "@/data/fixture"\n')
     const { projectFixtureRelease } = await import("./project-fixture-release.mjs")
     await projectFixtureRelease()
