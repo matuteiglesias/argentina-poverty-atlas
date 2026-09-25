@@ -4,6 +4,7 @@ import type {
   Concept,
   Estimand,
   PovertyFact,
+  ReleaseGeography,
 } from "@/data/release"
 import type { RuntimeGeometryTransport } from "@/map/runtimeTransport"
 
@@ -67,6 +68,17 @@ function roundDomain(max: number) {
   return Math.max(step, Math.ceil(max / step) * step)
 }
 
+export function getLegendModelFromMax(max: number): LegendModel {
+  return {
+    min: 0,
+    max,
+    stops: CHOROPLETH_COLORS.map((color, index) => ({
+      color,
+      value: (max * index) / (CHOROPLETH_COLORS.length - 1),
+    })),
+  }
+}
+
 /** A release-wide domain is stable across periods and persons/households. */
 export function getLegendModel(
   release: AtlasRelease,
@@ -81,15 +93,7 @@ export function getLegendModel(
         fact.estimand === estimand,
     )
     .map((fact) => fact.estimate)
-  const max = roundDomain(Math.max(...values))
-  return {
-    min: 0,
-    max,
-    stops: CHOROPLETH_COLORS.map((color, index) => ({
-      color,
-      value: (max * index) / (CHOROPLETH_COLORS.length - 1),
-    })),
-  }
+  return getLegendModelFromMax(roundDomain(Math.max(...values)))
 }
 
 export function buildFillColorExpression(legend: LegendModel): unknown[] {
@@ -122,6 +126,26 @@ export function factForState(
         fact.estimand === state.estimand,
     ) ?? null
   )
+}
+
+export interface RuntimeFactSource {
+  geographies: readonly ReleaseGeography[]
+  factForState(state: AtlasState, geographyId: string): PovertyFact | null
+  legendForState(state: AtlasState): LegendModel
+}
+
+function runtimeFactSourceFromRelease(release: AtlasRelease): RuntimeFactSource {
+  return {
+    geographies: release.geographies,
+    factForState: (state, geographyId) => factForState(release, state, geographyId),
+    legendForState: (state) => getLegendModel(release, state.concept, state.estimand),
+  }
+}
+
+function normalizeFactSource(
+  source: AtlasRelease | RuntimeFactSource,
+): RuntimeFactSource {
+  return "metadata" in source ? runtimeFactSourceFromRelease(source) : source
 }
 
 export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
@@ -219,10 +243,11 @@ function eventGeographyId(
 export function createRuntimeJoin(
   map: MapRuntime,
   transport: RuntimeGeometryTransport,
-  release: AtlasRelease,
+  releaseOrSource: AtlasRelease | RuntimeFactSource,
   onSelect: (geographyId: string) => void,
   onHover: (geographyId: string | null) => void = () => undefined,
 ) {
+  const source = normalizeFactSource(releaseOrSource)
   for (const layer of buildLayerSpecs(transport)) {
     if (!map.getLayer(String(layer.id))) map.addLayer(layer)
   }
@@ -264,15 +289,15 @@ export function createRuntimeJoin(
 
   return {
     applyState(state: AtlasState) {
-      const legend = getLegendModel(release, state.concept, state.estimand)
+      const legend = source.legendForState(state)
       map.setPaintProperty(
         MAP_LAYERS.fill,
         "fill-color",
         buildFillColorExpression(legend),
       )
 
-      for (const geography of release.geographies) {
-        const fact = factForState(release, state, geography.id)
+      for (const geography of source.geographies) {
+        const fact = source.factForState(state, geography.id)
         map.setFeatureState(featureTarget(transport, geography.id), {
           hasData: fact !== null,
           estimate: fact?.estimate ?? 0,
