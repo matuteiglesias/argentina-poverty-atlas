@@ -1,0 +1,62 @@
+{
+  "schema_version": "atlas-public-partitioned-release-manifest/v1",
+  "release_id": "atlas-poverty-release-set-department-2024q1-2025q4-v1",
+  "source_releases": [
+    {
+      "period": "2024-Q1",
+      "release_id": "poverty-estimate-release-2024-q1-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2024-Q2",
+      "release_id": "poverty-estimate-release-2024-q2-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2024-Q3",
+      "release_id": "poverty-estimate-release-2024-q3-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2024-Q4",
+      "release_id": "poverty-estimate-release-2024-q4-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2025-Q1",
+      "release_id": "poverty-estimate-release-2025-q1-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2025-Q2",
+      "release_id": "poverty-estimate-release-2025-q2-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2025-Q3",
+      "release_id": "poverty-estimate-release-2025-q3-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    },
+    {
+      "period": "2025-Q4",
+      "release_id": "poverty-estimate-release-2025-q4-department-predictive-v1",
+      "scientific_status": "research_estimate"
+    }
+  ],
+  "geography_level": "department_2010",
+  "geography_count": 525,
+  "period_count": 8,
+  "files": {
+    "metadata.json": "c893b803c83d3bccb167b324c4cf771cee47d6a5ece5bb6af4d860303609238f",
+    "geographies.json": "f9c48abd9454a72514bbd92bf6e85d20f20f21bcfe2fc16fae378c4b15d1aaa3",
+    "national.json": "845c1610ca262b16fe22ef0e5ab77047fa3b708ca5cd20ca391dae128be7117e",
+    "facts/2024-Q1.json": "db6b95c3055ae5cbaf4eec00132bdd4b88a8d7a1e3dc63b26bbc2f60bfaaa176",
+    "facts/2024-Q2.json": "20cc50648492280ce2af683435a2409d6bf1d347bb8f3a831d057709a4d2567f",
+    "facts/2024-Q3.json": "3afc364420909945c216e67289b84e20bb413526a9e64c7d2cf9bc36f223ea38",
+    "facts/2024-Q4.json": "e05857e000b4d46641b0f2f7345ba6a2532d4398452b9359a913e7db43dc6723",
+    "facts/2025-Q1.json": "f4089bbaa5763ef8f22cd8c9591ec2e6fed285082d261f164b20db84c084a871",
+    "facts/2025-Q2.json": "2c559b9a153d1a691606df9bca5958e8fac3ad99a99578aad63de1340c733dd8",
+    "facts/2025-Q3.json": "91c342393dac4a01b91372e9cec28499255d326d44595f4b8a614bdb79196037",
+    "facts/2025-Q4.json": "1b0bbf3fbe2f9dc04b49f08e6c84532a89409a676c4acb1f261987903897ce0f"
+  }
+}

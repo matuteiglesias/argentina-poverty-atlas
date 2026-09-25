@@ -1,0 +1,4610 @@
+[
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.06897080030741595,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.05024449921127883,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.04476703562810841,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.15364482392112314,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.08156745799573129,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.06207193895420348,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.1320033456163762,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.08576857865265522,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.07272713894663224,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.3257583159461883,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.16178491836088113,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.11504223599582879,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.16931137820347147,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.11184730875005697,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.09540663306211532,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.3603177345684751,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.18862353547953123,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.13900767974393238,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.14215581941576422,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.0945482632712585,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.08096853723593493,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.336649452083855,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.1716607564904014,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.12429191005152247,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.2232902473279531,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.1478249739785666,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.1258146566701547,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.44227813175836295,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.2436171941230588,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.1825996264028491,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.24119792968187995,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.15997997676681627,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.13603953673090374,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.46619828858624135,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.26093857033578904,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.19670831561066157,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.12352929090237381,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.08029097684645116,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.06802355533007455,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.36823942385987357,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.17554907253229907,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.1207197568504924,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.17393680585794385,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.11419174553225425,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.09710469982925289,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.39888817924139003,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.20731475296186058,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.15043904738374148,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.2629777776534149,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.17486676680008234,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.14848888792501316,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.49051206907594186,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.2804552407137753,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.21334540060815382,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.18444581373308913,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.12128183856527959,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.10330024462160013,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.38754729693030626,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.20432247897490513,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.15076924143769327,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.12329512972133194,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.08361884636524682,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.07227480296964615,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.2911702495035822,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.14877465165768025,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.10861474378862479,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.16515209239089831,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.10891798425348521,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.09298053300266695,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.42004438236985175,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.2117851327431437,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.15120067507875432,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.13523618149725553,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.08930247119979372,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.0761375228505653,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.34293730332250694,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.17305022776455964,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.12363656958103654,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.22859066317062524,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.15122133362719598,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.12859665301130022,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.44729895237780953,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.24829798329762676,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.18652832562583352,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.14164632693068357,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.09069179860831637,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.07637423960418917,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.39986835324256553,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.19681980125324744,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.1365363080879836,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.1392669540097293,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.09055297489409156,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.07672542308211511,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.38746469846620696,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.19190076247880686,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.1342351341759089,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.19400881817731777,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.125502818399751,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.10579484705276075,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.40071752665417154,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.21318040001531502,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.156795352402698,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.19391794541817642,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.12352054500848815,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.10336662684326778,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.460909519620475,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.24213065220157767,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.17338333815007873,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.14576828501172245,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.09896218297748026,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.08545143797969723,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.35874186191993646,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.18460751817738436,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.13399460359609594,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.11977803851188319,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.07667794797191976,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.06456240742026774,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.35882665461378044,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.17057190425179752,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.11667228942462932,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.14213967798161525,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.0951536094817573,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.08166498179791365,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.3276021523091553,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.16958121521163858,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.12390898517025453,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.23165251194756792,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.15266219545942508,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.12932347804550817,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.4482720402405219,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.24900424006199212,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.18713731731640068,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.17359162126933417,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.1134306689740004,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.09614350053131986,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.36466352318746675,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.19219273596248027,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.1414065095587376,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.08984951943410946,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.05660500468573928,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.04740698769770422,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.30439781995797255,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.13644413162792338,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "households",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.09001843866590581,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.06637559293429045,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.04231867761531657,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.03555717240839763,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.18785802134207563,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.08613588155604548,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "02",
+    "estimate": 0.058783614209904037,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.14618581329433367,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.08215390706796012,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.06485641879766267,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.39880995322336976,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.18462787877966652,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "06",
+    "estimate": 0.12205553572419103,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.17768286058848817,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.10387864269888576,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.08338595023169777,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.4230195707459952,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.2035761841717635,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "10",
+    "estimate": 0.139413883619452,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.15296935198917846,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.09061717336290347,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.07318974971468661,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.4055018056783446,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.19253423414345466,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "14",
+    "estimate": 0.1302627368193493,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.24484845959207327,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.14289840838003348,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.11405494504738185,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.5180190827078793,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.26868321600491707,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "18",
+    "estimate": 0.1892209166272289,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.26384221736554875,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.1583078436639643,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.12769092917271582,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.5391550076782473,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.28702289008681164,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "22",
+    "estimate": 0.20563933811158902,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.13354349803569202,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.07697319136046299,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.06136395883290767,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.4540584932161555,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.20417866305485208,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "26",
+    "estimate": 0.1313254314100849,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.18946540602872564,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.1091733018410344,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.08692320453710108,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.47706593695665017,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.23316982577206077,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "30",
+    "estimate": 0.15809505165441923,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.29314895488299514,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.1755123099112598,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.14090330453973599,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.572227218733883,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.31227931301828055,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "34",
+    "estimate": 0.22601180764619708,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.19315998592175915,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.10990604585317881,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.08701166424923741,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.45681262965827496,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.21921444974151574,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "38",
+    "estimate": 0.14901413133430133,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.13319545682440526,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.07939685135546166,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.06455216757615366,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.3560351322141923,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.16811437513257182,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "42",
+    "estimate": 0.11380463597778025,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.1676034502865884,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.09727070574579046,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.07789139371592654,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.4855426779182425,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.22642101415871946,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "46",
+    "estimate": 0.1506384629653257,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.14651033847930786,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.08677594323741723,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.06990111801986221,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.4116021419132323,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.19549686438239067,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "50",
+    "estimate": 0.13158740677854638,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.24836855747509046,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.14778464081015824,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.11876074006596178,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.5348998817710886,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.2737896668041786,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "54",
+    "estimate": 0.19338494804057332,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.15806231009925786,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.08836550674418432,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.06981687843038831,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.4872340666141694,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.22954181166651427,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "58",
+    "estimate": 0.1502942038709421,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.14837748238568021,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.08505050781883193,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.06764508791017909,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.46736521158940936,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.2186294044147979,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "62",
+    "estimate": 0.1431584351560455,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.2090161062862756,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.11962538134484968,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.0946598810468037,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.47367277936621943,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.2340373498877799,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "66",
+    "estimate": 0.1608135295668999,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.20998130105920587,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.12175176273599504,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.09697000135922983,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.5333333962559366,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.2689899756451492,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "70",
+    "estimate": 0.184114024391275,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.15187047074783905,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.09128366599044437,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.0743464692325237,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.4202909883521238,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.2018890088521238,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "74",
+    "estimate": 0.13692707870605944,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.13594840360901708,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.07617884684060149,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.05985878326342369,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.4488142859683977,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.20414261919030224,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "78",
+    "estimate": 0.13145956804420147,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.1538284170080452,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.09012039210889905,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.07233474608335005,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.39590056998414686,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.18992753758809253,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "82",
+    "estimate": 0.1290225761791486,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.24990096875589773,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.14840456128195098,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.11885660638181521,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.519511218928224,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.2712656257689858,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "86",
+    "estimate": 0.19267032229167125,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.1805384456057678,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.10552892691384722,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.08451520979018887,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.41818716714296045,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.20430982210020257,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "90",
+    "estimate": 0.1408400651877505,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.09729301369145307,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.05332901533829928,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "indigence",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.04171638592466346,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt0",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.3828743735470103,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt1",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.16162190585595293,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  },
+  {
+    "period": "2025-Q4",
+    "universe": "persons",
+    "concept": "poverty",
+    "estimand": "fgt2",
+    "geography_level": "province_2010",
+    "geography_id": "94",
+    "estimate": 0.09896959044977688,
+    "uncertainty_status": "not_supplied",
+    "quality_status": "research_estimate",
+    "coverage": 1,
+    "warning_codes": [
+      "research_estimate",
+      "not_official_statistics"
+    ]
+  }
+]

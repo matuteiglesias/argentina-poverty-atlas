@@ -1,4 +1,3995 @@
-import { activeRelease } from "@/data/activeRelease"
-import { descriptorFromEmbeddedRelease } from "@/data/releaseCatalog"
+import { validateReleaseDescriptors } from "@/data/releaseCatalog"
 
-export const activeReleases = [descriptorFromEmbeddedRelease(activeRelease)] as const
+export const activeReleases = validateReleaseDescriptors([
+  {
+    "metadata": {
+      "schema_version": "atlas-poverty-release-set/v1",
+      "release_id": "atlas-poverty-release-set-province-2024q1-2025q4-v1",
+      "scientific_status": "research_estimate",
+      "not_for_interpretation": true,
+      "periods": [
+        {
+          "id": "2024-Q1",
+          "label": "2024-Q1"
+        },
+        {
+          "id": "2024-Q2",
+          "label": "2024-Q2"
+        },
+        {
+          "id": "2024-Q3",
+          "label": "2024-Q3"
+        },
+        {
+          "id": "2024-Q4",
+          "label": "2024-Q4"
+        },
+        {
+          "id": "2025-Q1",
+          "label": "2025-Q1"
+        },
+        {
+          "id": "2025-Q2",
+          "label": "2025-Q2"
+        },
+        {
+          "id": "2025-Q3",
+          "label": "2025-Q3"
+        },
+        {
+          "id": "2025-Q4",
+          "label": "2025-Q4"
+        }
+      ],
+      "universes": [
+        "households",
+        "persons"
+      ],
+      "concepts": [
+        "indigence",
+        "poverty"
+      ],
+      "estimands": [
+        "fgt0",
+        "fgt1",
+        "fgt2"
+      ],
+      "geography_level": "province_2010",
+      "national_geography": {
+        "id": "ARG",
+        "name": "Argentina"
+      },
+      "parents": {
+        "2024-Q1": "poverty-estimate-release-2024-q1-province-predictive-v1",
+        "2024-Q2": "poverty-estimate-release-2024-q2-province-predictive-v1",
+        "2024-Q3": "poverty-estimate-release-2024-q3-province-predictive-v1",
+        "2024-Q4": "poverty-estimate-release-2024-q4-province-predictive-v1",
+        "2025-Q1": "poverty-estimate-release-2025-q1-province-predictive-v1",
+        "2025-Q2": "poverty-estimate-release-2025-q2-province-predictive-v1",
+        "2025-Q3": "poverty-estimate-release-2025-q3-province-predictive-v1",
+        "2025-Q4": "poverty-estimate-release-2025-q4-province-predictive-v1"
+      },
+      "comparability": {
+        "uncertainty": "not_supplied",
+        "status": "verified detached research releases; not official INDEC statistics"
+      }
+    },
+    "geographies": [
+      {
+        "id": "02",
+        "name": "Ciudad Autónoma de Buenos Aires",
+        "shortName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "06",
+        "name": "Buenos Aires",
+        "shortName": "Buenos Aires"
+      },
+      {
+        "id": "10",
+        "name": "Catamarca",
+        "shortName": "Catamarca"
+      },
+      {
+        "id": "14",
+        "name": "Córdoba",
+        "shortName": "Córdoba"
+      },
+      {
+        "id": "18",
+        "name": "Corrientes",
+        "shortName": "Corrientes"
+      },
+      {
+        "id": "22",
+        "name": "Chaco",
+        "shortName": "Chaco"
+      },
+      {
+        "id": "26",
+        "name": "Chubut",
+        "shortName": "Chubut"
+      },
+      {
+        "id": "30",
+        "name": "Entre Ríos",
+        "shortName": "Entre Ríos"
+      },
+      {
+        "id": "34",
+        "name": "Formosa",
+        "shortName": "Formosa"
+      },
+      {
+        "id": "38",
+        "name": "Jujuy",
+        "shortName": "Jujuy"
+      },
+      {
+        "id": "42",
+        "name": "La Pampa",
+        "shortName": "La Pampa"
+      },
+      {
+        "id": "46",
+        "name": "La Rioja",
+        "shortName": "La Rioja"
+      },
+      {
+        "id": "50",
+        "name": "Mendoza",
+        "shortName": "Mendoza"
+      },
+      {
+        "id": "54",
+        "name": "Misiones",
+        "shortName": "Misiones"
+      },
+      {
+        "id": "58",
+        "name": "Neuquén",
+        "shortName": "Neuquén"
+      },
+      {
+        "id": "62",
+        "name": "Río Negro",
+        "shortName": "Río Negro"
+      },
+      {
+        "id": "66",
+        "name": "Salta",
+        "shortName": "Salta"
+      },
+      {
+        "id": "70",
+        "name": "San Juan",
+        "shortName": "San Juan"
+      },
+      {
+        "id": "74",
+        "name": "San Luis",
+        "shortName": "San Luis"
+      },
+      {
+        "id": "78",
+        "name": "Santa Cruz",
+        "shortName": "Santa Cruz"
+      },
+      {
+        "id": "82",
+        "name": "Santa Fe",
+        "shortName": "Santa Fe"
+      },
+      {
+        "id": "86",
+        "name": "Santiago del Estero",
+        "shortName": "Santiago del Estero"
+      },
+      {
+        "id": "90",
+        "name": "Tucumán",
+        "shortName": "Tucumán"
+      },
+      {
+        "id": "94",
+        "name": "Tierra del Fuego, Antártida e Islas del Atlántico Sur",
+        "shortName": "Tierra del Fuego, Antártida e Islas del Atlántico Sur"
+      }
+    ],
+    "metadataUrl": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/metadata.json",
+    "geographiesUrl": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/geographies.json",
+    "nationalUrl": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/national.json",
+    "manifestUrl": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/manifest.json",
+    "factsByPeriod": {
+      "2024-Q1": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q1.json",
+      "2024-Q2": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q2.json",
+      "2024-Q3": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q3.json",
+      "2024-Q4": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q4.json",
+      "2025-Q1": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q1.json",
+      "2025-Q2": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q2.json",
+      "2025-Q3": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q3.json",
+      "2025-Q4": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q4.json"
+    },
+    "legendMax": {
+      "indigence|fgt0": 0.5,
+      "indigence|fgt1": 0.30000000000000004,
+      "indigence|fgt2": 0.2,
+      "poverty|fgt0": 0.8,
+      "poverty|fgt1": 0.5,
+      "poverty|fgt2": 0.4
+    }
+  },
+  {
+    "metadata": {
+      "schema_version": "atlas-poverty-release-set/v1",
+      "release_id": "atlas-poverty-release-set-department-2024q1-2025q4-v1",
+      "scientific_status": "research_estimate",
+      "not_for_interpretation": true,
+      "periods": [
+        {
+          "id": "2024-Q1",
+          "label": "2024-Q1"
+        },
+        {
+          "id": "2024-Q2",
+          "label": "2024-Q2"
+        },
+        {
+          "id": "2024-Q3",
+          "label": "2024-Q3"
+        },
+        {
+          "id": "2024-Q4",
+          "label": "2024-Q4"
+        },
+        {
+          "id": "2025-Q1",
+          "label": "2025-Q1"
+        },
+        {
+          "id": "2025-Q2",
+          "label": "2025-Q2"
+        },
+        {
+          "id": "2025-Q3",
+          "label": "2025-Q3"
+        },
+        {
+          "id": "2025-Q4",
+          "label": "2025-Q4"
+        }
+      ],
+      "universes": [
+        "households",
+        "persons"
+      ],
+      "concepts": [
+        "indigence",
+        "poverty"
+      ],
+      "estimands": [
+        "fgt0",
+        "fgt1",
+        "fgt2"
+      ],
+      "geography_level": "department_2010",
+      "national_geography": {
+        "id": "ARG",
+        "name": "Argentina"
+      },
+      "parents": {
+        "2024-Q1": "poverty-estimate-release-2024-q1-department-predictive-v1",
+        "2024-Q2": "poverty-estimate-release-2024-q2-department-predictive-v1",
+        "2024-Q3": "poverty-estimate-release-2024-q3-department-predictive-v1",
+        "2024-Q4": "poverty-estimate-release-2024-q4-department-predictive-v1",
+        "2025-Q1": "poverty-estimate-release-2025-q1-department-predictive-v1",
+        "2025-Q2": "poverty-estimate-release-2025-q2-department-predictive-v1",
+        "2025-Q3": "poverty-estimate-release-2025-q3-department-predictive-v1",
+        "2025-Q4": "poverty-estimate-release-2025-q4-department-predictive-v1"
+      },
+      "comparability": {
+        "uncertainty": "not_supplied",
+        "status": "verified detached research releases; not official INDEC statistics"
+      }
+    },
+    "geographies": [
+      {
+        "id": "02001",
+        "name": "Comuna 01",
+        "shortName": "Comuna 01",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02002",
+        "name": "Comuna 02",
+        "shortName": "Comuna 02",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02003",
+        "name": "Comuna 03",
+        "shortName": "Comuna 03",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02004",
+        "name": "Comuna 04",
+        "shortName": "Comuna 04",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02005",
+        "name": "Comuna 05",
+        "shortName": "Comuna 05",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02006",
+        "name": "Comuna 06",
+        "shortName": "Comuna 06",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02007",
+        "name": "Comuna 07",
+        "shortName": "Comuna 07",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02008",
+        "name": "Comuna 08",
+        "shortName": "Comuna 08",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02009",
+        "name": "Comuna 09",
+        "shortName": "Comuna 09",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02010",
+        "name": "Comuna 10",
+        "shortName": "Comuna 10",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02011",
+        "name": "Comuna 11",
+        "shortName": "Comuna 11",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02012",
+        "name": "Comuna 12",
+        "shortName": "Comuna 12",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02013",
+        "name": "Comuna 13",
+        "shortName": "Comuna 13",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02014",
+        "name": "Comuna 14",
+        "shortName": "Comuna 14",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "02015",
+        "name": "Comuna 15",
+        "shortName": "Comuna 15",
+        "provinceId": "02",
+        "provinceName": "Ciudad Autónoma de Buenos Aires"
+      },
+      {
+        "id": "06007",
+        "name": "Adolfo Alsina",
+        "shortName": "Adolfo Alsina",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06014",
+        "name": "Adolfo Gonzáles Chaves",
+        "shortName": "Adolfo Gonzáles Chaves",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06021",
+        "name": "Alberti",
+        "shortName": "Alberti",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06028",
+        "name": "Almirante Brown",
+        "shortName": "Almirante Brown",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06035",
+        "name": "Avellaneda",
+        "shortName": "Avellaneda",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06042",
+        "name": "Ayacucho",
+        "shortName": "Ayacucho",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06049",
+        "name": "Azul",
+        "shortName": "Azul",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06056",
+        "name": "Bahía Blanca",
+        "shortName": "Bahía Blanca",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06063",
+        "name": "Balcarce",
+        "shortName": "Balcarce",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06070",
+        "name": "Baradero",
+        "shortName": "Baradero",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06077",
+        "name": "Bartolomé Mitre",
+        "shortName": "Bartolomé Mitre",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06084",
+        "name": "Benito Juárez",
+        "shortName": "Benito Juárez",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06091",
+        "name": "Berazategui",
+        "shortName": "Berazategui",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06098",
+        "name": "Berisso",
+        "shortName": "Berisso",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06105",
+        "name": "Bolívar",
+        "shortName": "Bolívar",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06112",
+        "name": "Bragado",
+        "shortName": "Bragado",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06119",
+        "name": "Brandsen",
+        "shortName": "Brandsen",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06126",
+        "name": "Campana",
+        "shortName": "Campana",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06134",
+        "name": "Cañuelas",
+        "shortName": "Cañuelas",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06140",
+        "name": "Capitán Sarmiento",
+        "shortName": "Capitán Sarmiento",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06147",
+        "name": "Carlos Casares",
+        "shortName": "Carlos Casares",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06154",
+        "name": "Carlos Tejedor",
+        "shortName": "Carlos Tejedor",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06161",
+        "name": "Carmen de Areco",
+        "shortName": "Carmen de Areco",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06168",
+        "name": "Castelli",
+        "shortName": "Castelli",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06175",
+        "name": "Colón",
+        "shortName": "Colón",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06182",
+        "name": "Coronel de Marina L. Rosales",
+        "shortName": "Coronel de Marina L. Rosales",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06189",
+        "name": "Coronel Dorrego",
+        "shortName": "Coronel Dorrego",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06196",
+        "name": "Coronel Pringles",
+        "shortName": "Coronel Pringles",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06203",
+        "name": "Coronel Suárez",
+        "shortName": "Coronel Suárez",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06210",
+        "name": "Chacabuco",
+        "shortName": "Chacabuco",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06217",
+        "name": "Chascomús",
+        "shortName": "Chascomús",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06224",
+        "name": "Chivilcoy",
+        "shortName": "Chivilcoy",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06231",
+        "name": "Daireaux",
+        "shortName": "Daireaux",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06238",
+        "name": "Dolores",
+        "shortName": "Dolores",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06245",
+        "name": "Ensenada",
+        "shortName": "Ensenada",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06252",
+        "name": "Escobar",
+        "shortName": "Escobar",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06260",
+        "name": "Esteban Echeverría",
+        "shortName": "Esteban Echeverría",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06266",
+        "name": "Exaltación de la Cruz",
+        "shortName": "Exaltación de la Cruz",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06270",
+        "name": "Ezeiza",
+        "shortName": "Ezeiza",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06274",
+        "name": "Florencio Varela",
+        "shortName": "Florencio Varela",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06277",
+        "name": "Florentino Ameghino",
+        "shortName": "Florentino Ameghino",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06280",
+        "name": "General Alvarado",
+        "shortName": "General Alvarado",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06287",
+        "name": "General Alvear",
+        "shortName": "General Alvear",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06294",
+        "name": "General Arenales",
+        "shortName": "General Arenales",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06301",
+        "name": "General Belgrano",
+        "shortName": "General Belgrano",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06308",
+        "name": "General Guido",
+        "shortName": "General Guido",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06315",
+        "name": "General Juan Madariaga",
+        "shortName": "General Juan Madariaga",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06322",
+        "name": "General La Madrid",
+        "shortName": "General La Madrid",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06329",
+        "name": "General Las Heras",
+        "shortName": "General Las Heras",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06336",
+        "name": "General Lavalle",
+        "shortName": "General Lavalle",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06343",
+        "name": "General Paz",
+        "shortName": "General Paz",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06351",
+        "name": "General Pinto",
+        "shortName": "General Pinto",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06357",
+        "name": "General Pueyrredón",
+        "shortName": "General Pueyrredón",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06364",
+        "name": "General Rodríguez",
+        "shortName": "General Rodríguez",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06371",
+        "name": "General San Martín",
+        "shortName": "General San Martín",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06385",
+        "name": "General Viamonte",
+        "shortName": "General Viamonte",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06392",
+        "name": "General Villegas",
+        "shortName": "General Villegas",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06399",
+        "name": "Guaminí",
+        "shortName": "Guaminí",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06406",
+        "name": "Hipólito Yrigoyen",
+        "shortName": "Hipólito Yrigoyen",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06408",
+        "name": "Hurlingham",
+        "shortName": "Hurlingham",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06410",
+        "name": "Ituzaingó",
+        "shortName": "Ituzaingó",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06412",
+        "name": "José C. Paz",
+        "shortName": "José C. Paz",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06413",
+        "name": "Junín",
+        "shortName": "Junín",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06420",
+        "name": "La Costa",
+        "shortName": "La Costa",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06427",
+        "name": "La Matanza",
+        "shortName": "La Matanza",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06434",
+        "name": "Lanús",
+        "shortName": "Lanús",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06441",
+        "name": "La Plata",
+        "shortName": "La Plata",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06448",
+        "name": "Laprida",
+        "shortName": "Laprida",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06455",
+        "name": "Las Flores",
+        "shortName": "Las Flores",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06462",
+        "name": "Leandro N. Alem",
+        "shortName": "Leandro N. Alem",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06469",
+        "name": "Lincoln",
+        "shortName": "Lincoln",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06476",
+        "name": "Lobería",
+        "shortName": "Lobería",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06483",
+        "name": "Lobos",
+        "shortName": "Lobos",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06490",
+        "name": "Lomas de Zamora",
+        "shortName": "Lomas de Zamora",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06497",
+        "name": "Luján",
+        "shortName": "Luján",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06505",
+        "name": "Magdalena",
+        "shortName": "Magdalena",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06511",
+        "name": "Maipú",
+        "shortName": "Maipú",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06515",
+        "name": "Malvinas Argentinas",
+        "shortName": "Malvinas Argentinas",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06518",
+        "name": "Mar Chiquita",
+        "shortName": "Mar Chiquita",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06525",
+        "name": "Marcos Paz",
+        "shortName": "Marcos Paz",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06532",
+        "name": "Mercedes",
+        "shortName": "Mercedes",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06539",
+        "name": "Merlo",
+        "shortName": "Merlo",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06547",
+        "name": "Monte",
+        "shortName": "Monte",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06553",
+        "name": "Monte Hermoso",
+        "shortName": "Monte Hermoso",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06560",
+        "name": "Moreno",
+        "shortName": "Moreno",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06568",
+        "name": "Morón",
+        "shortName": "Morón",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06574",
+        "name": "Navarro",
+        "shortName": "Navarro",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06581",
+        "name": "Necochea",
+        "shortName": "Necochea",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06588",
+        "name": "9 de Julio",
+        "shortName": "9 de Julio",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06595",
+        "name": "Olavarría",
+        "shortName": "Olavarría",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06602",
+        "name": "Patagones",
+        "shortName": "Patagones",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06609",
+        "name": "Pehuajó",
+        "shortName": "Pehuajó",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06616",
+        "name": "Pellegrini",
+        "shortName": "Pellegrini",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06623",
+        "name": "Pergamino",
+        "shortName": "Pergamino",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06630",
+        "name": "Pila",
+        "shortName": "Pila",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06638",
+        "name": "Pilar",
+        "shortName": "Pilar",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06644",
+        "name": "Pinamar",
+        "shortName": "Pinamar",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06648",
+        "name": "Presidente Perón",
+        "shortName": "Presidente Perón",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06651",
+        "name": "Puán",
+        "shortName": "Puán",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06655",
+        "name": "Punta Indio",
+        "shortName": "Punta Indio",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06658",
+        "name": "Quilmes",
+        "shortName": "Quilmes",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06665",
+        "name": "Ramallo",
+        "shortName": "Ramallo",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06672",
+        "name": "Rauch",
+        "shortName": "Rauch",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06679",
+        "name": "Rivadavia",
+        "shortName": "Rivadavia",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06686",
+        "name": "Rojas",
+        "shortName": "Rojas",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06693",
+        "name": "Roque Pérez",
+        "shortName": "Roque Pérez",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06700",
+        "name": "Saavedra",
+        "shortName": "Saavedra",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06707",
+        "name": "Saladillo",
+        "shortName": "Saladillo",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06714",
+        "name": "Salto",
+        "shortName": "Salto",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06721",
+        "name": "Salliqueló",
+        "shortName": "Salliqueló",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06728",
+        "name": "San Andrés de Giles",
+        "shortName": "San Andrés de Giles",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06735",
+        "name": "San Antonio de Areco",
+        "shortName": "San Antonio de Areco",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06742",
+        "name": "San Cayetano",
+        "shortName": "San Cayetano",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06749",
+        "name": "San Fernando",
+        "shortName": "San Fernando",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06756",
+        "name": "San Isidro",
+        "shortName": "San Isidro",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06760",
+        "name": "San Miguel",
+        "shortName": "San Miguel",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06763",
+        "name": "San Nicolás",
+        "shortName": "San Nicolás",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06770",
+        "name": "San Pedro",
+        "shortName": "San Pedro",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06778",
+        "name": "San Vicente",
+        "shortName": "San Vicente",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06784",
+        "name": "Suipacha",
+        "shortName": "Suipacha",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06791",
+        "name": "Tandil",
+        "shortName": "Tandil",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06798",
+        "name": "Tapalqué",
+        "shortName": "Tapalqué",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06805",
+        "name": "Tigre",
+        "shortName": "Tigre",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06812",
+        "name": "Tordillo",
+        "shortName": "Tordillo",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06819",
+        "name": "Tornquist",
+        "shortName": "Tornquist",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06826",
+        "name": "Trenque Lauquen",
+        "shortName": "Trenque Lauquen",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06833",
+        "name": "Tres Arroyos",
+        "shortName": "Tres Arroyos",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06840",
+        "name": "Tres de Febrero",
+        "shortName": "Tres de Febrero",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06847",
+        "name": "Tres Lomas",
+        "shortName": "Tres Lomas",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06854",
+        "name": "25 de Mayo",
+        "shortName": "25 de Mayo",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06861",
+        "name": "Vicente López",
+        "shortName": "Vicente López",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06868",
+        "name": "Villa Gesell",
+        "shortName": "Villa Gesell",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06875",
+        "name": "Villarino",
+        "shortName": "Villarino",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "06882",
+        "name": "Zárate",
+        "shortName": "Zárate",
+        "provinceId": "06",
+        "provinceName": "Buenos Aires"
+      },
+      {
+        "id": "10007",
+        "name": "Ambato",
+        "shortName": "Ambato",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10014",
+        "name": "Ancasti",
+        "shortName": "Ancasti",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10021",
+        "name": "Andalgalá",
+        "shortName": "Andalgalá",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10028",
+        "name": "Antofagasta de la Sierra",
+        "shortName": "Antofagasta de la Sierra",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10035",
+        "name": "Belén",
+        "shortName": "Belén",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10042",
+        "name": "Capayán",
+        "shortName": "Capayán",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10049",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10056",
+        "name": "El Alto",
+        "shortName": "El Alto",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10063",
+        "name": "Fray Mamerto Esquiú",
+        "shortName": "Fray Mamerto Esquiú",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10070",
+        "name": "La Paz",
+        "shortName": "La Paz",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10077",
+        "name": "Paclin",
+        "shortName": "Paclin",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10084",
+        "name": "Poman",
+        "shortName": "Poman",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10091",
+        "name": "Santa María",
+        "shortName": "Santa María",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10098",
+        "name": "Santa Rosa",
+        "shortName": "Santa Rosa",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10105",
+        "name": "Tinogasta",
+        "shortName": "Tinogasta",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "10112",
+        "name": "Valle Viejo",
+        "shortName": "Valle Viejo",
+        "provinceId": "10",
+        "provinceName": "Catamarca"
+      },
+      {
+        "id": "14007",
+        "name": "Calamuchita",
+        "shortName": "Calamuchita",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14014",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14021",
+        "name": "Colón",
+        "shortName": "Colón",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14028",
+        "name": "Cruz del Eje",
+        "shortName": "Cruz del Eje",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14035",
+        "name": "General Roca",
+        "shortName": "General Roca",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14042",
+        "name": "General San Martín",
+        "shortName": "General San Martín",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14049",
+        "name": "Ischilín",
+        "shortName": "Ischilín",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14056",
+        "name": "Juárez Celman",
+        "shortName": "Juárez Celman",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14063",
+        "name": "Marcos Juárez",
+        "shortName": "Marcos Juárez",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14070",
+        "name": "Minas",
+        "shortName": "Minas",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14077",
+        "name": "Pocho",
+        "shortName": "Pocho",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14084",
+        "name": "Presidente Roque Sáenz Peña",
+        "shortName": "Presidente Roque Sáenz Peña",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14091",
+        "name": "Punilla",
+        "shortName": "Punilla",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14098",
+        "name": "Río Cuarto",
+        "shortName": "Río Cuarto",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14105",
+        "name": "Río Primero",
+        "shortName": "Río Primero",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14112",
+        "name": "Río Seco",
+        "shortName": "Río Seco",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14119",
+        "name": "Río Segundo",
+        "shortName": "Río Segundo",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14126",
+        "name": "San Alberto",
+        "shortName": "San Alberto",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14133",
+        "name": "San Javier",
+        "shortName": "San Javier",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14140",
+        "name": "San Justo",
+        "shortName": "San Justo",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14147",
+        "name": "Santa María",
+        "shortName": "Santa María",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14154",
+        "name": "Sobremonte",
+        "shortName": "Sobremonte",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14161",
+        "name": "Tercero Arriba",
+        "shortName": "Tercero Arriba",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14168",
+        "name": "Totoral",
+        "shortName": "Totoral",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14175",
+        "name": "Tulumba",
+        "shortName": "Tulumba",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "14182",
+        "name": "Unión",
+        "shortName": "Unión",
+        "provinceId": "14",
+        "provinceName": "Córdoba"
+      },
+      {
+        "id": "18007",
+        "name": "Bella Vista",
+        "shortName": "Bella Vista",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18014",
+        "name": "Berón de Astrada",
+        "shortName": "Berón de Astrada",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18021",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18028",
+        "name": "Concepción",
+        "shortName": "Concepción",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18035",
+        "name": "Curuzú Cuatiá",
+        "shortName": "Curuzú Cuatiá",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18042",
+        "name": "Empedrado",
+        "shortName": "Empedrado",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18049",
+        "name": "Esquina",
+        "shortName": "Esquina",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18056",
+        "name": "General Alvear",
+        "shortName": "General Alvear",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18063",
+        "name": "General Paz",
+        "shortName": "General Paz",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18070",
+        "name": "Goya",
+        "shortName": "Goya",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18077",
+        "name": "Itatí",
+        "shortName": "Itatí",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18084",
+        "name": "Ituzaingó",
+        "shortName": "Ituzaingó",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18091",
+        "name": "Lavalle",
+        "shortName": "Lavalle",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18098",
+        "name": "Mburucuyá",
+        "shortName": "Mburucuyá",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18105",
+        "name": "Mercedes",
+        "shortName": "Mercedes",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18112",
+        "name": "Monte Caseros",
+        "shortName": "Monte Caseros",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18119",
+        "name": "Paso de los Libres",
+        "shortName": "Paso de los Libres",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18126",
+        "name": "Saladas",
+        "shortName": "Saladas",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18133",
+        "name": "San Cosme",
+        "shortName": "San Cosme",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18140",
+        "name": "San Luis del Palmar",
+        "shortName": "San Luis del Palmar",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18147",
+        "name": "San Martín",
+        "shortName": "San Martín",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18154",
+        "name": "San Miguel",
+        "shortName": "San Miguel",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18161",
+        "name": "San Roque",
+        "shortName": "San Roque",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18168",
+        "name": "Santo Tomé",
+        "shortName": "Santo Tomé",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "18175",
+        "name": "Sauce",
+        "shortName": "Sauce",
+        "provinceId": "18",
+        "provinceName": "Corrientes"
+      },
+      {
+        "id": "22007",
+        "name": "Almirante Brown",
+        "shortName": "Almirante Brown",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22014",
+        "name": "Bermejo",
+        "shortName": "Bermejo",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22021",
+        "name": "Comandante Fernández",
+        "shortName": "Comandante Fernández",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22028",
+        "name": "Chacabuco",
+        "shortName": "Chacabuco",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22036",
+        "name": "12 de Octubre",
+        "shortName": "12 de Octubre",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22039",
+        "name": "2 de Abril",
+        "shortName": "2 de Abril",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22043",
+        "name": "Fray Justo Santa María de Oro",
+        "shortName": "Fray Justo Santa María de Oro",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22049",
+        "name": "General Belgrano",
+        "shortName": "General Belgrano",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22056",
+        "name": "General Donovan",
+        "shortName": "General Donovan",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22063",
+        "name": "General Güemes",
+        "shortName": "General Güemes",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22070",
+        "name": "Independencia",
+        "shortName": "Independencia",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22077",
+        "name": "Libertad",
+        "shortName": "Libertad",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22084",
+        "name": "Libertador General San Martín",
+        "shortName": "Libertador General San Martín",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22091",
+        "name": "Maipú",
+        "shortName": "Maipú",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22098",
+        "name": "Mayor Luis J. Fontana",
+        "shortName": "Mayor Luis J. Fontana",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22105",
+        "name": "9 de Julio",
+        "shortName": "9 de Julio",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22112",
+        "name": "O'Higgins",
+        "shortName": "O'Higgins",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22119",
+        "name": "Presidencia de la Plaza",
+        "shortName": "Presidencia de la Plaza",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22126",
+        "name": "1°  de Mayo",
+        "shortName": "1°  de Mayo",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22133",
+        "name": "Quitilipi",
+        "shortName": "Quitilipi",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22140",
+        "name": "San Fernando",
+        "shortName": "San Fernando",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22147",
+        "name": "San Lorenzo",
+        "shortName": "San Lorenzo",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22154",
+        "name": "Sargento Cabral",
+        "shortName": "Sargento Cabral",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22161",
+        "name": "Tapenagá",
+        "shortName": "Tapenagá",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "22168",
+        "name": "25 de Mayo",
+        "shortName": "25 de Mayo",
+        "provinceId": "22",
+        "provinceName": "Chaco"
+      },
+      {
+        "id": "26007",
+        "name": "Biedma",
+        "shortName": "Biedma",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26014",
+        "name": "Cushamen",
+        "shortName": "Cushamen",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26021",
+        "name": "Escalante",
+        "shortName": "Escalante",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26028",
+        "name": "Florentino Ameghino",
+        "shortName": "Florentino Ameghino",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26035",
+        "name": "Futaleufú",
+        "shortName": "Futaleufú",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26042",
+        "name": "Gaiman",
+        "shortName": "Gaiman",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26049",
+        "name": "Gastre",
+        "shortName": "Gastre",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26056",
+        "name": "Languiñeo",
+        "shortName": "Languiñeo",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26063",
+        "name": "Martires",
+        "shortName": "Martires",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26070",
+        "name": "Paso de los Indios",
+        "shortName": "Paso de los Indios",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26077",
+        "name": "Rawson",
+        "shortName": "Rawson",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26084",
+        "name": "Río Senguer",
+        "shortName": "Río Senguer",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26091",
+        "name": "Sarmiento",
+        "shortName": "Sarmiento",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26098",
+        "name": "Tehuelches",
+        "shortName": "Tehuelches",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "26105",
+        "name": "Telsen",
+        "shortName": "Telsen",
+        "provinceId": "26",
+        "provinceName": "Chubut"
+      },
+      {
+        "id": "30008",
+        "name": "Colón",
+        "shortName": "Colón",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30015",
+        "name": "Concordia",
+        "shortName": "Concordia",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30021",
+        "name": "Diamante",
+        "shortName": "Diamante",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30028",
+        "name": "Federación",
+        "shortName": "Federación",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30035",
+        "name": "Federal",
+        "shortName": "Federal",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30042",
+        "name": "Feliciano",
+        "shortName": "Feliciano",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30049",
+        "name": "Gualeguay",
+        "shortName": "Gualeguay",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30056",
+        "name": "Gualeguaychú",
+        "shortName": "Gualeguaychú",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30063",
+        "name": "Islas del Ibicuy",
+        "shortName": "Islas del Ibicuy",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30070",
+        "name": "La Paz",
+        "shortName": "La Paz",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30077",
+        "name": "Nogoya",
+        "shortName": "Nogoya",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30084",
+        "name": "Paraná",
+        "shortName": "Paraná",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30088",
+        "name": "San Salvador",
+        "shortName": "San Salvador",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30091",
+        "name": "Tala",
+        "shortName": "Tala",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30098",
+        "name": "Uruguay",
+        "shortName": "Uruguay",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30105",
+        "name": "Victoria",
+        "shortName": "Victoria",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "30113",
+        "name": "Villaguay",
+        "shortName": "Villaguay",
+        "provinceId": "30",
+        "provinceName": "Entre Ríos"
+      },
+      {
+        "id": "34007",
+        "name": "Bermejo",
+        "shortName": "Bermejo",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34014",
+        "name": "Formosa",
+        "shortName": "Formosa",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34021",
+        "name": "Laishi",
+        "shortName": "Laishi",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34028",
+        "name": "Matacos",
+        "shortName": "Matacos",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34035",
+        "name": "Patiño",
+        "shortName": "Patiño",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34042",
+        "name": "Pilagás",
+        "shortName": "Pilagás",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34049",
+        "name": "Pilcomayo",
+        "shortName": "Pilcomayo",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34056",
+        "name": "Pirane",
+        "shortName": "Pirane",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "34063",
+        "name": "Ramón Lista",
+        "shortName": "Ramón Lista",
+        "provinceId": "34",
+        "provinceName": "Formosa"
+      },
+      {
+        "id": "38007",
+        "name": "Cochinoca",
+        "shortName": "Cochinoca",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38014",
+        "name": "El Carmen",
+        "shortName": "El Carmen",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38021",
+        "name": "Dr. Manuel Belgrano",
+        "shortName": "Dr. Manuel Belgrano",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38028",
+        "name": "Humahuaca",
+        "shortName": "Humahuaca",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38035",
+        "name": "Ledesma",
+        "shortName": "Ledesma",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38042",
+        "name": "Palpalá",
+        "shortName": "Palpalá",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38049",
+        "name": "Rinconada",
+        "shortName": "Rinconada",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38056",
+        "name": "San Antonio",
+        "shortName": "San Antonio",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38063",
+        "name": "San Pedro",
+        "shortName": "San Pedro",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38070",
+        "name": "Santa Bárbara",
+        "shortName": "Santa Bárbara",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38077",
+        "name": "Santa Catalina",
+        "shortName": "Santa Catalina",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38084",
+        "name": "Susques",
+        "shortName": "Susques",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38094",
+        "name": "Tilcara",
+        "shortName": "Tilcara",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38098",
+        "name": "Tumbaya",
+        "shortName": "Tumbaya",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38105",
+        "name": "Valle Grande",
+        "shortName": "Valle Grande",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "38112",
+        "name": "Yaví",
+        "shortName": "Yaví",
+        "provinceId": "38",
+        "provinceName": "Jujuy"
+      },
+      {
+        "id": "42007",
+        "name": "Atreuco",
+        "shortName": "Atreuco",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42014",
+        "name": "Caleu Caleu",
+        "shortName": "Caleu Caleu",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42021",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42028",
+        "name": "Catriló",
+        "shortName": "Catriló",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42035",
+        "name": "Conhelo",
+        "shortName": "Conhelo",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42042",
+        "name": "Curacó",
+        "shortName": "Curacó",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42049",
+        "name": "Chalileo",
+        "shortName": "Chalileo",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42056",
+        "name": "Chapaleufú",
+        "shortName": "Chapaleufú",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42063",
+        "name": "Chical Có",
+        "shortName": "Chical Có",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42070",
+        "name": "Guatraché",
+        "shortName": "Guatraché",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42077",
+        "name": "Hucal",
+        "shortName": "Hucal",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42084",
+        "name": "Lihuel Calel",
+        "shortName": "Lihuel Calel",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42091",
+        "name": "Limay Mahuida",
+        "shortName": "Limay Mahuida",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42098",
+        "name": "Loventué",
+        "shortName": "Loventué",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42105",
+        "name": "Maracó",
+        "shortName": "Maracó",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42112",
+        "name": "Puelén",
+        "shortName": "Puelén",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42119",
+        "name": "Quemú Quemú",
+        "shortName": "Quemú Quemú",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42126",
+        "name": "Rancul",
+        "shortName": "Rancul",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42133",
+        "name": "Realicó",
+        "shortName": "Realicó",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42140",
+        "name": "Toay",
+        "shortName": "Toay",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42147",
+        "name": "Trenel",
+        "shortName": "Trenel",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "42154",
+        "name": "Utracán",
+        "shortName": "Utracán",
+        "provinceId": "42",
+        "provinceName": "La Pampa"
+      },
+      {
+        "id": "46007",
+        "name": "Arauco",
+        "shortName": "Arauco",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46014",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46021",
+        "name": "Castro Barros",
+        "shortName": "Castro Barros",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46028",
+        "name": "Coronel Felipe Varela",
+        "shortName": "Coronel Felipe Varela",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46035",
+        "name": "Chamical",
+        "shortName": "Chamical",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46042",
+        "name": "Chilecito",
+        "shortName": "Chilecito",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46049",
+        "name": "Famatina",
+        "shortName": "Famatina",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46056",
+        "name": "General Angel V. Peñaloza",
+        "shortName": "General Angel V. Peñaloza",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46063",
+        "name": "General Belgrano",
+        "shortName": "General Belgrano",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46070",
+        "name": "General Juan F.Quiroga",
+        "shortName": "General Juan F.Quiroga",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46077",
+        "name": "General Lamadrid",
+        "shortName": "General Lamadrid",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46084",
+        "name": "General Ocampo",
+        "shortName": "General Ocampo",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46091",
+        "name": "General San Martín",
+        "shortName": "General San Martín",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46098",
+        "name": "Vinchina",
+        "shortName": "Vinchina",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46105",
+        "name": "Independencia",
+        "shortName": "Independencia",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46112",
+        "name": "Rosario Vera Peñaloza",
+        "shortName": "Rosario Vera Peñaloza",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46119",
+        "name": "San Blas de los Sauces",
+        "shortName": "San Blas de los Sauces",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "46126",
+        "name": "Sanagasta",
+        "shortName": "Sanagasta",
+        "provinceId": "46",
+        "provinceName": "La Rioja"
+      },
+      {
+        "id": "50007",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50014",
+        "name": "General Alvear",
+        "shortName": "General Alvear",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50021",
+        "name": "Godoy Cruz",
+        "shortName": "Godoy Cruz",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50028",
+        "name": "Guaymallén",
+        "shortName": "Guaymallén",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50035",
+        "name": "Junín",
+        "shortName": "Junín",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50042",
+        "name": "La Paz",
+        "shortName": "La Paz",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50049",
+        "name": "Las Heras",
+        "shortName": "Las Heras",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50056",
+        "name": "Lavalle",
+        "shortName": "Lavalle",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50063",
+        "name": "Luján de Cuyo",
+        "shortName": "Luján de Cuyo",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50070",
+        "name": "Maipú",
+        "shortName": "Maipú",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50077",
+        "name": "Malargüe",
+        "shortName": "Malargüe",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50084",
+        "name": "Rivadavia",
+        "shortName": "Rivadavia",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50091",
+        "name": "San Carlos",
+        "shortName": "San Carlos",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50098",
+        "name": "San Martín",
+        "shortName": "San Martín",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50105",
+        "name": "San Rafael",
+        "shortName": "San Rafael",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50112",
+        "name": "Santa Rosa",
+        "shortName": "Santa Rosa",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50119",
+        "name": "Tunuyán",
+        "shortName": "Tunuyán",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "50126",
+        "name": "Tupungato",
+        "shortName": "Tupungato",
+        "provinceId": "50",
+        "provinceName": "Mendoza"
+      },
+      {
+        "id": "54007",
+        "name": "Apóstoles",
+        "shortName": "Apóstoles",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54014",
+        "name": "Cainguás",
+        "shortName": "Cainguás",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54021",
+        "name": "Candelaria",
+        "shortName": "Candelaria",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54028",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54035",
+        "name": "Concepción",
+        "shortName": "Concepción",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54042",
+        "name": "El Dorado",
+        "shortName": "El Dorado",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54049",
+        "name": "General Manuel Belgrano",
+        "shortName": "General Manuel Belgrano",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54056",
+        "name": "Guaraní",
+        "shortName": "Guaraní",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54063",
+        "name": "Iguazú",
+        "shortName": "Iguazú",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54070",
+        "name": "Leandro N. Alem",
+        "shortName": "Leandro N. Alem",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54077",
+        "name": "Libertador General San Martín",
+        "shortName": "Libertador General San Martín",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54084",
+        "name": "Montecarlo",
+        "shortName": "Montecarlo",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54091",
+        "name": "Oberá",
+        "shortName": "Oberá",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54098",
+        "name": "San Ignacio",
+        "shortName": "San Ignacio",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54105",
+        "name": "San Javier",
+        "shortName": "San Javier",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54112",
+        "name": "San Pedro",
+        "shortName": "San Pedro",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "54119",
+        "name": "25 de Mayo",
+        "shortName": "25 de Mayo",
+        "provinceId": "54",
+        "provinceName": "Misiones"
+      },
+      {
+        "id": "58007",
+        "name": "Aluminé",
+        "shortName": "Aluminé",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58014",
+        "name": "Añelo",
+        "shortName": "Añelo",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58021",
+        "name": "Catan Lil",
+        "shortName": "Catan Lil",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58028",
+        "name": "Collón Curá",
+        "shortName": "Collón Curá",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58035",
+        "name": "Confluencia",
+        "shortName": "Confluencia",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58042",
+        "name": "Chos Malal",
+        "shortName": "Chos Malal",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58049",
+        "name": "Huiliches",
+        "shortName": "Huiliches",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58056",
+        "name": "Lacar",
+        "shortName": "Lacar",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58063",
+        "name": "Loncopué",
+        "shortName": "Loncopué",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58070",
+        "name": "Los Lagos",
+        "shortName": "Los Lagos",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58077",
+        "name": "Minas",
+        "shortName": "Minas",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58084",
+        "name": "Ñorquín",
+        "shortName": "Ñorquín",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58091",
+        "name": "Pehuenches",
+        "shortName": "Pehuenches",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58098",
+        "name": "Picún Leufú",
+        "shortName": "Picún Leufú",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58105",
+        "name": "Picunches",
+        "shortName": "Picunches",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "58112",
+        "name": "Zapala",
+        "shortName": "Zapala",
+        "provinceId": "58",
+        "provinceName": "Neuquén"
+      },
+      {
+        "id": "62007",
+        "name": "Adolfo Alsina",
+        "shortName": "Adolfo Alsina",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62014",
+        "name": "Avellaneda",
+        "shortName": "Avellaneda",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62021",
+        "name": "Bariloche",
+        "shortName": "Bariloche",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62028",
+        "name": "Conesa",
+        "shortName": "Conesa",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62035",
+        "name": "El Cuy",
+        "shortName": "El Cuy",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62042",
+        "name": "General Roca",
+        "shortName": "General Roca",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62049",
+        "name": "9 de Julio",
+        "shortName": "9 de Julio",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62056",
+        "name": "Ñorquinco",
+        "shortName": "Ñorquinco",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62063",
+        "name": "Pichi Mahuída",
+        "shortName": "Pichi Mahuída",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62070",
+        "name": "Pilnaniyeu",
+        "shortName": "Pilnaniyeu",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62077",
+        "name": "San Antonio",
+        "shortName": "San Antonio",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62084",
+        "name": "Valcheta",
+        "shortName": "Valcheta",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "62091",
+        "name": "25 de Mayo",
+        "shortName": "25 de Mayo",
+        "provinceId": "62",
+        "provinceName": "Río Negro"
+      },
+      {
+        "id": "66007",
+        "name": "Anta",
+        "shortName": "Anta",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66014",
+        "name": "Cachi",
+        "shortName": "Cachi",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66021",
+        "name": "Cafayate",
+        "shortName": "Cafayate",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66028",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66035",
+        "name": "Cerrillos",
+        "shortName": "Cerrillos",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66042",
+        "name": "Chicoana",
+        "shortName": "Chicoana",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66049",
+        "name": "General Güemes",
+        "shortName": "General Güemes",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66056",
+        "name": "General José de San Martín",
+        "shortName": "General José de San Martín",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66063",
+        "name": "Guachipas",
+        "shortName": "Guachipas",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66070",
+        "name": "Iruya",
+        "shortName": "Iruya",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66077",
+        "name": "La Caldera",
+        "shortName": "La Caldera",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66084",
+        "name": "La Candelaria",
+        "shortName": "La Candelaria",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66091",
+        "name": "La Poma",
+        "shortName": "La Poma",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66098",
+        "name": "La Viña",
+        "shortName": "La Viña",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66105",
+        "name": "Los Andes",
+        "shortName": "Los Andes",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66112",
+        "name": "Metán",
+        "shortName": "Metán",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66119",
+        "name": "Molinos",
+        "shortName": "Molinos",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66126",
+        "name": "Orán",
+        "shortName": "Orán",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66133",
+        "name": "Rivadavia",
+        "shortName": "Rivadavia",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66140",
+        "name": "Rosario de la Frontera",
+        "shortName": "Rosario de la Frontera",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66147",
+        "name": "Rosario de Lerma",
+        "shortName": "Rosario de Lerma",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66154",
+        "name": "San Carlos",
+        "shortName": "San Carlos",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "66161",
+        "name": "Santa Victoria",
+        "shortName": "Santa Victoria",
+        "provinceId": "66",
+        "provinceName": "Salta"
+      },
+      {
+        "id": "70007",
+        "name": "Albardón",
+        "shortName": "Albardón",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70014",
+        "name": "Angaco",
+        "shortName": "Angaco",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70021",
+        "name": "Calingasta",
+        "shortName": "Calingasta",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70028",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70035",
+        "name": "Caucete",
+        "shortName": "Caucete",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70042",
+        "name": "Chimbas",
+        "shortName": "Chimbas",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70049",
+        "name": "Iglesia",
+        "shortName": "Iglesia",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70056",
+        "name": "Jáchal",
+        "shortName": "Jáchal",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70063",
+        "name": "9 de julio",
+        "shortName": "9 de julio",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70070",
+        "name": "Pocito",
+        "shortName": "Pocito",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70077",
+        "name": "Rawson",
+        "shortName": "Rawson",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70084",
+        "name": "Rivadavia",
+        "shortName": "Rivadavia",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70091",
+        "name": "San Martín",
+        "shortName": "San Martín",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70098",
+        "name": "Santa Lucía",
+        "shortName": "Santa Lucía",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70105",
+        "name": "Sarmiento",
+        "shortName": "Sarmiento",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70112",
+        "name": "Ullum",
+        "shortName": "Ullum",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70119",
+        "name": "Valle Fértil",
+        "shortName": "Valle Fértil",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70126",
+        "name": "25 de Mayo",
+        "shortName": "25 de Mayo",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "70133",
+        "name": "Zonda",
+        "shortName": "Zonda",
+        "provinceId": "70",
+        "provinceName": "San Juan"
+      },
+      {
+        "id": "74007",
+        "name": "Ayacucho",
+        "shortName": "Ayacucho",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74014",
+        "name": "Belgrano",
+        "shortName": "Belgrano",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74021",
+        "name": "Coronel Pringles",
+        "shortName": "Coronel Pringles",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74028",
+        "name": "Chacabuco",
+        "shortName": "Chacabuco",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74035",
+        "name": "General Pedernera",
+        "shortName": "General Pedernera",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74042",
+        "name": "Gobernador Dupuy",
+        "shortName": "Gobernador Dupuy",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74049",
+        "name": "Junín",
+        "shortName": "Junín",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74056",
+        "name": "La Capital",
+        "shortName": "La Capital",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "74063",
+        "name": "Libertador General San Martín",
+        "shortName": "Libertador General San Martín",
+        "provinceId": "74",
+        "provinceName": "San Luis"
+      },
+      {
+        "id": "78007",
+        "name": "Corpen Aike",
+        "shortName": "Corpen Aike",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78014",
+        "name": "Deseado",
+        "shortName": "Deseado",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78021",
+        "name": "Güer Aike",
+        "shortName": "Güer Aike",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78028",
+        "name": "Lago Argentino",
+        "shortName": "Lago Argentino",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78035",
+        "name": "Lago Buenos Aires",
+        "shortName": "Lago Buenos Aires",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78042",
+        "name": "Magallanes",
+        "shortName": "Magallanes",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "78049",
+        "name": "Río Chico",
+        "shortName": "Río Chico",
+        "provinceId": "78",
+        "provinceName": "Santa Cruz"
+      },
+      {
+        "id": "82007",
+        "name": "Belgrano",
+        "shortName": "Belgrano",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82014",
+        "name": "Caseros",
+        "shortName": "Caseros",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82021",
+        "name": "Castellanos",
+        "shortName": "Castellanos",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82028",
+        "name": "Constitución",
+        "shortName": "Constitución",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82035",
+        "name": "Garay",
+        "shortName": "Garay",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82042",
+        "name": "General López",
+        "shortName": "General López",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82049",
+        "name": "General Obligado",
+        "shortName": "General Obligado",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82056",
+        "name": "Iriondo",
+        "shortName": "Iriondo",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82063",
+        "name": "La Capital",
+        "shortName": "La Capital",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82070",
+        "name": "Las Colonias",
+        "shortName": "Las Colonias",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82077",
+        "name": "9 de Julio",
+        "shortName": "9 de Julio",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82084",
+        "name": "Rosario",
+        "shortName": "Rosario",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82091",
+        "name": "San Cristobal",
+        "shortName": "San Cristobal",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82098",
+        "name": "San Javier",
+        "shortName": "San Javier",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82105",
+        "name": "San Jerónimo",
+        "shortName": "San Jerónimo",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82112",
+        "name": "San Justo",
+        "shortName": "San Justo",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82119",
+        "name": "San Lorenzo",
+        "shortName": "San Lorenzo",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82126",
+        "name": "San Martín",
+        "shortName": "San Martín",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "82133",
+        "name": "Vera",
+        "shortName": "Vera",
+        "provinceId": "82",
+        "provinceName": "Santa Fe"
+      },
+      {
+        "id": "86007",
+        "name": "Aguirre",
+        "shortName": "Aguirre",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86014",
+        "name": "Alberdi",
+        "shortName": "Alberdi",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86021",
+        "name": "Atamisqui",
+        "shortName": "Atamisqui",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86028",
+        "name": "Avellaneda",
+        "shortName": "Avellaneda",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86035",
+        "name": "Banda",
+        "shortName": "Banda",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86042",
+        "name": "Belgrano",
+        "shortName": "Belgrano",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86049",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86056",
+        "name": "Copo",
+        "shortName": "Copo",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86063",
+        "name": "Choya",
+        "shortName": "Choya",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86070",
+        "name": "Figueroa",
+        "shortName": "Figueroa",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86077",
+        "name": "General Taboada",
+        "shortName": "General Taboada",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86084",
+        "name": "Guasayán",
+        "shortName": "Guasayán",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86091",
+        "name": "Jiménez",
+        "shortName": "Jiménez",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86098",
+        "name": "Juan F. Ibarra",
+        "shortName": "Juan F. Ibarra",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86105",
+        "name": "Loreto",
+        "shortName": "Loreto",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86112",
+        "name": "Mitre",
+        "shortName": "Mitre",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86119",
+        "name": "Moreno",
+        "shortName": "Moreno",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86126",
+        "name": "Ojo de agua",
+        "shortName": "Ojo de agua",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86133",
+        "name": "Pelegrini",
+        "shortName": "Pelegrini",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86140",
+        "name": "Quebrachos",
+        "shortName": "Quebrachos",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86147",
+        "name": "Río Hondo",
+        "shortName": "Río Hondo",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86154",
+        "name": "Rivadavia",
+        "shortName": "Rivadavia",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86161",
+        "name": "Robles",
+        "shortName": "Robles",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86168",
+        "name": "Salavina",
+        "shortName": "Salavina",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86175",
+        "name": "San Martín",
+        "shortName": "San Martín",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86182",
+        "name": "Sarmiento",
+        "shortName": "Sarmiento",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "86189",
+        "name": "Silípica",
+        "shortName": "Silípica",
+        "provinceId": "86",
+        "provinceName": "Santiago del Estero"
+      },
+      {
+        "id": "90007",
+        "name": "Burruyacú",
+        "shortName": "Burruyacú",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90014",
+        "name": "Cruz Alta",
+        "shortName": "Cruz Alta",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90021",
+        "name": "Chicligasta",
+        "shortName": "Chicligasta",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90028",
+        "name": "Famallá",
+        "shortName": "Famallá",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90035",
+        "name": "Graneros",
+        "shortName": "Graneros",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90042",
+        "name": "Juan B. Alberdi",
+        "shortName": "Juan B. Alberdi",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90049",
+        "name": "La Cocha",
+        "shortName": "La Cocha",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90056",
+        "name": "Leales",
+        "shortName": "Leales",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90063",
+        "name": "Lules",
+        "shortName": "Lules",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90070",
+        "name": "Monteros",
+        "shortName": "Monteros",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90077",
+        "name": "Río Chico",
+        "shortName": "Río Chico",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90084",
+        "name": "Capital",
+        "shortName": "Capital",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90091",
+        "name": "Simoca",
+        "shortName": "Simoca",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90098",
+        "name": "Tafí del Valle",
+        "shortName": "Tafí del Valle",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90105",
+        "name": "Tafí Viejo",
+        "shortName": "Tafí Viejo",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90112",
+        "name": "Trancas",
+        "shortName": "Trancas",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "90119",
+        "name": "Yerba Buena",
+        "shortName": "Yerba Buena",
+        "provinceId": "90",
+        "provinceName": "Tucumán"
+      },
+      {
+        "id": "94007",
+        "name": "Río Grande",
+        "shortName": "Río Grande",
+        "provinceId": "94",
+        "provinceName": "Tierra del Fuego, Antártida e Islas del Atlántico Sur"
+      },
+      {
+        "id": "94014",
+        "name": "Ushuaia",
+        "shortName": "Ushuaia",
+        "provinceId": "94",
+        "provinceName": "Tierra del Fuego, Antártida e Islas del Atlántico Sur"
+      }
+    ],
+    "metadataUrl": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/metadata.json",
+    "geographiesUrl": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/geographies.json",
+    "nationalUrl": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/national.json",
+    "manifestUrl": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/manifest.json",
+    "factsByPeriod": {
+      "2024-Q1": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q1.json",
+      "2024-Q2": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q2.json",
+      "2024-Q3": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q3.json",
+      "2024-Q4": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q4.json",
+      "2025-Q1": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q1.json",
+      "2025-Q2": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q2.json",
+      "2025-Q3": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q3.json",
+      "2025-Q4": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q4.json"
+    },
+    "legendMax": {
+      "indigence|fgt0": 0.9,
+      "indigence|fgt1": 0.6000000000000001,
+      "indigence|fgt2": 0.5,
+      "poverty|fgt0": 1,
+      "poverty|fgt1": 0.8,
+      "poverty|fgt2": 0.6000000000000001
+    }
+  }
+])

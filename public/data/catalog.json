@@ -1,14 +1,62 @@
 {
-  "schema_version": "atlas-public-catalog/v1",
-  "default_release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+  "schema_version": "atlas-public-catalog/v2",
+  "default_release_id": "atlas-poverty-release-set-province-2024q1-2025q4-v1",
   "releases": [
     {
-      "release_id": "poverty-estimate-release-2024-q3-province-predictive-v1",
+      "release_id": "atlas-poverty-release-set-province-2024q1-2025q4-v1",
       "scientific_status": "research_estimate",
+      "geography_level": "province_2010",
       "not_for_interpretation": true,
-      "metadata": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/metadata.json",
-      "facts": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/facts.json",
-      "manifest": "/data/releases/poverty-estimate-release-2024-q3-province-predictive-v1/manifest.json"
+      "metadata": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/metadata.json",
+      "geographies": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/geographies.json",
+      "national": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/national.json",
+      "facts_by_period": {
+        "2024-Q1": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q1.json",
+        "2024-Q2": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q2.json",
+        "2024-Q3": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q3.json",
+        "2024-Q4": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2024-Q4.json",
+        "2025-Q1": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q1.json",
+        "2025-Q2": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q2.json",
+        "2025-Q3": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q3.json",
+        "2025-Q4": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/facts/2025-Q4.json"
+      },
+      "legend_max": {
+        "indigence|fgt0": 0.5,
+        "indigence|fgt1": 0.30000000000000004,
+        "indigence|fgt2": 0.2,
+        "poverty|fgt0": 0.8,
+        "poverty|fgt1": 0.5,
+        "poverty|fgt2": 0.4
+      },
+      "manifest": "/data/releases/atlas-poverty-release-set-province-2024q1-2025q4-v1/manifest.json"
+    },
+    {
+      "release_id": "atlas-poverty-release-set-department-2024q1-2025q4-v1",
+      "scientific_status": "research_estimate",
+      "geography_level": "department_2010",
+      "not_for_interpretation": true,
+      "metadata": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/metadata.json",
+      "geographies": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/geographies.json",
+      "national": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/national.json",
+      "facts_by_period": {
+        "2024-Q1": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q1.json",
+        "2024-Q2": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q2.json",
+        "2024-Q3": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q3.json",
+        "2024-Q4": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2024-Q4.json",
+        "2025-Q1": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q1.json",
+        "2025-Q2": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q2.json",
+        "2025-Q3": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q3.json",
+        "2025-Q4": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/facts/2025-Q4.json"
+      },
+      "legend_max": {
+        "indigence|fgt0": 0.9,
+        "indigence|fgt1": 0.6000000000000001,
+        "indigence|fgt2": 0.5,
+        "poverty|fgt0": 1,
+        "poverty|fgt1": 0.8,
+        "poverty|fgt2": 0.6000000000000001
+      },
+      "manifest": "/data/releases/atlas-poverty-release-set-department-2024q1-2025q4-v1/manifest.json"
     }
   ]
 }

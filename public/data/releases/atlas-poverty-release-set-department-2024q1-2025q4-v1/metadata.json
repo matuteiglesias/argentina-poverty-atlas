@@ -1,0 +1,72 @@
+{
+  "schema_version": "atlas-poverty-release-set/v1",
+  "release_id": "atlas-poverty-release-set-department-2024q1-2025q4-v1",
+  "scientific_status": "research_estimate",
+  "not_for_interpretation": true,
+  "periods": [
+    {
+      "id": "2024-Q1",
+      "label": "2024-Q1"
+    },
+    {
+      "id": "2024-Q2",
+      "label": "2024-Q2"
+    },
+    {
+      "id": "2024-Q3",
+      "label": "2024-Q3"
+    },
+    {
+      "id": "2024-Q4",
+      "label": "2024-Q4"
+    },
+    {
+      "id": "2025-Q1",
+      "label": "2025-Q1"
+    },
+    {
+      "id": "2025-Q2",
+      "label": "2025-Q2"
+    },
+    {
+      "id": "2025-Q3",
+      "label": "2025-Q3"
+    },
+    {
+      "id": "2025-Q4",
+      "label": "2025-Q4"
+    }
+  ],
+  "universes": [
+    "households",
+    "persons"
+  ],
+  "concepts": [
+    "indigence",
+    "poverty"
+  ],
+  "estimands": [
+    "fgt0",
+    "fgt1",
+    "fgt2"
+  ],
+  "geography_level": "department_2010",
+  "national_geography": {
+    "id": "ARG",
+    "name": "Argentina"
+  },
+  "parents": {
+    "2024-Q1": "poverty-estimate-release-2024-q1-department-predictive-v1",
+    "2024-Q2": "poverty-estimate-release-2024-q2-department-predictive-v1",
+    "2024-Q3": "poverty-estimate-release-2024-q3-department-predictive-v1",
+    "2024-Q4": "poverty-estimate-release-2024-q4-department-predictive-v1",
+    "2025-Q1": "poverty-estimate-release-2025-q1-department-predictive-v1",
+    "2025-Q2": "poverty-estimate-release-2025-q2-department-predictive-v1",
+    "2025-Q3": "poverty-estimate-release-2025-q3-department-predictive-v1",
+    "2025-Q4": "poverty-estimate-release-2025-q4-department-predictive-v1"
+  },
+  "comparability": {
+    "uncertainty": "not_supplied",
+    "status": "verified detached research releases; not official INDEC statistics"
+  }
+}
