@@ -62,5 +62,31 @@
     "synthetic_fixture_requires_demo_label": true,
     "research_estimate_requires_non_official_label": true
   },
-  "unknown_semantics_policy": "reject_until_profile_is_versioned"
+  "unknown_semantics_policy": "reject_until_profile_is_versioned",
+  "supported_geography_profiles": {
+    "province_2010": {
+      "id_regex": "^[0-9]{2}$",
+      "expected_geographies": 24
+    },
+    "department_2010": {
+      "id_regex": "^[0-9]{5}$",
+      "expected_geographies": 525
+    }
+  },
+  "presentation_release_set": {
+    "schema_version": "atlas-poverty-release-set/v1",
+    "scientific_release_unit": "one period x one geography level",
+    "concatenation_only": true,
+    "scientific_recalculation_allowed": false,
+    "canonical_department_periods": [
+      "2024-Q1",
+      "2024-Q2",
+      "2024-Q3",
+      "2024-Q4",
+      "2025-Q1",
+      "2025-Q2",
+      "2025-Q3",
+      "2025-Q4"
+    ]
+  }
 }
