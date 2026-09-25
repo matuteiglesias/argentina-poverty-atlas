@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { fixtureRelease } from "@/data/fixtureRelease"
+import { descriptorFromEmbeddedRelease } from "@/data/releaseCatalog"
 import { makeReleaseRegistry } from "@/data/releaseRegistry"
 import type { AtlasRelease } from "@/data/release"
 import {
@@ -36,7 +37,7 @@ function dualRegistry() {
     },
   ]
   department.facts = []
-  return makeReleaseRegistry([province, department])
+  return makeReleaseRegistry([descriptorFromEmbeddedRelease(province), descriptorFromEmbeddedRelease(department)])
 }
 
 describe("atlas URL state", () => {
