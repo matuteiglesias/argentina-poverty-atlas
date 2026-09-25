@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import scripts.publish_w3_mapbox as publisher
+import publish_w3_mapbox as publisher
 
 MANIFEST = Path("mapbox/manifests/department-w3.json")
 manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
