@@ -1,14 +1,13 @@
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { labels } from "@/data/activeRelease"
 import {
-  fixtureRelease,
-  getPeriodLabel,
-  getProvince,
-  labels,
-} from "@/data/activeRelease"
+  getGeography,
+  getReleaseForLevel,
+} from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
-import { geometryTransportManifest } from "@/map/geometryTransport"
+import { transportForLevel } from "@/map/geometryTransport"
 
 interface ResearchTrustPanelProps {
   state: AtlasState
@@ -21,20 +20,25 @@ function humanizeKey(value: string) {
 
 export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPanelProps) {
   const [copied, setCopied] = useState<"citation" | "url" | null>(null)
-  const selected = getProvince(state.place)
-  const releaseId = fixtureRelease.metadata.release_id
+  const release = getReleaseForLevel(state.level)
+  const transport = transportForLevel(state.level)
+  const selected = getGeography(state.level, state.place)
+  const releaseId = release.metadata.release_id
+  const periodLabel =
+    release.metadata.periods.find((period) => period.id === state.period)?.label ??
+    state.period
   const citation = useMemo(() => {
     const place = selected ? selected.name : "Argentina"
     return [
       "Atlas de pobreza en Argentina",
       `release ${releaseId}`,
-      `${place}, ${getPeriodLabel(state.period)}`,
+      `${place}, ${periodLabel}`,
       `${labels.concepts[state.concept]}, ${labels.universes[state.universe]}, ${labels.estimands[state.estimand]}`,
-      fixtureRelease.metadata.scientific_status === "synthetic_fixture"
+      release.metadata.scientific_status === "synthetic_fixture"
         ? "datos sintéticos de demostración; no interpretar como estimación real u oficial"
         : "estimación de investigación; no es una estadística oficial de INDEC",
     ].join(". ")
-  }, [releaseId, selected, state.concept, state.estimand, state.period, state.universe])
+  }, [periodLabel, release.metadata.scientific_status, releaseId, selected, state.concept, state.estimand, state.universe])
 
   async function copy(kind: "citation" | "url", value: string) {
     try {
@@ -52,7 +56,7 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-950">Estado científico</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            {fixtureRelease.metadata.scientific_status === "synthetic_fixture" ? (
+            {release.metadata.scientific_status === "synthetic_fixture" ? (
               <><strong className="font-semibold text-slate-900">Datos sintéticos.</strong> La estructura reproduce el contrato del atlas, pero los valores no deben interpretarse como pobreza observada o estimada.</>
             ) : (
               <><strong className="font-semibold text-slate-900">Estimación de investigación.</strong> No es una estadística oficial de INDEC; mantiene activas las limitaciones de transporte y método.</>
@@ -68,7 +72,7 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-950">Geografía</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            La geometría y los hechos tienen ciclos independientes y se unen por <code className="font-mono text-xs">geography_id</code>. Estado del transporte: <strong>{geometryTransportManifest.status}</strong>.
+            La geometría y los hechos tienen ciclos independientes y se unen por <code className="font-mono text-xs">geography_id</code>. Estado del transporte: <strong>{transport.status}</strong>.
           </p>
         </div>
       </div>
@@ -125,15 +129,15 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
             <h3 className="font-semibold text-slate-900">Release de datos</h3>
             <dl className="mt-3 grid gap-2">
               <div><dt className="inline text-slate-500">ID: </dt><dd className="inline break-all font-mono text-xs text-slate-800">{releaseId}</dd></div>
-              <div><dt className="inline text-slate-500">schema: </dt><dd className="inline font-mono text-xs text-slate-800">{fixtureRelease.metadata.schema_version}</dd></div>
-              <div><dt className="inline text-slate-500">nivel: </dt><dd className="inline font-mono text-xs text-slate-800">{fixtureRelease.metadata.geography_level}</dd></div>
-              <div><dt className="inline text-slate-500">not_for_interpretation: </dt><dd className="inline font-mono text-xs text-slate-800">{String(fixtureRelease.metadata.not_for_interpretation)}</dd></div>
+              <div><dt className="inline text-slate-500">schema: </dt><dd className="inline font-mono text-xs text-slate-800">{release.metadata.schema_version}</dd></div>
+              <div><dt className="inline text-slate-500">nivel: </dt><dd className="inline font-mono text-xs text-slate-800">{release.metadata.geography_level}</dd></div>
+              <div><dt className="inline text-slate-500">not_for_interpretation: </dt><dd className="inline font-mono text-xs text-slate-800">{String(release.metadata.not_for_interpretation)}</dd></div>
             </dl>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">Padres declarados</h3>
             <dl className="mt-3 grid gap-2">
-              {Object.entries(fixtureRelease.metadata.parents).map(([key, value]) => (
+              {Object.entries(release.metadata.parents).map(([key, value]) => (
                 <div key={key}>
                   <dt className="text-xs uppercase tracking-[0.08em] text-slate-500">{humanizeKey(key)}</dt>
                   <dd className="break-all font-mono text-xs text-slate-800">{value}</dd>
@@ -144,7 +148,7 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
           <div>
             <h3 className="font-semibold text-slate-900">Comparabilidad</h3>
             <dl className="mt-3 grid gap-2">
-              {Object.entries(fixtureRelease.metadata.comparability).map(([key, value]) => (
+              {Object.entries(release.metadata.comparability).map(([key, value]) => (
                 <div key={key}>
                   <dt className="inline text-slate-500">{humanizeKey(key)}: </dt>
                   <dd className="inline text-slate-800">{value}</dd>
@@ -155,8 +159,8 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
           <div>
             <h3 className="font-semibold text-slate-900">Transporte cartográfico</h3>
             <dl className="mt-3 grid gap-2">
-              <div><dt className="inline text-slate-500">transport_id: </dt><dd className="inline font-mono text-xs text-slate-800">{geometryTransportManifest.transport_id}</dd></div>
-              <div><dt className="inline text-slate-500">status: </dt><dd className="inline font-mono text-xs text-slate-800">{geometryTransportManifest.status}</dd></div>
+              <div><dt className="inline text-slate-500">transport_id: </dt><dd className="inline font-mono text-xs text-slate-800">{transport.transport_id}</dd></div>
+              <div><dt className="inline text-slate-500">status: </dt><dd className="inline font-mono text-xs text-slate-800">{transport.status}</dd></div>
               <div><dt className="inline text-slate-500">feature identity: </dt><dd className="inline font-mono text-xs text-slate-800">geography_id</dd></div>
               <div><dt className="inline text-slate-500">poverty in tiles: </dt><dd className="inline font-mono text-xs text-slate-800">false</dd></div>
             </dl>
