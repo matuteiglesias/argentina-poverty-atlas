@@ -1,4 +1,4 @@
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   getPeriodsForLevel,
   requireEstimateForLevel,
