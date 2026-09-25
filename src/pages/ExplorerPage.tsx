@@ -3,7 +3,7 @@ import { GeographyLookup } from "@/components/GeographyLookup"
 import { ResearchTrustPanel } from "@/components/ResearchTrustPanel"
 import { Selectors } from "@/components/Selectors"
 import { Card } from "@/components/ui/card"
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   geographyLevelLabels,
   getGeography,
