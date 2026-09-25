@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto"
-import { readFile, mkdir, writeFile } from "node:fs/promises"
+import { readFile, mkdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -76,130 +76,170 @@ function singleReleaseProjection(release) {
   }
 }
 
-function generatedModule(release) {
-  return `import { validateAtlasRelease, factKey, type AtlasRelease, type Concept, type Estimand, type GeographyLevel, type PeriodId, type PovertyFact, type Universe } from "@/data/release"
-
-export const activeRelease: AtlasRelease = validateAtlasRelease(${JSON.stringify({
-    metadata: release.metadata,
-    geographies: release.geographies,
-    facts: release.facts,
-  })})
-export const fixtureRelease = activeRelease
-export const periods = activeRelease.metadata.periods
-export const geographies = activeRelease.geographies
-export const provinces = activeRelease.geographies
-export const universes = activeRelease.metadata.universes
-export const concepts = activeRelease.metadata.concepts
-export const estimands = activeRelease.metadata.estimands
-export const geographyLevel: GeographyLevel = activeRelease.metadata.geography_level
-export type { Concept, Estimand, GeographyLevel, PeriodId, PovertyFact, Universe }
-const index = new Map(activeRelease.facts.map((fact) => [factKey(fact), fact]))
-export function getFact(geographyId: string, period: PeriodId, universe: Universe, concept: Concept, estimand: Estimand) {
-  const level = geographyId === "ARG" ? "national" : activeRelease.metadata.geography_level
-  return index.get([period, universe, concept, estimand, level, geographyId].join("|")) ?? null
+function legendDomainKey(concept, estimand) {
+  return `${concept}|${estimand}`
 }
-export function getEstimate(...args: Parameters<typeof getFact>) { return getFact(...args)?.estimate ?? null }
-export function fixtureEstimate(...args: Parameters<typeof getFact>) { const value = getEstimate(...args); if (value === null) throw new Error("Missing released fact"); return value }
-export function getGeography(id: string | null) { return geographies.find((item) => item.id === id) ?? null }
-export const getProvince = getGeography
-export function getPeriodLabel(id: PeriodId) { return periods.find((period) => period.id === id)?.label ?? id }
-export const labels = { universes: { persons: "Personas", households: "Hogares" }, concepts: { poverty: "Pobreza", indigence: "Indigencia" }, estimands: { fgt0: "Incidencia", fgt1: "Brecha", fgt2: "Severidad" } } as const
-`
+
+function roundLegendDomain(max) {
+  const step = max <= 0.1 ? 0.02 : max <= 0.3 ? 0.05 : 0.1
+  return Math.max(step, Math.ceil(max / step) * step)
+}
+
+function legendDomains(release) {
+  const result = {}
+  for (const concept of release.metadata.concepts) {
+    for (const estimand of release.metadata.estimands) {
+      const values = release.facts
+        .filter(
+          (fact) =>
+            fact.geography_level === release.metadata.geography_level &&
+            fact.concept === concept &&
+            fact.estimand === estimand,
+        )
+        .map((fact) => fact.estimate)
+      if (values.length === 0) fail(`cannot derive legend domain for ${concept}/${estimand}`)
+      result[legendDomainKey(concept, estimand)] = roundLegendDomain(Math.max(...values))
+    }
+  }
+  return result
 }
 
 async function writePublicRelease(release) {
   const publicDir = path.join(root, "public/data/releases", release.metadata.release_id)
-  await mkdir(publicDir, { recursive: true })
+  const factsDir = path.join(publicDir, "facts")
+  await mkdir(factsDir, { recursive: true })
+
   const metadataJson = json(release.metadata)
-  const factsJson = json(release.facts)
+  const geographiesJson = json(release.geographies)
+  const nationalFacts = release.facts.filter(
+    (fact) => fact.geography_level === "national" && fact.geography_id === "ARG",
+  )
+  const expectedNational =
+    release.metadata.periods.length *
+    release.metadata.universes.length *
+    release.metadata.concepts.length *
+    release.metadata.estimands.length
+  if (nationalFacts.length !== expectedNational) {
+    fail(
+      `${release.metadata.release_id} must expose exactly ${expectedNational} explicit national facts`,
+    )
+  }
+  const nationalJson = json(nationalFacts)
+
+  const files = {
+    "metadata.json": sha256(Buffer.from(metadataJson)),
+    "geographies.json": sha256(Buffer.from(geographiesJson)),
+    "national.json": sha256(Buffer.from(nationalJson)),
+  }
+  const factsByPeriod = {}
+
+  for (const period of release.metadata.periods) {
+    const facts = release.facts.filter(
+      (fact) =>
+        fact.period === period.id &&
+        fact.geography_level === release.metadata.geography_level,
+    )
+    const expected =
+      release.geographies.length *
+      release.metadata.universes.length *
+      release.metadata.concepts.length *
+      release.metadata.estimands.length
+    if (facts.length !== expected) {
+      fail(
+        `${release.metadata.release_id}/${period.id} must expose exactly ${expected} territorial facts, found ${facts.length}`,
+      )
+    }
+    const factsJson = json(facts)
+    const relative = `facts/${period.id}.json`
+    files[relative] = sha256(Buffer.from(factsJson))
+    await writeFile(path.join(publicDir, relative), factsJson)
+    factsByPeriod[period.id] =
+      `/data/releases/${release.metadata.release_id}/${relative}`
+  }
+
   const sourceReleases = release.sourceReleases.map((item) => ({
     period: item.period,
     release_id: item.manifest.release_id,
     scientific_status: item.manifest.scientific_status,
   }))
   const manifest = {
-    schema_version:
-      release.sourceReleases.length > 1
-        ? "atlas-poverty-release-set-manifest/v1"
-        : "atlas-public-release-manifest/v1",
+    schema_version: "atlas-public-partitioned-release-manifest/v1",
     release_id: release.metadata.release_id,
     source_releases: sourceReleases,
-    files: {
-      "metadata.json": sha256(Buffer.from(metadataJson)),
-      "facts.json": sha256(Buffer.from(factsJson)),
-    },
+    geography_level: release.metadata.geography_level,
+    geography_count: release.geographies.length,
+    period_count: release.metadata.periods.length,
+    files,
   }
+
   await writeFile(path.join(publicDir, "metadata.json"), metadataJson)
-  await writeFile(path.join(publicDir, "facts.json"), factsJson)
+  await writeFile(path.join(publicDir, "geographies.json"), geographiesJson)
+  await writeFile(path.join(publicDir, "national.json"), nationalJson)
   await writeFile(path.join(publicDir, "manifest.json"), json(manifest))
+
   return {
     release_id: release.metadata.release_id,
     scientific_status: release.metadata.scientific_status,
     geography_level: release.metadata.geography_level,
     not_for_interpretation: true,
     metadata: `/data/releases/${release.metadata.release_id}/metadata.json`,
-    facts: `/data/releases/${release.metadata.release_id}/facts.json`,
+    geographies: `/data/releases/${release.metadata.release_id}/geographies.json`,
+    national: `/data/releases/${release.metadata.release_id}/national.json`,
+    facts_by_period: factsByPeriod,
+    legend_max: legendDomains(release),
     manifest: `/data/releases/${release.metadata.release_id}/manifest.json`,
   }
 }
 
 async function writePublicCollection(releases, defaultRelease) {
+  const releasesRoot = path.join(root, "public/data/releases")
+  await rm(releasesRoot, { recursive: true, force: true })
+  await mkdir(releasesRoot, { recursive: true })
   const entries = []
   for (const release of releases) entries.push(await writePublicRelease(release))
   await mkdir(path.join(root, "public/data"), { recursive: true })
   await writeFile(
     path.join(root, "public/data/catalog.json"),
     json({
-      schema_version: "atlas-public-catalog/v1",
+      schema_version: "atlas-public-catalog/v2",
       default_release_id: defaultRelease.metadata.release_id,
       releases: entries,
     }),
   )
+  return entries
 }
 
-async function writeGeneratedCollection(releases, defaultRelease) {
-  if (releases.length === 1) {
-    await writeFile(
-      path.join(root, "src/data/activeRelease.ts"),
-      generatedModule(defaultRelease),
-    )
-    await writeFile(
-      path.join(root, "src/data/activeReleases.ts"),
-      'import { activeRelease } from "@/data/activeRelease"\n\nexport const activeReleases = [activeRelease] as const\n',
-    )
-    return
+function descriptorProjection(release, entry) {
+  return {
+    metadata: release.metadata,
+    geographies: release.geographies,
+    metadataUrl: entry.metadata,
+    geographiesUrl: entry.geographies,
+    nationalUrl: entry.national,
+    manifestUrl: entry.manifest,
+    factsByPeriod: entry.facts_by_period,
+    legendMax: entry.legend_max,
   }
+}
 
-  const byLevel = new Map(
-    releases.map((release) => [release.metadata.geography_level, release]),
-  )
-  const province = byLevel.get("province_2010")
-  const department = byLevel.get("department_2010")
-  if (!province || !department || releases.length !== 2) {
-    fail("commissioned release collection must contain exactly province_2010 and department_2010")
+async function writeGeneratedCollection(releases, entries) {
+  if (releases.length !== entries.length) {
+    fail("generated descriptor count differs from public catalog count")
   }
-  await writeFile(
-    path.join(root, "src/data/activeRelease.province.ts"),
-    generatedModule(province),
+  const descriptors = releases.map((release, index) =>
+    descriptorProjection(release, entries[index]),
   )
-  await writeFile(
-    path.join(root, "src/data/activeRelease.department.ts"),
-    generatedModule(department),
-  )
+  const module = `import { validateReleaseDescriptors } from "@/data/releaseCatalog"
+
+export const activeReleases = validateReleaseDescriptors(${JSON.stringify(descriptors, null, 2)})
+`
+  await writeFile(path.join(root, "src/data/activeReleases.ts"), module)
   await writeFile(
     path.join(root, "src/data/activeRelease.ts"),
-    'export * from "@/data/activeRelease.province"\n',
+    'export { labels } from "@/data/releaseCatalog"\n',
   )
-  await writeFile(
-    path.join(root, "src/data/activeReleases.ts"),
-    [
-      'import { activeRelease as provinceRelease } from "@/data/activeRelease.province"',
-      'import { activeRelease as departmentRelease } from "@/data/activeRelease.department"',
-      "",
-      "export const activeReleases = [provinceRelease, departmentRelease] as const",
-      "",
-    ].join("\n"),
-  )
+  await rm(path.join(root, "src/data/activeRelease.province.ts"), { force: true })
+  await rm(path.join(root, "src/data/activeRelease.department.ts"), { force: true })
 }
 
 function explicitDirectories() {
@@ -365,8 +405,8 @@ async function main() {
       (release) => release.metadata.geography_level === "province_2010",
     )
     if (!defaultRelease) fail("commissioned batch lacks province default release")
-    await writePublicCollection(releases, defaultRelease)
-    await writeGeneratedCollection(releases, defaultRelease)
+    const entries = await writePublicCollection(releases, defaultRelease)
+    await writeGeneratedCollection(releases, entries)
     console.log(
       `Ingested commissioned 8Q collection: ${releases.map((release) => `${release.metadata.geography_level}=${release.facts.length}`).join(", ")}`,
     )
@@ -424,8 +464,8 @@ async function main() {
     }
   }
 
-  await writePublicCollection([release], release)
-  await writeGeneratedCollection([release], release)
+  const entries = await writePublicCollection([release], release)
+  await writeGeneratedCollection([release], entries)
   console.log(
     `Ingested ${release.metadata.release_id}: ${release.metadata.periods.length} periods, ${release.geographies.length} geographies, ${release.facts.length} facts`,
   )
