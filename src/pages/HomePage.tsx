@@ -4,7 +4,6 @@ import { Selectors } from "@/components/Selectors"
 import { Button } from "@/components/ui/button"
 import { labels } from "@/data/activeRelease"
 import {
-  geographyLevelLabels,
   getGeography,
   getReleaseForLevel,
   requireEstimateForLevel,
