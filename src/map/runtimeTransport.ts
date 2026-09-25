@@ -1,11 +1,13 @@
+import type { GeographyLevel } from "@/data/release"
 import {
   geometryTransportManifest,
+  geometryTransportManifestForLevel,
   isPublishedGeometryTransport,
   type GeometryTransportManifest,
 } from "@/map/geometryTransport"
 
 export interface RuntimeGeometryTransport {
-  geography_level: "province_2010"
+  geography_level: GeographyLevel
   geography_release_id: string
   feature_id_property: "geography_id"
   mapbox_source: string
@@ -14,17 +16,31 @@ export interface RuntimeGeometryTransport {
   expected_geography_ids: string[]
 }
 
+function levelFromManifest(manifest: GeometryTransportManifest): GeographyLevel {
+  if (manifest.parent_release?.level === "department") return "department_2010"
+  if (manifest.upstream_audit.required_level === "department") return "department_2010"
+  return "province_2010"
+}
+
 /**
- * Convert the exact W3 governed manifest into the small shape the runtime join
- * needs. A blocked W3 manifest is not a degraded transport: it is no transport.
+ * Convert one exact governed transport manifest into the small shape the runtime
+ * join needs. Ready/blocked manifests are not degraded transports: they are no
+ * transport.
  */
 export function runtimeTransportFromManifest(
   manifest: GeometryTransportManifest,
+  expectedLevel: GeographyLevel = levelFromManifest(manifest),
 ): RuntimeGeometryTransport | null {
   if (!isPublishedGeometryTransport(manifest)) return null
+  const level = levelFromManifest(manifest)
+  if (level !== expectedLevel) {
+    throw new Error(
+      `Runtime geometry level mismatch: expected ${expectedLevel}, got ${level}`,
+    )
+  }
 
   return {
-    geography_level: "province_2010",
+    geography_level: level,
     geography_release_id: `${manifest.parent_release.geography_id}@${manifest.parent_release.release_version}`,
     feature_id_property: "geography_id",
     mapbox_source: `mapbox://${manifest.mapbox.tileset_id}`,
@@ -34,6 +50,14 @@ export function runtimeTransportFromManifest(
   }
 }
 
+export function runtimeGeometryTransportForLevel(
+  level: GeographyLevel,
+): RuntimeGeometryTransport | null {
+  return runtimeTransportFromManifest(geometryTransportManifestForLevel(level), level)
+}
+
+// Backwards-compatible province seam for the editorial homepage.
 export const runtimeGeometryTransport = runtimeTransportFromManifest(
   geometryTransportManifest,
+  "province_2010",
 )
