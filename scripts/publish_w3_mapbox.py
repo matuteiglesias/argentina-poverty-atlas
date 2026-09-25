@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import math
@@ -91,7 +92,11 @@ def request_bytes(path: str, *, label: str, allow_not_found: bool = False) -> by
     request = urllib.request.Request(mapbox_url(path), method="GET")
     try:
         with urllib.request.urlopen(request, timeout=90) as response:
-            return response.read()
+            raw = response.read()
+            encoding = (response.headers.get("Content-Encoding") or "").lower()
+            if encoding == "gzip" or raw[:2] == b"\\x1f\\x8b":
+                raw = gzip.decompress(raw)
+            return raw
     except urllib.error.HTTPError as exc:
         if allow_not_found and exc.code == 404:
             return b""
