@@ -1,7 +1,6 @@
 import {
   concepts,
   estimands,
-  geographyProfile,
   validateAtlasRelease,
   type AtlasRelease,
   type AtlasReleaseMetadata,
@@ -93,11 +92,6 @@ export function validateReleaseDescriptor(
     geographies: descriptor.geographies,
     facts: [],
   })
-  const profile = geographyProfile(descriptor.metadata.geography_level)
-  invariant(
-    descriptor.geographies.length === profile.expectedCount,
-    `${descriptor.metadata.geography_level} must expose exactly ${profile.expectedCount} geographies`,
-  )
   invariant(Boolean(descriptor.metadataUrl), "metadataUrl is required")
   invariant(Boolean(descriptor.geographiesUrl), "geographiesUrl is required")
   invariant(Boolean(descriptor.nationalUrl), "nationalUrl is required")
