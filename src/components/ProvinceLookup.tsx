@@ -1,4 +1,4 @@
-import { provinces } from "@/data/activeRelease"
+import { getGeographiesForLevel } from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
 
 interface ProvinceLookupProps {
@@ -8,6 +8,7 @@ interface ProvinceLookupProps {
 }
 
 export function ProvinceLookup({ state, onSelect, compact = false }: ProvinceLookupProps) {
+  const provinces = getGeographiesForLevel("province_2010")
   return (
     <label className={compact ? "grid gap-1.5 text-xs font-medium text-slate-600" : "grid gap-2 text-sm font-medium text-slate-700"}>
       <span>Ir a una jurisdicción</span>
