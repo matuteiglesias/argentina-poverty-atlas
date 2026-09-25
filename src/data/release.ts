@@ -51,7 +51,7 @@ export interface AtlasReleaseMetadata {
   estimands: Estimand[]
   geography_level: GeographyLevel
   national_geography: { id: "ARG"; name: string }
-  parents: Record<string, unknown>
+  parents: Record<string, string>
   comparability: Record<string, string>
 }
 
