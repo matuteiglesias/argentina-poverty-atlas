@@ -442,7 +442,7 @@ async function main() {
     )
     await writeFile(
       path.join(root, "src/data/activeReleases.ts"),
-      'import { activeRelease } from "@/data/activeRelease"\n\nexport const activeReleases = [activeRelease] as const\n',
+      'import { activeRelease } from "@/data/activeRelease"\nimport { descriptorFromEmbeddedRelease } from "@/data/releaseCatalog"\n\nexport const activeReleases = [descriptorFromEmbeddedRelease(activeRelease)] as const\n',
     )
     const { projectFixtureRelease } = await import("./project-fixture-release.mjs")
     await projectFixtureRelease()
