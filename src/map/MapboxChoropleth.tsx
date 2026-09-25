@@ -3,11 +3,13 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { AnyLayer, Map as MapboxMap, MapLayerMouseEvent } from "mapbox-gl"
 import { Card } from "@/components/ui/card"
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   geographyLevelLabels,
   getEstimateForLevel,
+  getFactForLevel,
   getGeography,
+  getLegendMaxForLevel,
   getReleaseForLevel,
 } from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
@@ -17,12 +19,13 @@ import {
 } from "@/map/geometryTransport"
 import {
   createRuntimeJoin,
-  getLegendModel,
+  getLegendModelFromMax,
   MAP_SOURCE_ID,
   NO_DATA_COLOR,
   type MapLayerEvent,
   type MapLayerEventHandler,
   type MapRuntime,
+  type RuntimeFactSource,
   type RuntimeJoin,
   type RuntimeMapEventName,
 } from "@/map/runtimeJoin"
@@ -99,10 +102,12 @@ function periodLabel(state: AtlasState) {
 }
 
 function MapLegend({ state }: { state: AtlasState }) {
-  const release = getReleaseForLevel(state.level)
   const legend = useMemo(
-    () => getLegendModel(release, state.concept, state.estimand),
-    [release, state.concept, state.estimand],
+    () =>
+      getLegendModelFromMax(
+        getLegendMaxForLevel(state.level, state.concept, state.estimand),
+      ),
+    [state.concept, state.estimand, state.level],
   )
 
   return (
@@ -169,6 +174,25 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
+  const factSource = useMemo<RuntimeFactSource>(
+    () => ({
+      geographies: release.geographies,
+      factForState: (current, geographyId) =>
+        getFactForLevel(
+          current.level,
+          geographyId,
+          current.period,
+          current.universe,
+          current.concept,
+          current.estimand,
+        ),
+      legendForState: (current) =>
+        getLegendModelFromMax(
+          getLegendMaxForLevel(current.level, current.concept, current.estimand),
+        ),
+    }),
+    [release.geographies],
+  )
   const [status, setStatus] = useState<RuntimeStatus>(() =>
     transport
       ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -273,7 +297,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         runtime = createRuntimeJoin(
           createMapRuntimeAdapter(map),
           publishedTransport,
-          release,
+          factSource,
           (geographyId) => selectRef.current(geographyId),
           (geographyId) => {
             if (!disposed) setHoveredId(geographyId)
@@ -299,7 +323,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       runtimeRef.current = null
       map?.remove()
     }
-  }, [manifest, release, state.level, transport])
+  }, [factSource, manifest, state.level, transport])
 
   return (
     <Card className="overflow-hidden">

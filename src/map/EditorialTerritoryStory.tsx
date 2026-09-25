@@ -1,15 +1,18 @@
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { Map as MapboxMap } from "mapbox-gl"
 import { Button } from "@/components/ui/button"
+import { labels } from "@/data/releaseCatalog"
 import {
-  fixtureEstimate,
-  fixtureRelease,
+  getEstimateForLevel,
+  getFactForLevel,
+  getGeography,
+  getLegendMaxForLevel,
   getPeriodLabel,
-  getProvince,
-  labels,
-} from "@/data/activeRelease"
+  getReleaseForLevel,
+  requireEstimateForLevel,
+} from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
 import {
@@ -22,7 +25,9 @@ import { geometryTransportManifest } from "@/map/geometryTransport"
 import { createMapRuntimeAdapter } from "@/map/mapRuntimeAdapter"
 import {
   createRuntimeJoin,
+  getLegendModelFromMax,
   MAP_SOURCE_ID,
+  type RuntimeFactSource,
   type RuntimeJoin,
 } from "@/map/runtimeJoin"
 import {
@@ -87,9 +92,30 @@ export function EditorialTerritoryStory({
         },
   )
 
-  const selectedProvince = getProvince(state.place)
+  const release = getReleaseForLevel("province_2010")
+  const factSource = useMemo<RuntimeFactSource>(
+    () => ({
+      geographies: release.geographies,
+      factForState: (current, geographyId) =>
+        getFactForLevel(
+          "province_2010",
+          geographyId,
+          current.period,
+          current.universe,
+          current.concept,
+          current.estimand,
+        ),
+      legendForState: (current) =>
+        getLegendModelFromMax(
+          getLegendMaxForLevel("province_2010", current.concept, current.estimand),
+        ),
+    }),
+    [release.geographies],
+  )
+  const selectedProvince = getGeography("province_2010", state.place)
   const selectedValue = selectedProvince
-    ? fixtureEstimate(
+    ? getEstimateForLevel(
+        "province_2010",
         selectedProvince.id,
         state.period,
         state.universe,
@@ -97,9 +123,10 @@ export function EditorialTerritoryStory({
         state.estimand,
       )
     : null
-  const hoveredProvince = getProvince(hoveredId)
+  const hoveredProvince = getGeography("province_2010", hoveredId)
   const hoveredValue = hoveredProvince
-    ? fixtureEstimate(
+    ? getEstimateForLevel(
+        "province_2010",
         hoveredProvince.id,
         state.period,
         state.universe,
@@ -107,7 +134,8 @@ export function EditorialTerritoryStory({
         state.estimand,
       )
     : null
-  const national = fixtureEstimate(
+  const national = requireEstimateForLevel(
+    "province_2010",
     "ARG",
     state.period,
     state.universe,
@@ -184,7 +212,7 @@ export function EditorialTerritoryStory({
         runtime = createRuntimeJoin(
           createMapRuntimeAdapter(map),
           publishedTransport,
-          fixtureRelease,
+          factSource,
           (geographyId) => selectRef.current(geographyId),
           (geographyId) => {
             if (!disposed) setHoveredId(geographyId)
@@ -211,7 +239,7 @@ export function EditorialTerritoryStory({
       mapRef.current = null
       map?.remove()
     }
-  }, [])
+  }, [factSource])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -358,7 +386,7 @@ export function EditorialTerritoryStory({
 
       <div className="mx-auto grid max-w-7xl gap-4 px-5 py-8 sm:px-8 md:hidden">
         <p className="text-sm font-medium text-slate-800">
-          {getPeriodLabel(state.period)} · {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
+          {getPeriodLabel("province_2010", state.period)} · {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
         </p>
         <Button className="w-fit" onClick={onExplore}>Abrir el explorador →</Button>
       </div>

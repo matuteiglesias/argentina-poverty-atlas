@@ -8,16 +8,15 @@
   },
   "scripts": {
     "data:project": "node scripts/ingest-poverty-release.mjs",
-    "predev": "npm run data:project",
     "dev": "vite",
-    "prebuild": "npm run data:project",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint src vite.config.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "preview": "vite preview"
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run data:verify-public && npm run build",
+    "preview": "vite preview",
+    "data:verify-public": "node scripts/verify-public-projection.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

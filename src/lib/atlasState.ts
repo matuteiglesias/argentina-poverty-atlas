@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   concepts,
   estimands,
@@ -11,6 +11,7 @@ import {
 } from "@/data/release"
 import {
   defaultGeographyLevel,
+  loadReleaseData,
   releaseRegistry,
   type ReleaseRegistry,
 } from "@/data/releaseRegistry"
@@ -166,36 +167,104 @@ export function applyAtlasPatch(
   return applyAtlasPatchWithRegistry(state, patch, releaseRegistry)
 }
 
-export function useAtlasNavigation() {
-  const readLocation = () => ({
+function readLocation() {
+  return {
     route: normalizeRoute(window.location.pathname),
     state: parseAtlasState(window.location.search),
-  })
+  }
+}
 
+export function useAtlasNavigation() {
   const [location, setLocation] = useState(readLocation)
+  const [dataReady, setDataReady] = useState(false)
+  const [dataPending, setDataPending] = useState(true)
+  const [dataError, setDataError] = useState<string | null>(null)
+  const transitionId = useRef(0)
 
   useEffect(() => {
-    const onPopState = () => setLocation(readLocation())
+    let cancelled = false
+    const initial = readLocation()
+    setDataPending(true)
+    void loadReleaseData(initial.state.level, initial.state.period)
+      .then(() => {
+        if (cancelled) return
+        setLocation(initial)
+        setDataReady(true)
+        setDataPending(false)
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        setDataError(error instanceof Error ? error.message : "No se pudieron cargar los datos")
+        setDataPending(false)
+      })
+
+    const onPopState = () => {
+      const target = readLocation()
+      const ticket = ++transitionId.current
+      setDataPending(true)
+      setDataError(null)
+      void loadReleaseData(target.state.level, target.state.period)
+        .then(() => {
+          if (ticket !== transitionId.current) return
+          setLocation(target)
+          setDataReady(true)
+          setDataPending(false)
+        })
+        .catch((error: unknown) => {
+          if (ticket !== transitionId.current) return
+          setDataError(error instanceof Error ? error.message : "No se pudieron cargar los datos")
+          setDataPending(false)
+        })
+    }
     window.addEventListener("popstate", onPopState)
-    return () => window.removeEventListener("popstate", onPopState)
+    return () => {
+      cancelled = true
+      window.removeEventListener("popstate", onPopState)
+    }
   }, [])
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const transition = (
+      route: AtlasRoute,
+      nextState: AtlasState,
+      mode: "push" | "replace",
+    ) => {
+      const normalized = normalizeAtlasState(nextState)
+      const href = buildAtlasHref(route, normalized)
+      const ticket = ++transitionId.current
+      setDataPending(true)
+      setDataError(null)
+      void loadReleaseData(normalized.level, normalized.period)
+        .then(() => {
+          if (ticket !== transitionId.current) return
+          if (mode === "push") window.history.pushState({}, "", href)
+          else window.history.replaceState({}, "", href)
+          setLocation({ route, state: normalized })
+          setDataReady(true)
+          setDataPending(false)
+        })
+        .catch((error: unknown) => {
+          if (ticket !== transitionId.current) return
+          setDataError(error instanceof Error ? error.message : "No se pudieron cargar los datos")
+          setDataPending(false)
+        })
+    }
+
+    return {
       ...location,
+      dataReady,
+      dataPending,
+      dataError,
       navigate(route: AtlasRoute, nextState = location.state) {
-        const normalized = normalizeAtlasState(nextState)
-        const href = buildAtlasHref(route, normalized)
-        window.history.pushState({}, "", href)
-        setLocation({ route, state: normalized })
+        transition(route, nextState, "push")
       },
       updateState(patch: Partial<AtlasState>) {
-        const nextState = applyAtlasPatch(location.state, patch)
-        const href = buildAtlasHref(location.route, nextState)
-        window.history.replaceState({}, "", href)
-        setLocation({ ...location, state: nextState })
+        transition(
+          location.route,
+          applyAtlasPatch(location.state, patch),
+          "replace",
+        )
       },
-    }),
-    [location],
-  )
+    }
+  }, [dataError, dataPending, dataReady, location])
 }
