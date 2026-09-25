@@ -8,6 +8,7 @@ import {
   getPeriodsForLevel,
   getReleaseForLevel,
   requireEstimateForLevel,
+  useAllPeriodsForLevel,
 } from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
@@ -130,7 +131,19 @@ function GeographyComparisonChart({
   state: AtlasState
   geographyId: string
 }) {
+  const historyStatus = useAllPeriodsForLevel(state.level)
   const periods = getPeriodsForLevel(state.level)
+
+  if (historyStatus.kind !== "ready") {
+    return (
+      <div className="rounded-xl bg-slate-950/[0.035] p-4 text-sm text-slate-600">
+        {historyStatus.kind === "error"
+          ? `No se pudo cargar la serie territorial: ${historyStatus.message}`
+          : "Cargando serie territorial…"}
+      </div>
+    )
+  }
+
   const geographySeries = periods.map((period) =>
     requireEstimateForLevel(
       state.level,
