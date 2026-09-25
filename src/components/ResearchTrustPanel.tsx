@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   getGeography,
   getReleaseForLevel,
