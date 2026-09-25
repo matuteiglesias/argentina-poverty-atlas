@@ -1,10 +1,12 @@
 export const universes = ["persons", "households"] as const
 export const concepts = ["poverty", "indigence"] as const
 export const estimands = ["fgt0", "fgt1", "fgt2"] as const
+export const geographyLevels = ["province_2010", "department_2010"] as const
 
 export type Universe = (typeof universes)[number]
 export type Concept = (typeof concepts)[number]
 export type Estimand = (typeof estimands)[number]
+export type GeographyLevel = (typeof geographyLevels)[number]
 export type PeriodId = string
 
 export interface ReleasePeriod {
@@ -16,6 +18,7 @@ export interface ReleaseGeography {
   id: string
   name: string
   shortName: string
+  provinceId?: string
 }
 
 export interface PovertyFact {
@@ -23,7 +26,7 @@ export interface PovertyFact {
   universe: Universe
   concept: Concept
   estimand: Estimand
-  geography_level: "province_2010" | "national"
+  geography_level: GeographyLevel | "national"
   geography_id: string
   estimate: number
   uncertainty_status: "not_supplied" | string
@@ -46,7 +49,7 @@ export interface AtlasReleaseMetadata {
   universes: Universe[]
   concepts: Concept[]
   estimands: Estimand[]
-  geography_level: "province_2010"
+  geography_level: GeographyLevel
   national_geography: { id: "ARG"; name: string }
   parents: Record<string, string>
   comparability: Record<string, string>
@@ -56,6 +59,18 @@ export interface AtlasRelease {
   metadata: AtlasReleaseMetadata
   geographies: ReleaseGeography[]
   facts: PovertyFact[]
+}
+
+const geographyProfiles: Record<
+  GeographyLevel,
+  { pattern: RegExp; expectedCount: number }
+> = {
+  province_2010: { pattern: /^\d{2}$/, expectedCount: 24 },
+  department_2010: { pattern: /^\d{5}$/, expectedCount: 525 },
+}
+
+export function geographyProfile(level: GeographyLevel) {
+  return geographyProfiles[level]
 }
 
 export function factKey(fact: PovertyFact) {
@@ -76,6 +91,10 @@ function assert(condition: unknown, message: string): asserts condition {
 export function validateAtlasRelease(release: AtlasRelease) {
   const { metadata, geographies, facts } = release
   assert(Boolean(metadata.release_id), "release_id is required")
+  assert(
+    geographyLevels.includes(metadata.geography_level),
+    `unsupported geography level ${metadata.geography_level}`,
+  )
   assert(metadata.periods.length > 0, "at least one period is required")
   assert(metadata.national_geography.id === "ARG", "national geography must be ARG")
 
@@ -84,9 +103,10 @@ export function validateAtlasRelease(release: AtlasRelease) {
 
   const geographyIds = new Set(geographies.map((geography) => geography.id))
   assert(geographyIds.size === geographies.length, "geography IDs must be unique")
+  const profile = geographyProfile(metadata.geography_level)
   assert(
-    geographies.every((geography) => /^\d{2}$/.test(geography.id)),
-    "province IDs must remain two-character strings",
+    geographies.every((geography) => profile.pattern.test(geography.id)),
+    `${metadata.geography_level} IDs violate the governed string format`,
   )
 
   const seenFactKeys = new Set<string>()
@@ -96,11 +116,18 @@ export function validateAtlasRelease(release: AtlasRelease) {
     assert(concepts.includes(fact.concept), `unsupported concept ${fact.concept}`)
     assert(estimands.includes(fact.estimand), `unsupported estimand ${fact.estimand}`)
     assert(Number.isFinite(fact.estimate), `non-finite estimate for ${factKey(fact)}`)
-    assert(fact.estimate >= 0 && fact.estimate <= 1, `estimate outside [0,1] for ${factKey(fact)}`)
+    assert(
+      fact.estimate >= 0 && fact.estimate <= 1,
+      `estimate outside [0,1] for ${factKey(fact)}`,
+    )
 
     if (fact.geography_level === "national") {
       assert(fact.geography_id === "ARG", "national facts must use geography_id ARG")
     } else {
+      assert(
+        fact.geography_level === metadata.geography_level,
+        `fact geography level ${fact.geography_level} differs from release level ${metadata.geography_level}`,
+      )
       assert(
         geographyIds.has(fact.geography_id),
         `incompatible geography ID ${fact.geography_id}`,
@@ -112,10 +139,19 @@ export function validateAtlasRelease(release: AtlasRelease) {
     seenFactKeys.add(key)
 
     if (fact.uncertainty_status === "not_supplied") {
-      assert(fact.standard_error === undefined, `standard_error supplied while uncertainty is absent for ${key}`)
-      assert(fact.ci_lower === undefined && fact.ci_upper === undefined, `CI supplied while uncertainty is absent for ${key}`)
+      assert(
+        fact.standard_error === undefined,
+        `standard_error supplied while uncertainty is absent for ${key}`,
+      )
+      assert(
+        fact.ci_lower === undefined && fact.ci_upper === undefined,
+        `CI supplied while uncertainty is absent for ${key}`,
+      )
       assert(fact.cv === undefined, `cv supplied while uncertainty is absent for ${key}`)
-      assert(fact.uncertainty_method === undefined, `uncertainty_method supplied while uncertainty is absent for ${key}`)
+      assert(
+        fact.uncertainty_method === undefined,
+        `uncertainty_method supplied while uncertainty is absent for ${key}`,
+      )
     }
   }
 
@@ -128,6 +164,7 @@ export function assertW2FixtureRelease(release: AtlasRelease) {
   assert(metadata.schema_version === "atlas-fixture-release/v1", "unexpected fixture schema")
   assert(metadata.scientific_status === "synthetic_fixture", "fixture status must be synthetic_fixture")
   assert(metadata.not_for_interpretation === true, "fixture must be marked not_for_interpretation")
+  assert(metadata.geography_level === "province_2010", "W2 fixture remains province_2010")
   assert(geographies.length === 24, "W2 requires exactly 24 jurisdictions")
   assert(metadata.periods.length >= 6 && metadata.periods.length <= 8, "W2 requires 6–8 periods")
   assert(JSON.stringify(metadata.universes) === JSON.stringify(universes), "W2 universe set mismatch")
