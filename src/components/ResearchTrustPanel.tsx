@@ -7,7 +7,7 @@ import {
   getReleaseForLevel,
 } from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
-import { transportForLevel } from "@/map/geometryTransport"
+import { geometryTransportManifestForLevel } from "@/map/geometryTransport"
 
 interface ResearchTrustPanelProps {
   state: AtlasState
@@ -21,7 +21,7 @@ function humanizeKey(value: string) {
 export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPanelProps) {
   const [copied, setCopied] = useState<"citation" | "url" | null>(null)
   const release = getReleaseForLevel(state.level)
-  const transport = transportForLevel(state.level)
+  const transport = geometryTransportManifestForLevel(state.level)
   const selected = getGeography(state.level, state.place)
   const releaseId = release.metadata.release_id
   const periodLabel =
