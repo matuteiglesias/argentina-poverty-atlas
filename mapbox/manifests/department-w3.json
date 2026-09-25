@@ -1,7 +1,7 @@
 {
   "schema": "argentina-poverty-atlas.geometry-transport/v1",
   "transport_id": "department-w3",
-  "status": "ready_for_publication",
+  "status": "published",
   "inspected_at": "2026-09-25",
   "atlas_base_commit": "90a614ef172e25cf1a8c53f419666128c4d45f60",
   "fixture_geography_ids": [
@@ -536,7 +536,7 @@
     "commit_sha": "5b8ee5f9ccaa6a7b1bd94127c37733782cc70c68",
     "required_level": "department",
     "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/pull/41",
-    "finding": "Exact Census-2010 department release is real-source proven: 525 zero-preserving department IDs, governed display labels, deterministic WGS84 display derivative, and detached verification.",
+    "finding": "Exact Census-2010 department release provides 525 governed features, display labels, a deterministic WGS84 geometry-only derivative, and detached real-source verification.",
     "candidate_evidence": [
       {
         "dataset_id": "arggeo.indec.census.2010.department-footprint",
@@ -545,7 +545,6 @@
         "source_snapshot_sha256": "c9184f47fd46c8a47e2c15e5c734b7b6ceb660ce737e18430691f6fbff3c53e8",
         "artifact_sha256": "7b6664f59d0f4f82937d52ca8fe01a22b1f4dc40d83bc49c608dfd1b40b390c5",
         "display_geojson_sha256": "399033eb5bd79337959f2d3483f6843c71551726723308a6bcc4c7889fe27df8",
-        "department_id_set_sha256": "f2c1195789c5d556db3379dd89310b0b6cea4df84ef6efa14cc814dbfc831144",
         "feature_count": 525,
         "eligible_as_w3_parent": true,
         "identity_rule": "geography_id = department_2010_id = native_id"
@@ -555,22 +554,22 @@
   "parent_release": {
     "repository": "matuteiglesias/argentina-geography",
     "commit_sha": "5b8ee5f9ccaa6a7b1bd94127c37733782cc70c68",
-    "dataset_id": "arggeo.indec.census.2010.department-footprint",
-    "geography_id": null,
+    "geography_id": "indec:2010-national-c9184f47fd46:census-derived:department",
     "release_version": "derived-2010-national-c9184f47fd46",
     "level": "department",
     "source_snapshot_sha256": "c9184f47fd46c8a47e2c15e5c734b7b6ceb660ce737e18430691f6fbff3c53e8",
     "artifact_sha256": "7b6664f59d0f4f82937d52ca8fe01a22b1f4dc40d83bc49c608dfd1b40b390c5",
-    "feature_count": 525
+    "feature_count": 525,
+    "dataset_id": "arggeo.indec.census.2010.department-footprint"
   },
   "mapbox": {
     "style_url": "mapbox://styles/mapbox/standard",
-    "tileset_id": null,
-    "source_layer": null,
+    "tileset_id": "matuteiglesias2.arg-dept-indec2010-c9184f47fd46",
+    "source_layer": "Argentina departments - INDEC Census 2010 c9184f47fd46",
     "feature_id_property": "geography_id",
-    "published_feature_count": null,
-    "publication_time": null,
-    "publication_job_id": null
+    "published_feature_count": 525,
+    "publication_time": "2026-09-25T14:30:32.358Z",
+    "publication_job_id": "cmuh25qkw00i71nt0t9ixcjac"
   },
   "payload_policy": {
     "geometry_only": true,
