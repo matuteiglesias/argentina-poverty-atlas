@@ -247,7 +247,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         "top-right",
       )
 
-      map.on("load", () => {
+      map.once("style.load", () => {
         if (disposed || !map) return
         if (!map.getSource(MAP_SOURCE_ID)) {
           map.addSource(MAP_SOURCE_ID, {
