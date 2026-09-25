@@ -80,15 +80,15 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
       <div className="grid gap-3 border-t border-slate-900/10 pt-5 sm:grid-cols-2 lg:grid-cols-4">
         <a
           className="rounded-xl border border-slate-900/10 bg-white/65 px-4 py-3 text-sm font-semibold text-slate-800 hover:border-slate-900/25 hover:bg-white"
-          href={`/data/releases/${releaseId}/facts.json`}
+          href={release.factsByPeriod[state.period]}
           download
         >
           Descargar datos JSON
-          <span className="mt-1 block text-xs font-normal text-slate-500">Hechos del release</span>
+          <span className="mt-1 block text-xs font-normal text-slate-500">Hechos territoriales del período</span>
         </a>
         <a
           className="rounded-xl border border-slate-900/10 bg-white/65 px-4 py-3 text-sm font-semibold text-slate-800 hover:border-slate-900/25 hover:bg-white"
-          href={`/data/releases/${releaseId}/metadata.json`}
+          href={release.metadataUrl}
           target="_blank"
           rel="noreferrer"
         >
