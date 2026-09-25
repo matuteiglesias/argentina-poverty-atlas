@@ -2,7 +2,7 @@ import { NationalTimeline } from "@/components/NationalTimeline"
 import { ResearchTrustPanel } from "@/components/ResearchTrustPanel"
 import { Selectors } from "@/components/Selectors"
 import { Button } from "@/components/ui/button"
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   getGeography,
   getReleaseForLevel,
