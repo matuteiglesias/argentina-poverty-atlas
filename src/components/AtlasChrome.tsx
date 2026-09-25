@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
-import { fixtureRelease } from "@/data/activeRelease"
+import type { GeographyLevel } from "@/data/release"
+import { getReleaseForLevel } from "@/data/releaseRegistry"
 import type { AtlasRoute, AtlasState } from "@/lib/atlasState"
 
 interface HeaderProps {
@@ -46,8 +47,9 @@ export function Header({ route, state, onNavigate }: HeaderProps) {
   )
 }
 
-export function FixtureBanner() {
-  const isFixture = fixtureRelease.metadata.scientific_status === "synthetic_fixture"
+export function FixtureBanner({ level }: { level: GeographyLevel }) {
+  const release = getReleaseForLevel(level)
+  const isFixture = release.metadata.scientific_status === "synthetic_fixture"
 
   return (
     <div
@@ -74,7 +76,8 @@ export function PageShell({ children }: { children: ReactNode }) {
   return <main>{children}</main>
 }
 
-export function Footer() {
+export function Footer({ level }: { level: GeographyLevel }) {
+  const release = getReleaseForLevel(level)
   return (
     <footer className="mt-20 border-t border-slate-900/10 bg-white/25">
       <div className="mx-auto grid max-w-[96rem] gap-5 px-4 py-10 text-sm text-slate-600 sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
@@ -87,8 +90,8 @@ export function Footer() {
           </p>
         </div>
         <div className="text-xs md:text-right">
-          <p>release: {fixtureRelease.metadata.release_id}</p>
-          <p>estado: {fixtureRelease.metadata.scientific_status}</p>
+          <p>release: {release.metadata.release_id}</p>
+          <p>estado: {release.metadata.scientific_status}</p>
         </div>
       </div>
     </footer>
