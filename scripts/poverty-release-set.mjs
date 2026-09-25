@@ -369,13 +369,7 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
       geography_level: level,
       national_geography: { id: "ARG", name: "Argentina" },
       parents: Object.fromEntries(
-        ordered.map((release) => [
-          release.period,
-          {
-            release_id: release.manifest.release_id,
-            frame_vintage: release.frameVintage,
-          },
-        ]),
+        ordered.map((release) => [release.period, String(release.manifest.release_id)]),
       ),
       comparability: {
         uncertainty: "not_supplied",
