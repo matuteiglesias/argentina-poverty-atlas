@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  departmentGeometryIds,
+  departmentGeometryTransportManifest,
   geometryTransportManifest,
   provinceGeometryIds,
   validateGeometryTransportManifest,
@@ -45,6 +47,35 @@ describe("W3 geometry transport manifest", () => {
       expect(geometryTransportManifest.status).toBe("blocked_upstream")
       expect(geometryTransportManifest.parent_release).toBeNull()
     }
+  })
+
+  it("accepts the exact 525-department transport contract", () => {
+    expect(departmentGeometryIds).toHaveLength(525)
+    expect(new Set(departmentGeometryIds).size).toBe(525)
+    expect(departmentGeometryIds.every((id) => /^\d{5}$/.test(id))).toBe(true)
+    expect(
+      validateGeometryTransportManifest(
+        departmentGeometryTransportManifest,
+        departmentGeometryIds,
+        "department_2010",
+      ),
+    ).toBe(departmentGeometryTransportManifest)
+    expect(departmentGeometryTransportManifest.parent_release?.feature_count).toBe(525)
+    expect(departmentGeometryTransportManifest.payload_policy.poverty_values_embedded).toBe(false)
+  })
+
+  it("rejects department ID width drift", () => {
+    const invalid = {
+      ...departmentGeometryTransportManifest,
+      fixture_geography_ids: [...departmentGeometryIds.slice(0, 524), "9999"],
+    }
+    expect(() =>
+      validateGeometryTransportManifest(
+        invalid,
+        departmentGeometryIds,
+        "department_2010",
+      ),
+    ).toThrow(/exactly match/)
   })
 
   it("accepts a pinned parent before provider publication", () => {
