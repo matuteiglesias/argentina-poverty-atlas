@@ -3,15 +3,18 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { AnyLayer, Map as MapboxMap, MapLayerMouseEvent } from "mapbox-gl"
 import { Card } from "@/components/ui/card"
+import { labels } from "@/data/activeRelease"
 import {
-  fixtureEstimate,
-  fixtureRelease,
-  getPeriodLabel,
-  getProvince,
-  labels,
-} from "@/data/activeRelease"
+  geographyLevelLabels,
+  getEstimateForLevel,
+  getGeography,
+  getReleaseForLevel,
+} from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
-import { geometryTransportManifest } from "@/map/geometryTransport"
+import {
+  geometryTransportManifestForLevel,
+  type GeometryTransportManifest,
+} from "@/map/geometryTransport"
 import {
   createRuntimeJoin,
   getLegendModel,
@@ -24,7 +27,7 @@ import {
   type RuntimeMapEventName,
 } from "@/map/runtimeJoin"
 import {
-  runtimeGeometryTransport,
+  runtimeGeometryTransportForLevel,
   type RuntimeGeometryTransport,
 } from "@/map/runtimeTransport"
 import { formatPercent } from "@/lib/utils"
@@ -56,28 +59,20 @@ function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
   }
 
   return {
-    getLayer(id) {
-      return map.getLayer(id)
-    },
-    addLayer(layer) {
-      map.addLayer(layer as AnyLayer)
-    },
-    setPaintProperty(layerId, property, value) {
-      setPaintProperty(layerId, property, value)
-    },
-    setFeatureState(target, state) {
-      map.setFeatureState(target, state)
-    },
-    on(type: RuntimeMapEventName, layerId, handler) {
-      map.on(type, layerId, eventHandler(handler))
-    },
+    getLayer: (id) => map.getLayer(id),
+    addLayer: (layer) => map.addLayer(layer as AnyLayer),
+    setPaintProperty: (layerId, property, value) =>
+      setPaintProperty(layerId, property, value),
+    setFeatureState: (target, state) => map.setFeatureState(target, state),
+    on: (type: RuntimeMapEventName, layerId, handler) =>
+      map.on(type, layerId, eventHandler(handler)),
     off(type: RuntimeMapEventName, layerId, handler) {
       const adapted = handlers.get(handler)
       if (!adapted) return
       map.off(type, layerId, adapted)
       handlers.delete(handler)
     },
-    setCursor(cursor) {
+    setCursor: (cursor) => {
       map.getCanvas().style.cursor = cursor
     },
   }
@@ -91,14 +86,23 @@ interface MapboxChoroplethProps {
 type RuntimeStatus =
   | { kind: "loading"; message: string }
   | { kind: "ready"; message: string; transport: RuntimeGeometryTransport }
-  | { kind: "blocked"; message: string }
+  | { kind: "blocked"; message: string; manifest: GeometryTransportManifest }
   | { kind: "unavailable"; message: string }
   | { kind: "error"; message: string }
 
+function periodLabel(state: AtlasState) {
+  return (
+    getReleaseForLevel(state.level).metadata.periods.find(
+      (period) => period.id === state.period,
+    )?.label ?? state.period
+  )
+}
+
 function MapLegend({ state }: { state: AtlasState }) {
+  const release = getReleaseForLevel(state.level)
   const legend = useMemo(
-    () => getLegendModel(fixtureRelease, state.concept, state.estimand),
-    [state.concept, state.estimand],
+    () => getLegendModel(release, state.concept, state.estimand),
+    [release, state.concept, state.estimand],
   )
 
   return (
@@ -108,10 +112,9 @@ function MapLegend({ state }: { state: AtlasState }) {
           {labels.concepts[state.concept]} · {labels.estimands[state.estimand]}
         </span>
         <span className="rounded-full bg-slate-100 px-2.5 py-1">
-          escala comparable entre períodos y universos
+          escala comparable dentro del nivel
         </span>
       </div>
-
       <div aria-label={`Escala de 0 a ${formatPercent(legend.max)}`}>
         <div
           className="h-3 rounded-full border border-slate-900/10"
@@ -141,7 +144,6 @@ function MapLegend({ state }: { state: AtlasState }) {
           })}
         </div>
       </div>
-
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500">
         <span>Más claro → menor valor</span>
         <span>Más oscuro → mayor valor</span>
@@ -164,29 +166,35 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const stateRef = useRef(state)
   const selectRef = useRef(onSelect)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const manifest = geometryTransportManifestForLevel(state.level)
+  const transport = runtimeGeometryTransportForLevel(state.level)
+  const release = getReleaseForLevel(state.level)
   const [status, setStatus] = useState<RuntimeStatus>(() =>
-    runtimeGeometryTransport
+    transport
       ? { kind: "loading", message: "Preparando transporte cartográfico…" }
       : {
           kind: "blocked",
-          message: geometryTransportManifest.upstream_audit.finding,
+          message: manifest.upstream_audit.finding,
+          manifest,
         },
   )
 
-  const hoveredProvince = getProvince(hoveredId)
-  const hoveredValue = hoveredProvince
-    ? fixtureEstimate(
-        hoveredProvince.id,
+  const hoveredGeography = getGeography(state.level, hoveredId)
+  const hoveredValue = hoveredGeography
+    ? getEstimateForLevel(
+        state.level,
+        hoveredGeography.id,
         state.period,
         state.universe,
         state.concept,
         state.estimand,
       )
     : null
-  const selectedProvince = getProvince(state.place)
-  const selectedValue = selectedProvince
-    ? fixtureEstimate(
-        selectedProvince.id,
+  const selectedGeography = getGeography(state.level, state.place)
+  const selectedValue = selectedGeography
+    ? getEstimateForLevel(
+        state.level,
+        selectedGeography.id,
         state.period,
         state.universe,
         state.concept,
@@ -204,17 +212,26 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   }, [onSelect])
 
   useEffect(() => {
+    setHoveredId(null)
+    setStatus(
+      transport
+        ? { kind: "loading", message: "Preparando transporte cartográfico…" }
+        : {
+            kind: "blocked",
+            message: manifest.upstream_audit.finding,
+            manifest,
+          },
+    )
+
     const container = containerRef.current
-    const transport = runtimeGeometryTransport
     if (!container || !transport) return
     const publishedTransport: RuntimeGeometryTransport = transport
-
     const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN?.trim()
     if (!token) {
       setStatus({
         kind: "unavailable",
         message:
-          "El transporte W3 está publicado, pero falta VITE_MAPBOX_PUBLIC_TOKEN. La tabla territorial sigue disponible.",
+          "El transporte está publicado, pero falta VITE_MAPBOX_PUBLIC_TOKEN. La consulta tabular sigue disponible.",
       })
       return
     }
@@ -226,19 +243,16 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     async function mountMap() {
       const mapboxgl = (await import("mapbox-gl")).default
       if (disposed || !container) return
-
-      const coarsePointer = window.matchMedia("(pointer: coarse)").matches
       mapboxgl.accessToken = token
       map = new mapboxgl.Map({
         container,
         style: publishedTransport.style_url,
         center: [-64, -38],
-        zoom: 2.8,
+        zoom: state.level === "department_2010" ? 3.1 : 2.8,
         minZoom: 2,
         attributionControl: true,
-        cooperativeGestures: coarsePointer,
+        cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
       })
-
       map.scrollZoom.disable()
       map.dragRotate.disable()
       map.touchZoomRotate.disableRotation()
@@ -259,7 +273,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         runtime = createRuntimeJoin(
           createMapRuntimeAdapter(map),
           publishedTransport,
-          fixtureRelease,
+          release,
           (geographyId) => selectRef.current(geographyId),
           (geographyId) => {
             if (!disposed) setHoveredId(geographyId)
@@ -267,20 +281,15 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         )
         runtimeRef.current = runtime
         runtime.applyState(stateRef.current)
-        setStatus({
-          kind: "ready",
-          message: "Mapa listo",
-          transport: publishedTransport,
-        })
+        setStatus({ kind: "ready", message: "Mapa listo", transport: publishedTransport })
       })
     }
 
     void mountMap().catch((error: unknown) => {
       if (disposed) return
-      const message = error instanceof Error ? error.message : "Error desconocido"
       setStatus({
         kind: "error",
-        message: `${message}. La tabla territorial sigue disponible.`,
+        message: `${error instanceof Error ? error.message : "Error desconocido"}. La tabla territorial sigue disponible.`,
       })
     })
 
@@ -290,57 +299,54 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       runtimeRef.current = null
       map?.remove()
     }
-  }, [])
+  }, [manifest, release, state.level, transport])
 
   return (
     <Card className="overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-slate-900/10 p-4 sm:flex-row sm:items-end sm:justify-between sm:p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-            Territorio · {getPeriodLabel(state.period)}
+            Territorio · {periodLabel(state)}
           </p>
           <h2 className="mt-1 font-serif text-2xl font-semibold">
-            Mapa provincial
+            Mapa · {geographyLevelLabels[state.level]}
           </h2>
           <p className="mt-1 text-sm text-slate-600">
             {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
           </p>
         </div>
-        {selectedProvince && selectedValue !== null ? (
+        {selectedGeography && selectedValue !== null ? (
           <div className="rounded-xl border border-slate-900/10 bg-slate-50 px-3 py-2 text-sm sm:text-right">
             <span className="block text-xs text-slate-500">Selección activa</span>
             <span className="font-semibold text-slate-900">
-              {selectedProvince.shortName} · {formatPercent(selectedValue)}
+              {selectedGeography.shortName} · {formatPercent(selectedValue)}
             </span>
           </div>
         ) : (
           <p className="max-w-xs text-sm leading-5 text-slate-500 sm:text-right">
-            Pasá el cursor para leer; hacé click o tocá para fijar una jurisdicción.
+            Pasá el cursor para leer; hacé click o tocá para fijar un territorio.
           </p>
         )}
       </div>
 
       <div className="relative h-[26rem] bg-slate-100 sm:h-[34rem] lg:h-[40rem]">
-        <div className="absolute inset-0">
-          <div
-            ref={containerRef}
-            className="h-full w-full"
-            aria-label="Mapa coroplético de jurisdicciones argentinas"
-          />
-        </div>
+        <div
+          ref={containerRef}
+          className="absolute inset-0"
+          aria-label={`Mapa coroplético de ${geographyLevelLabels[state.level].toLowerCase()}`}
+        />
 
-        {status.kind === "ready" && hoveredProvince && hoveredValue !== null && (
+        {status.kind === "ready" && hoveredGeography && hoveredValue !== null && (
           <div className="pointer-events-none absolute left-3 top-3 max-w-[15rem] rounded-xl border border-white/70 bg-white/95 px-3.5 py-3 shadow-lg shadow-slate-950/10 backdrop-blur-sm sm:left-4 sm:top-4">
             <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-              {hoveredProvince.id}
+              {hoveredGeography.id}
             </span>
             <span className="mt-0.5 block text-sm font-semibold text-slate-950">
-              {hoveredProvince.shortName}
+              {hoveredGeography.shortName}
             </span>
             <span className="mt-1 block text-2xl font-semibold tabular-nums text-slate-950">
               {formatPercent(hoveredValue)}
             </span>
-            <span className="mt-1 block text-xs text-slate-500">Click/tap para fijar</span>
           </div>
         )}
 
@@ -356,13 +362,11 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
                       ? "Credencial pública pendiente"
                       : "No se pudo inicializar el mapa"}
               </p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {status.message}
-              </p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{status.message}</p>
               {status.kind === "blocked" && (
                 <a
                   className="mt-4 inline-flex text-sm font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4"
-                  href={geometryTransportManifest.upstream_audit.blocker_issue}
+                  href={status.manifest.upstream_audit.blocker_issue}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -377,9 +381,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       <MapLegend state={state} />
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-slate-900/10 px-4 py-2.5 text-[11px] text-slate-500 sm:px-5">
-        <span>una instancia Mapbox GL JS {MAPBOX_GL_VERSION}</span>
+        <span>Mapbox GL JS {MAPBOX_GL_VERSION}</span>
         <span>join: feature-state/geography_id</span>
-        <span>transporte: {geometryTransportManifest.status}</span>
+        <span>transporte: {manifest.status}</span>
         {status.kind === "ready" && (
           <span>geografía: {status.transport.geography_release_id}</span>
         )}
