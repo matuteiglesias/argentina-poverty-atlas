@@ -31,6 +31,26 @@ function json(value) {
   return `${JSON.stringify(value, null, 2)}\n`
 }
 
+function parentStrings(value) {
+  if (Array.isArray(value)) {
+    return Object.fromEntries(
+      value.map((item, index) => [
+        String(item?.role ?? `parent_${index + 1}`),
+        String(item?.release_id ?? item?.release ?? item?.manifest_sha256 ?? "unknown"),
+      ]),
+    )
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        typeof item === "string" ? item : JSON.stringify(item),
+      ]),
+    )
+  }
+  return {}
+}
+
 function singleReleaseProjection(release) {
   return {
     metadata: {
@@ -44,7 +64,7 @@ function singleReleaseProjection(release) {
       estimands: [...release.estimands],
       geography_level: release.geographyLevel,
       national_geography: { id: "ARG", name: "Argentina" },
-      parents: release.manifest.parents ?? {},
+      parents: parentStrings(release.manifest.parents),
       comparability: {
         frame_vintage: release.frameVintage,
         uncertainty: release.manifest.uncertainty_status,
