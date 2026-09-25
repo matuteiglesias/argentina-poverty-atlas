@@ -321,11 +321,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       </div>
 
       <div className="relative h-[26rem] bg-slate-100 sm:h-[34rem] lg:h-[40rem]">
-        <div
-          ref={containerRef}
-          className="absolute inset-0"
-          aria-label="Mapa coroplético de jurisdicciones argentinas"
-        />
+        <div className="absolute inset-0">
+          <div
+            ref={containerRef}
+            className="h-full w-full"
+            aria-label="Mapa coroplético de jurisdicciones argentinas"
+          />
+        </div>
 
         {status.kind === "ready" && hoveredProvince && hoveredValue !== null && (
           <div className="pointer-events-none absolute left-3 top-3 max-w-[15rem] rounded-xl border border-white/70 bg-white/95 px-3.5 py-3 shadow-lg shadow-slate-950/10 backdrop-blur-sm sm:left-4 sm:top-4">
