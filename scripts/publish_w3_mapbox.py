@@ -33,12 +33,25 @@ DISPLAY_SHA256 = "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366e
 TILESET_SLUG = "arg-prov-ign-b9fcf6f90f28"
 TILESET_ID = f"{MAPBOX_USERNAME}.{TILESET_SLUG}"
 TILESET_NAME = "Argentina provinces - IGN b9fcf6f90f28"
+TRANSPORT_ID = "province-w3"
+GEOGRAPHY_LEVEL = "province"
+BLOCKER_ISSUE = "https://github.com/matuteiglesias/argentina-geography/issues/34"
+IDENTITY_RULE = "geography_id = IN1 = native_id"
+UPSTREAM_FINDING = (
+    "Issue #34 is complete. Exact IGN Provincia release provides 24 fixture-compatible "
+    "features and a deterministic geometry-only GeoJSON derivative; the atlas re-materializes "
+    "and hash-verifies that derivative before Mapbox publication."
+)
 EXPECTED_IDS = (
     "02", "06", "10", "14", "18", "22", "26", "30",
     "34", "38", "42", "46", "50", "54", "58", "62",
     "66", "70", "74", "78", "82", "86", "90", "94",
 )
 EXPECTED_PROPERTIES = {"geography_id", "geo_uid", "native_id", "FNA", "GNA", "NAM"}
+
+
+def expected_feature_count() -> int:
+    return len(EXPECTED_IDS)
 
 
 def sha256_file(path: Path) -> str:
@@ -101,8 +114,10 @@ def validate_upstream_derivative(path: Path) -> tuple[dict, dict[str, object]]:
     if payload.get("type") != "FeatureCollection" or not isinstance(payload.get("features"), list):
         raise RuntimeError("Upstream display derivative is not a GeoJSON FeatureCollection")
     features = payload["features"]
-    if len(features) != 24:
-        raise RuntimeError(f"Expected 24 upstream province features, found {len(features)}")
+    if len(features) != expected_feature_count():
+        raise RuntimeError(
+            f"Expected {expected_feature_count()} upstream {GEOGRAPHY_LEVEL} features, found {len(features)}"
+        )
 
     observed_ids: list[str] = []
     representative_points: dict[str, tuple[float, float]] = {}
@@ -135,7 +150,7 @@ def validate_upstream_derivative(path: Path) -> tuple[dict, dict[str, object]]:
         raise RuntimeError(
             f"Upstream province IDs drifted: expected {list(EXPECTED_IDS)}, found {sorted(observed_ids)}"
         )
-    if len(set(observed_ids)) != 24:
+    if len(set(observed_ids)) != expected_feature_count():
         raise RuntimeError("Upstream display derivative contains duplicate geography_id values")
 
     return payload, {"representative_points": representative_points, "observed_ids": sorted(observed_ids)}
@@ -281,7 +296,7 @@ def prove_vector_ids(
 
     if all_observed != set(EXPECTED_IDS):
         missing = sorted(set(EXPECTED_IDS) - all_observed)
-        raise RuntimeError(f"Published vector-tile proof did not recover all 24 geography IDs; missing {missing}")
+        raise RuntimeError(f"Published vector-tile proof did not recover all {expected_feature_count()} geography IDs; missing {missing}")
 
     return {
         "expected_geography_ids": list(EXPECTED_IDS),
@@ -301,24 +316,20 @@ def update_manifest(upload: dict, tilejson: dict, source_layer: str, proof: dict
     manifest["upstream_audit"] = {
         "repository": UPSTREAM_REPOSITORY,
         "commit_sha": UPSTREAM_COMMIT,
-        "required_level": "province",
-        "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/issues/34",
-        "finding": (
-            "Issue #34 is complete. Exact IGN Provincia release provides 24 fixture-compatible "
-            "features and a deterministic geometry-only GeoJSON derivative; the atlas re-materializes "
-            "and hash-verifies that derivative before Mapbox publication."
-        ),
+        "required_level": GEOGRAPHY_LEVEL,
+        "blocker_issue": BLOCKER_ISSUE,
+        "finding": UPSTREAM_FINDING,
         "candidate_evidence": [
             {
                 "dataset_id": DATASET_ID,
                 "release_version": RELEASE_VERSION,
-                "level": "province",
+                "level": GEOGRAPHY_LEVEL,
                 "source_snapshot_sha256": SOURCE_SHA256,
                 "artifact_sha256": ARTIFACT_SHA256,
                 "display_geojson_sha256": DISPLAY_SHA256,
-                "feature_count": 24,
+                "feature_count": expected_feature_count(),
                 "eligible_as_w3_parent": True,
-                "identity_rule": "geography_id = IN1 = native_id",
+                "identity_rule": IDENTITY_RULE,
             }
         ],
     }
@@ -327,17 +338,17 @@ def update_manifest(upload: dict, tilejson: dict, source_layer: str, proof: dict
         "commit_sha": UPSTREAM_COMMIT,
         "geography_id": f"ign:{GEOGRAPHY_VERSION}:administrative:province",
         "release_version": RELEASE_VERSION,
-        "level": "province",
+        "level": GEOGRAPHY_LEVEL,
         "source_snapshot_sha256": SOURCE_SHA256,
         "artifact_sha256": ARTIFACT_SHA256,
-        "feature_count": 24,
+        "feature_count": expected_feature_count(),
     }
     manifest["mapbox"] = {
         "style_url": "mapbox://styles/mapbox/standard",
         "tileset_id": TILESET_ID,
         "source_layer": source_layer,
         "feature_id_property": "geography_id",
-        "published_feature_count": 24,
+        "published_feature_count": expected_feature_count(),
         "publication_time": upload.get("modified") or upload.get("created") or datetime.now(UTC).isoformat(),
         "publication_job_id": upload.get("id"),
     }
@@ -353,7 +364,7 @@ def update_manifest(upload: dict, tilejson: dict, source_layer: str, proof: dict
 
     publication_proof = {
         "schema": "argentina-poverty-atlas.mapbox-publication-proof/v1",
-        "transport_id": "province-w3",
+        "transport_id": TRANSPORT_ID,
         "parent": {
             "repository": UPSTREAM_REPOSITORY,
             "commit_sha": UPSTREAM_COMMIT,
@@ -362,7 +373,7 @@ def update_manifest(upload: dict, tilejson: dict, source_layer: str, proof: dict
             "source_snapshot_sha256": SOURCE_SHA256,
             "canonical_geoparquet_sha256": ARTIFACT_SHA256,
             "display_geojson_sha256": DISPLAY_SHA256,
-            "feature_count": 24,
+            "feature_count": expected_feature_count(),
         },
         "mapbox": {
             "username": MAPBOX_USERNAME,
@@ -399,7 +410,10 @@ def main() -> None:
         raise RuntimeError("MAPBOX_UPLOAD_TOKEN must be a secret sk.* credential")
 
     _, upstream_proof = validate_upstream_derivative(INPUT_GEOJSON)
-    print("Upstream W3 derivative verified: exact hash, exact 24 IDs, geometry-only property contract.")
+    print(
+        f"Upstream W3 derivative verified: exact hash, exact {expected_feature_count()} IDs, "
+        "geometry-only property contract."
+    )
 
     staged_url = stage_geojson(INPUT_GEOJSON)
     print("Exact upstream derivative staged in Mapbox-managed S3.")
@@ -423,7 +437,10 @@ def main() -> None:
         tilejson,
     )
     update_manifest(upload, tilejson, source_layer, proof)
-    print(f"W3 Mapbox identity proof complete: 24/24 IDs via source-layer={source_layer!r}.")
+    print(
+        f"W3 Mapbox identity proof complete: {expected_feature_count()}/{expected_feature_count()} "
+        f"IDs via source-layer={source_layer!r}."
+    )
 
 
 if __name__ == "__main__":

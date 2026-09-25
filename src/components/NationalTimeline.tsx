@@ -1,9 +1,9 @@
+import { labels } from "@/data/activeRelease"
 import {
-  fixtureEstimate,
-  labels,
-  periods,
-  type PeriodId,
-} from "@/data/activeRelease"
+  getPeriodsForLevel,
+  requireEstimateForLevel,
+} from "@/data/releaseRegistry"
+import type { PeriodId } from "@/data/release"
 import type { AtlasState } from "@/lib/atlasState"
 import { formatPercent } from "@/lib/utils"
 
@@ -18,9 +18,11 @@ const PAD_X = 28
 const PAD_Y = 34
 
 export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
+  const periods = getPeriodsForLevel(state.level)
   const values = periods.map((period) => ({
     period,
-    value: fixtureEstimate(
+    value: requireEstimateForLevel(
+      state.level,
       "ARG",
       period.id,
       state.universe,
@@ -37,9 +39,16 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
     PAD_X + (index / Math.max(values.length - 1, 1)) * (WIDTH - PAD_X * 2)
   const y = (value: number) =>
     PAD_Y + ((max - value) / Math.max(max - min, 0.001)) * (HEIGHT - PAD_Y * 2)
-  const points = values.map((item, index) => ({ ...item, x: x(index), y: y(item.value) }))
+  const points = values.map((item, index) => ({
+    ...item,
+    x: x(index),
+    y: y(item.value),
+  }))
   const linePath = points
-    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+    .map(
+      (point, index) =>
+        `${index === 0 ? "M" : "L"}${point.x.toFixed(1)},${point.y.toFixed(1)}`,
+    )
     .join(" ")
 
   return (
@@ -58,7 +67,7 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
           Una cifra necesita historia para tener contexto.
         </h2>
         <p className="mt-5 max-w-xl text-base leading-7 text-slate-600">
-          La serie conserva la misma definición de la vista actual. Elegí un período para llevar esa lectura al territorio sin cambiar de página.
+          La serie conserva la misma definición y el mismo release territorial de la vista actual. Elegí un período para llevar esa lectura al territorio.
         </p>
         <p className="mt-5 text-sm font-medium text-slate-800">
           {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
@@ -136,7 +145,10 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
           })}
         </svg>
 
-        <div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-6" aria-label="Elegir período">
+        <div
+          className="mt-3 grid grid-cols-4 gap-1.5 sm:grid-cols-8"
+          aria-label="Elegir período"
+        >
           {values.map(({ period, value }) => {
             const selected = period.id === state.period
             return (
@@ -151,8 +163,16 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
                 }
                 onClick={() => onChange({ period: period.id as PeriodId })}
               >
-                <span className="block truncate font-semibold">{period.label.replace("Demo ", "")}</span>
-                <span className={selected ? "mt-0.5 block text-white/65" : "mt-0.5 block text-slate-400"}>
+                <span className="block truncate font-semibold">
+                  {period.label.replace("Demo ", "")}
+                </span>
+                <span
+                  className={
+                    selected
+                      ? "mt-0.5 block text-white/65"
+                      : "mt-0.5 block text-slate-400"
+                  }
+                >
                   {formatPercent(value)}
                 </span>
               </button>

@@ -2,18 +2,23 @@ import { useEffect, useMemo, useState } from "react"
 import {
   concepts,
   estimands,
-  periods,
-  provinces,
   universes,
   type Concept,
   type Estimand,
+  type GeographyLevel,
   type PeriodId,
   type Universe,
-} from "@/data/activeRelease"
+} from "@/data/release"
+import {
+  defaultGeographyLevel,
+  releaseRegistry,
+  type ReleaseRegistry,
+} from "@/data/releaseRegistry"
 
 export type AtlasRoute = "/" | "/explorar"
 
 export interface AtlasState {
+  level: GeographyLevel
   period: PeriodId
   universe: Universe
   concept: Concept
@@ -21,16 +26,29 @@ export interface AtlasState {
   place: string | null
 }
 
+function releaseFor(registry: ReleaseRegistry, level: GeographyLevel) {
+  const release = registry.releases.get(level)
+  if (!release) throw new Error(`No release available for ${level}`)
+  return release
+}
+
+function latestPeriod(
+  level: GeographyLevel,
+  registry: ReleaseRegistry = releaseRegistry,
+): PeriodId {
+  const period = releaseFor(registry, level).metadata.periods.at(-1)
+  if (!period) throw new Error(`No periods available for ${level}`)
+  return period.id
+}
+
 export const defaultAtlasState: AtlasState = {
-  period: periods.at(-1)!.id,
+  level: defaultGeographyLevel,
+  period: latestPeriod(defaultGeographyLevel, releaseRegistry),
   universe: "persons",
   concept: "poverty",
   estimand: "fgt0",
   place: null,
 }
-
-const periodIds = new Set(periods.map((period) => period.id))
-const provinceIds = new Set(provinces.map((province) => province.id))
 
 function oneOf<T extends string>(
   value: string | null,
@@ -40,13 +58,58 @@ function oneOf<T extends string>(
   return value && allowed.includes(value as T) ? (value as T) : fallback
 }
 
+function supportedPeriod(
+  registry: ReleaseRegistry,
+  level: GeographyLevel,
+  value: string | null,
+): PeriodId {
+  const allowed = releaseFor(registry, level).metadata.periods.map((period) => period.id)
+  return value && allowed.includes(value) ? value : latestPeriod(level, registry)
+}
+
+function supportedPlace(
+  registry: ReleaseRegistry,
+  level: GeographyLevel,
+  value: string | null,
+): string | null {
+  if (!value) return null
+  return releaseFor(registry, level).geographies.some((geography) => geography.id === value)
+    ? value
+    : null
+}
+
+export function normalizeAtlasStateWithRegistry(
+  state: AtlasState,
+  registry: ReleaseRegistry,
+): AtlasState {
+  const level = registry.availableLevels.includes(state.level)
+    ? state.level
+    : registry.defaultLevel
+  return {
+    level,
+    period: supportedPeriod(registry, level, state.period),
+    universe: oneOf(state.universe, universes, defaultAtlasState.universe),
+    concept: oneOf(state.concept, concepts, defaultAtlasState.concept),
+    estimand: oneOf(state.estimand, estimands, defaultAtlasState.estimand),
+    place: supportedPlace(registry, level, state.place),
+  }
+}
+
+export function normalizeAtlasState(state: AtlasState): AtlasState {
+  return normalizeAtlasStateWithRegistry(state, releaseRegistry)
+}
+
 export function parseAtlasState(search: string): AtlasState {
   const params = new URLSearchParams(search)
+  const level = oneOf(
+    params.get("level"),
+    releaseRegistry.availableLevels,
+    defaultAtlasState.level,
+  )
 
-  return {
-    period: periodIds.has(params.get("period") as PeriodId)
-      ? (params.get("period") as PeriodId)
-      : defaultAtlasState.period,
+  return normalizeAtlasState({
+    level,
+    period: supportedPeriod(releaseRegistry, level, params.get("period")),
     universe: oneOf(
       params.get("universe"),
       universes,
@@ -58,19 +121,19 @@ export function parseAtlasState(search: string): AtlasState {
       estimands,
       defaultAtlasState.estimand,
     ),
-    place: provinceIds.has(params.get("place") ?? "")
-      ? params.get("place")
-      : null,
-  }
+    place: supportedPlace(releaseRegistry, level, params.get("place")),
+  })
 }
 
 export function serializeAtlasState(state: AtlasState) {
+  const normalized = normalizeAtlasState(state)
   const params = new URLSearchParams()
-  params.set("period", state.period)
-  params.set("universe", state.universe)
-  params.set("concept", state.concept)
-  params.set("estimand", state.estimand)
-  if (state.place) params.set("place", state.place)
+  params.set("level", normalized.level)
+  params.set("period", normalized.period)
+  params.set("universe", normalized.universe)
+  params.set("concept", normalized.concept)
+  params.set("estimand", normalized.estimand)
+  if (normalized.place) params.set("place", normalized.place)
   return params.toString()
 }
 
@@ -80,6 +143,27 @@ export function normalizeRoute(pathname: string): AtlasRoute {
 
 export function buildAtlasHref(route: AtlasRoute, state: AtlasState) {
   return `${route}?${serializeAtlasState(state)}`
+}
+
+export function applyAtlasPatchWithRegistry(
+  state: AtlasState,
+  patch: Partial<AtlasState>,
+  registry: ReleaseRegistry,
+): AtlasState {
+  const levelChanged = patch.level !== undefined && patch.level !== state.level
+  const candidate = {
+    ...state,
+    ...patch,
+    ...(levelChanged ? { place: null } : {}),
+  }
+  return normalizeAtlasStateWithRegistry(candidate, registry)
+}
+
+export function applyAtlasPatch(
+  state: AtlasState,
+  patch: Partial<AtlasState>,
+): AtlasState {
+  return applyAtlasPatchWithRegistry(state, patch, releaseRegistry)
 }
 
 export function useAtlasNavigation() {
@@ -100,12 +184,13 @@ export function useAtlasNavigation() {
     () => ({
       ...location,
       navigate(route: AtlasRoute, nextState = location.state) {
-        const href = buildAtlasHref(route, nextState)
+        const normalized = normalizeAtlasState(nextState)
+        const href = buildAtlasHref(route, normalized)
         window.history.pushState({}, "", href)
-        setLocation({ route, state: nextState })
+        setLocation({ route, state: normalized })
       },
       updateState(patch: Partial<AtlasState>) {
-        const nextState = { ...location.state, ...patch }
+        const nextState = applyAtlasPatch(location.state, patch)
         const href = buildAtlasHref(location.route, nextState)
         window.history.replaceState({}, "", href)
         setLocation({ ...location, state: nextState })

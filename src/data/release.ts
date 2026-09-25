@@ -19,6 +19,7 @@ export interface ReleaseGeography {
   name: string
   shortName: string
   provinceId?: string
+  provinceName?: string
 }
 
 export interface PovertyFact {

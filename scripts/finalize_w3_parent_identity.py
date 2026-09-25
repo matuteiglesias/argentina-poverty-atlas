@@ -13,8 +13,8 @@ MANIFEST_PATH = Path(os.environ.get("W3_MANIFEST", "mapbox/manifests/province-w3
 PROOF_PATH = Path(
     os.environ.get("W3_PROOF", "mapbox/manifests/province-w3-publication-proof.json")
 )
-EXPECTED_DATASET_ID = "arggeo.ign.administrative.province"
-EXPECTED_RELEASE_VERSION = "snapshot-20260826-b9fcf6f90f28"
+EXPECTED_DATASET_ID = os.environ.get("W3_EXPECTED_DATASET_ID", "arggeo.ign.administrative.province")
+EXPECTED_RELEASE_VERSION = os.environ.get("W3_EXPECTED_RELEASE_VERSION", "snapshot-20260826-b9fcf6f90f28")
 
 
 def scalar(row: pd.Series, name: str) -> str:
