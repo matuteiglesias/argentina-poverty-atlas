@@ -1,5 +1,9 @@
 import type { ReactNode } from "react"
-import { periods, labels, type PeriodId } from "@/data/activeRelease"
+import {
+  geographyLevelLabels,
+  getPeriodsForLevel,
+  releaseRegistry,
+} from "@/data/releaseRegistry"
 import type { AtlasState } from "@/lib/atlasState"
 
 interface SelectorProps {
@@ -27,22 +31,40 @@ const selectClass =
   "min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-950"
 
 export function Selectors({ state, onChange, compact = false }: SelectorProps) {
+  const periods = getPeriodsForLevel(state.level)
+
   return (
     <div
       className={
         compact
-          ? "grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          ? "grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
           : "grid gap-4"
       }
       aria-label="Controles del atlas"
     >
+      <Field label="Nivel">
+        <select
+          className={selectClass}
+          value={state.level}
+          onChange={(event) =>
+            onChange({
+              level: event.target.value as AtlasState["level"],
+            })
+          }
+        >
+          {releaseRegistry.availableLevels.map((level) => (
+            <option key={level} value={level}>
+              {geographyLevelLabels[level]}
+            </option>
+          ))}
+        </select>
+      </Field>
+
       <Field label="Período">
         <select
           className={selectClass}
           value={state.period}
-          onChange={(event) =>
-            onChange({ period: event.target.value as PeriodId })
-          }
+          onChange={(event) => onChange({ period: event.target.value })}
         >
           {periods.map((period) => (
             <option key={period.id} value={period.id}>
@@ -62,11 +84,8 @@ export function Selectors({ state, onChange, compact = false }: SelectorProps) {
             })
           }
         >
-          {Object.entries(labels.universes).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
+          <option value="persons">Personas</option>
+          <option value="households">Hogares</option>
         </select>
       </Field>
 
@@ -78,11 +97,8 @@ export function Selectors({ state, onChange, compact = false }: SelectorProps) {
             onChange({ concept: event.target.value as AtlasState["concept"] })
           }
         >
-          {Object.entries(labels.concepts).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
+          <option value="poverty">Pobreza</option>
+          <option value="indigence">Indigencia</option>
         </select>
       </Field>
 
@@ -94,11 +110,9 @@ export function Selectors({ state, onChange, compact = false }: SelectorProps) {
             onChange({ estimand: event.target.value as AtlasState["estimand"] })
           }
         >
-          {Object.entries(labels.estimands).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
+          <option value="fgt0">Incidencia</option>
+          <option value="fgt1">Brecha</option>
+          <option value="fgt2">Severidad</option>
         </select>
       </Field>
     </div>
