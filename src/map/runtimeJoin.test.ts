@@ -91,6 +91,7 @@ describe("W4 runtime choropleth join", () => {
     )
     const fixturePeriod = fixtureRelease.metadata.periods.at(-1)!.id
     const state = {
+      level: "province_2010",
       period: fixturePeriod,
       universe: "persons",
       concept: "poverty",
