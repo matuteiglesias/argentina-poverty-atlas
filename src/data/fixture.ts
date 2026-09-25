@@ -44,3 +44,6 @@ export function fixtureEstimate(
   }
   return estimate
 }
+
+import { fixtureRelease } from "@/data/fixtureRelease"
+export const activeRelease = fixtureRelease
