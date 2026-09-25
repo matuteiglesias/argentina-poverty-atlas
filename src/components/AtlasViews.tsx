@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { labels } from "@/data/activeRelease"
+import { labels } from "@/data/releaseCatalog"
 import {
   geographyLevelLabels,
   getFactForLevel,
