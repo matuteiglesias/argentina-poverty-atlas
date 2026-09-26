@@ -28,8 +28,6 @@ const transport: RuntimeGeometryTransport = {
   source_layer: "province_2010",
   style_url: "mapbox://styles/mapbox/standard",
   expected_geography_ids: fixtureRelease.geographies.map((item) => item.id),
-  minzoom: 0,
-  maxzoom: 9,
 }
 
 class MockMap implements MapRuntime {
