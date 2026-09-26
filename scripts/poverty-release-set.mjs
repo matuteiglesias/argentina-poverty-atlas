@@ -145,7 +145,6 @@ export async function verifyDetachedRelease(directory) {
   const spatialLevels = new Set()
   const aggregateIdentities = new Set()
   const periods = new Set()
-  const aggregateKey = `${releases[0].aggregate.level}|${releases[0].aggregate.id}`
   const releaseIds = new Set()
   const frameVintages = new Set()
   const universes = new Set()
@@ -335,6 +334,7 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
   const conceptKey = releases[0].concepts.join("|")
   const estimandKey = releases[0].estimands.join("|")
   const periods = new Set()
+  const aggregateKey = `${releases[0].aggregate.level}|${releases[0].aggregate.id}`
 
   for (const release of releases) {
     if (release.geographyLevel !== level) fail("release set mixes geography levels")
