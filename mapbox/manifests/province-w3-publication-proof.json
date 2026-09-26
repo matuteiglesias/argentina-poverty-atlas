@@ -1,74 +1,72 @@
 {
-  "schema": "argentina-poverty-atlas.mapbox-publication-proof/v1",
+  "schema": "argentina-poverty-atlas.mapbox-mts-publication-proof/v1",
   "transport_id": "province-w3",
-  "parent": {
-    "repository": "matuteiglesias/argentina-geography",
-    "commit_sha": "ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3",
-    "dataset_id": "arggeo.ign.administrative.province",
-    "release_version": "snapshot-20260826-b9fcf6f90f28",
-    "source_snapshot_sha256": "b9fcf6f90f28f1bdfcc713a47ad4ed63e2db0b000c4642611597d4ea8b897c55",
-    "canonical_geoparquet_sha256": "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b",
-    "display_geojson_sha256": "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3",
-    "feature_count": 24,
-    "geography_id": "ign:2026-08-26-b9fcf6f90f28:administrative:province"
+  "provider": "mapbox-tiling-service",
+  "tileset_id": "matuteiglesias2.atlas-prov-b9fcf6f90f28-mts",
+  "tileset_source": "mapbox://tileset-source/matuteiglesias2/atlas-prov-b9fcf6f90f28",
+  "source_layer": "province_2010",
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "province_2010": {
+        "source": "mapbox://tileset-source/matuteiglesias2/atlas-prov-b9fcf6f90f28",
+        "minzoom": 0,
+        "maxzoom": 9,
+        "features": {
+          "simplification": 4,
+          "attributes": {
+            "allowed_output": [
+              "geography_id"
+            ]
+          }
+        }
+      }
+    }
   },
-  "mapbox": {
-    "username": "matuteiglesias2",
-    "tileset_id": "matuteiglesias2.arg-prov-ign-b9fcf6f90f28",
-    "upload_id": null,
-    "upload_created": null,
-    "upload_modified": "2026-09-24T21:17:47.574038+00:00",
-    "upload_complete": true,
-    "upload_progress": 1,
-    "source_layer": "Argentina provinces IGN b9fcf6f90f28",
-    "tilejson_minzoom": 5,
-    "tilejson_maxzoom": 10,
-    "tilejson_vector_layers": [
+  "job": {
+    "id": null,
+    "stage": "recovered_existing_publish",
+    "warnings": [],
+    "recovered_existing_publish": true
+  },
+  "tilejson": {
+    "minzoom": 0,
+    "maxzoom": 9,
+    "vector_layers": [
       {
-        "description": "",
         "fields": {
-          "FNA": "String",
-          "GNA": "String",
-          "NAM": "String",
-          "geo_uid": "String",
-          "geography_id": "String",
-          "native_id": "String"
+          "geography_id": "string"
         },
-        "id": "Argentina provinces IGN b9fcf6f90f28",
+        "id": "province_2010",
         "maxzoom": 22,
         "minzoom": 0,
-        "source": "matuteiglesias2.arg-prov-ign-b9fcf6f90f28",
-        "source_name": "Argentina provinces IGN b9fcf6f90f28"
+        "source": "matuteiglesias2.atlas-prov-b9fcf6f90f28-mts",
+        "source_name": "Argentina provinces governed low-zoom"
       }
     ]
   },
-  "identity_proof": {
-    "expected_geography_ids": [
-      "02",
-      "06",
-      "10",
-      "14",
-      "18",
-      "22",
-      "26",
-      "30",
-      "34",
-      "38",
-      "42",
-      "46",
-      "50",
-      "54",
-      "58",
-      "62",
-      "66",
-      "70",
-      "74",
-      "78",
-      "82",
-      "86",
-      "90",
-      "94"
-    ],
+  "source_publication": {
+    "action": "reused",
+    "provider": {
+      "id": "mapbox://tileset-source/matuteiglesias2/atlas-prov-b9fcf6f90f28",
+      "files": 1,
+      "size": 45421185,
+      "size_nice": "45.4MB"
+    },
+    "local_artifact": {
+      "path": "/tmp/atlas-mts-province-yogg7kjw/province.ldgeojson",
+      "size_bytes": 45421185,
+      "sha256": "78a8b1587dca83e5cb3f584d8af8174083ef1376585bb7dc156837c62ae2be54",
+      "feature_count": 24,
+      "properties": [
+        "geography_id"
+      ]
+    }
+  },
+  "lowzoom_coverage_proof": {
+    "zoom": 2,
+    "requested_tile_count": 2,
+    "nonempty_tile_count": 2,
     "observed_geography_ids": [
       "02",
       "06",
@@ -95,55 +93,61 @@
       "90",
       "94"
     ],
+    "observed_expected_id_count": 24,
+    "expected_id_count": 24,
     "exact_id_set_match": true,
-    "recovery_mode": "existing_completed_upload_full_bounds_scan",
-    "steps": [
-      {
-        "zoom": 5,
-        "requested_tile_count": 75,
-        "nonempty_tile_count": 50,
-        "observed_geography_ids": [
-          "02",
-          "06",
-          "10",
-          "14",
-          "18",
-          "22",
-          "26",
-          "30",
-          "34",
-          "38",
-          "42",
-          "46",
-          "50",
-          "54",
-          "58",
-          "62",
-          "66",
-          "70",
-          "74",
-          "78",
-          "82",
-          "86",
-          "90",
-          "94"
-        ],
-        "cumulative_geography_id_count": 24
-      }
-    ]
+    "missing_geography_ids": []
+  },
+  "identity_proof": {
+    "zoom": 5,
+    "requested_tile_count": 8,
+    "nonempty_tile_count": 8,
+    "observed_geography_ids": [
+      "02",
+      "06",
+      "10",
+      "14",
+      "18",
+      "22",
+      "26",
+      "30",
+      "34",
+      "38",
+      "42",
+      "46",
+      "50",
+      "54",
+      "58",
+      "62",
+      "66",
+      "70",
+      "74",
+      "78",
+      "82",
+      "86",
+      "90",
+      "94"
+    ],
+    "observed_expected_id_count": 24,
+    "expected_id_count": 24,
+    "exact_id_set_match": true,
+    "missing_geography_ids": []
+  },
+  "expected_feature_count": 24,
+  "input_materialization": {
+    "expected_canonical_artifact_sha256": "3907e1e0e256f2ea768a66e14874266a576787fe724dad0d35eb9308ddc6dd7b",
+    "observed_materialized_artifact_sha256": "ac7299d49aec0bd02aba91ec67f78ddd8474bd23e8179ae0b3f8d674d4510257",
+    "canonical_artifact_sha256_match": false,
+    "expected_display_geojson_sha256": "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3",
+    "observed_display_geojson_sha256": "c49be97fef429c9bc473681e6677135bf19307da1141b1d7f6f12c50df366ed3",
+    "display_geojson_sha256_match": true,
+    "byte_drift_accepted": true,
+    "disposition": "PASS_WITH_WARNINGS"
   },
   "payload_policy": {
-    "upstream_property_fields": [
-      "FNA",
-      "GNA",
-      "NAM",
-      "geo_uid",
-      "geography_id",
-      "native_id"
-    ],
-    "poverty_values_embedded": false
+    "geometry_only": true,
+    "poverty_values_embedded": false,
+    "required_feature_property": "geography_id"
   },
-  "proved_at": "2026-09-24T21:17:47.574577+00:00",
-  "recovered_at": "2026-09-24T21:17:47.575148+00:00",
-  "recovery_note": "Recovered the completed immutable Aug-2026 Mapbox upload after the original workflow timed out; direct TileJSON/vector-tile proof confirms the immutable tileset. No mutable IGN re-download or provider rewrite was used."
+  "proved_at": "2026-09-26T19:52:24.683213+00:00"
 }

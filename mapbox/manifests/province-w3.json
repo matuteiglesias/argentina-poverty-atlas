@@ -63,11 +63,11 @@
   },
   "mapbox": {
     "style_url": "mapbox://styles/mapbox/standard",
-    "tileset_id": "matuteiglesias2.arg-prov-ign-b9fcf6f90f28",
-    "source_layer": "Argentina provinces IGN b9fcf6f90f28",
+    "tileset_id": "matuteiglesias2.atlas-prov-b9fcf6f90f28-mts",
+    "source_layer": "province_2010",
     "feature_id_property": "geography_id",
     "published_feature_count": 24,
-    "publication_time": "2026-09-24T21:17:47.574038+00:00",
+    "publication_time": "2026-09-26T19:52:24.683213+00:00",
     "publication_job_id": null
   },
   "payload_policy": {
