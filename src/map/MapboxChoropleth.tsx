@@ -197,7 +197,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const selectRef = useRef(onSelect)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
-  const [renderMode, setRenderMode] = useState<"standard" | "lite">("standard")
+  const [renderMode, setRenderMode] = useState<"standard" | "lite">("lite")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
@@ -576,7 +576,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
                   >
                     Reintentar mapa
                   </button>
-                  {renderMode === "standard" && (
+                  {renderMode === "standard" ? (
                     <button
                       type="button"
                       className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
@@ -585,7 +585,18 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
                         setRetryKey((value) => value + 1)
                       }}
                     >
-                      Probar modo liviano
+                      Volver al renderer liviano
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
+                      onClick={() => {
+                        setRenderMode("standard")
+                        setRetryKey((value) => value + 1)
+                      }}
+                    >
+                      Probar mapa base
                     </button>
                   )}
                 </div>
