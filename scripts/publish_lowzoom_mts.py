@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -12,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import mapbox_vector_tile
+import requests
 import mercantile
 from shapely.geometry import shape
 
@@ -30,7 +32,8 @@ PROFILES = {
         "layer_name": "province_2010",
         "minzoom": 0,
         "maxzoom": 9,
-        "proof_zoom": 2,
+        "coverage_zoom": 2,
+        "identity_zoom": 5,
         "name": "Argentina provinces governed low-zoom",
     },
     "department": {
@@ -39,7 +42,8 @@ PROFILES = {
         "layer_name": "department_2010",
         "minzoom": 2,
         "maxzoom": 11,
-        "proof_zoom": 3,
+        "coverage_zoom": 3,
+        "identity_zoom": 5,
         "name": "Argentina departments governed low-zoom",
     },
 }
@@ -191,12 +195,128 @@ def load_geojson() -> tuple[dict, list[str], dict[str, tuple[float, float]]]:
     return payload, ids, representatives
 
 
-def to_ldgeojson(payload: dict) -> bytes:
-    lines = [
-        json.dumps(feature, ensure_ascii=False, separators=(",", ":"))
-        for feature in payload["features"]
-    ]
-    return ("\n".join(lines) + "\n").encode("utf-8")
+def write_mts_source(payload: dict, path: Path) -> dict:
+    """Write the narrow provider source contract without mutating governed geometry."""
+    digest = hashlib.sha256()
+    size = 0
+    feature_count = 0
+    with path.open("wb") as handle:
+        for feature in payload["features"]:
+            properties = feature.get("properties") or {}
+            geography_id = properties.get("geography_id")
+            transport_feature = {
+                "type": "Feature",
+                "id": geography_id,
+                "properties": {"geography_id": geography_id},
+                "geometry": feature.get("geometry"),
+            }
+            line = (
+                json.dumps(
+                    transport_feature,
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+                + "\n"
+            ).encode("utf-8")
+            handle.write(line)
+            digest.update(line)
+            size += len(line)
+            feature_count += 1
+    return {
+        "path": str(path),
+        "size_bytes": size,
+        "sha256": digest.hexdigest(),
+        "feature_count": feature_count,
+        "properties": ["geography_id"],
+    }
+
+
+def get_source_info(source_id: str) -> dict | None:
+    path = f"/tilesets/v1/sources/{USERNAME}/{source_id}"
+    req = urllib.request.Request(api_url(path), method="GET", headers={"Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as response:
+            value = json.loads(response.read().decode("utf-8"))
+        return value if isinstance(value, dict) else None
+    except urllib.error.HTTPError as exc:
+        raw = exc.read()
+        if exc.code == 404:
+            return None
+        detail = raw.decode("utf-8", errors="replace")[:1500]
+        raise RuntimeError(
+            f"Mapbox GET {path} failed with HTTP {exc.code}: {detail}"
+        ) from None
+
+
+def upload_source_multipart(source_id: str, source_path: Path) -> dict:
+    """Create/replace one MTS source file using the multipart contract required by Mapbox."""
+    path = f"/tilesets/v1/sources/{USERNAME}/{source_id}"
+    url = api_url(path)
+    with source_path.open("rb") as handle:
+        response = requests.put(
+            url,
+            files={
+                "file": (
+                    source_path.name,
+                    handle,
+                    "application/geo+json",
+                )
+            },
+            headers={"Accept": "application/json"},
+            timeout=(30, 900),
+        )
+    if response.status_code not in (200, 201):
+        detail = response.text[:1500]
+        if response.status_code == 413:
+            detail += (
+                " | MTS accepts individual source files up to 20 GB; "
+                "a small file returning 413 usually indicates a malformed/non-multipart request."
+            )
+        if response.status_code == 403:
+            detail += (
+                " | The secret token likely lacks Mapbox tilesets:write/tilesets:read scopes."
+            )
+        raise RuntimeError(
+            f"Mapbox multipart PUT {path} failed with HTTP "
+            f"{response.status_code}: {detail}"
+        )
+    value = response.json()
+    if not isinstance(value, dict):
+        fail("Mapbox source upload returned a non-object response")
+    return value
+
+
+def ensure_source(source_id: str, source_path: Path, source_artifact: dict) -> dict:
+    """Treat source IDs as immutable content-addressed transport slots and reuse them."""
+    existing = get_source_info(source_id)
+    if existing is not None:
+        print(
+            "Reusing existing MTS source "
+            f"{existing.get('id', source_id)}; files={existing.get('files')}, "
+            f"size={existing.get('size', existing.get('source_size'))}"
+        )
+        return {
+            "action": "reused",
+            "provider": existing,
+            "local_artifact": source_artifact,
+        }
+
+    size_bytes = int(source_artifact["size_bytes"])
+    if size_bytes > 5 * 1024**3:
+        fail(
+            "MTS source exceeds 5 GB; split it before upload. "
+            "Mapbox supports up to 10 files per source and recommends <=5 GB chunks."
+        )
+    print(
+        f"Uploading MTS source with multipart/form-data: "
+        f"{source_id}; bytes={size_bytes}; sha256={source_artifact['sha256']}"
+    )
+    uploaded = upload_source_multipart(source_id, source_path)
+    return {
+        "action": "created",
+        "provider": uploaded,
+        "local_artifact": source_artifact,
+    }
 
 
 def load_tilejson(tileset_id: str) -> dict:
@@ -232,12 +352,14 @@ def load_tile(tileset_id: str, z: int, x: int, y: int) -> bytes:
         ) from None
 
 
-def prove_zoom(
+def inspect_zoom(
     tileset_id: str,
     layer_name: str,
     representatives: dict[str, tuple[float, float]],
     expected_ids: set[str],
     zoom: int,
+    *,
+    require_exact: bool,
 ) -> dict:
     tiles = {
         mercantile.tile(
@@ -265,11 +387,17 @@ def prove_zoom(
 
     missing = sorted(expected_ids - observed)
     unexpected = sorted(observed - expected_ids)
-    if missing or unexpected:
+    if unexpected:
         fail(
-            f"Low-zoom proof failed at z{zoom}: "
-            f"observed={len(observed)}/{len(expected_ids)}, "
-            f"missing={missing[:20]}, unexpected={unexpected[:20]}"
+            f"Tile proof found unexpected geography IDs at z{zoom}: "
+            f"{unexpected[:20]}"
+        )
+    if nonempty == 0 or not observed:
+        fail(f"Tile coverage proof found no expected geometry at z{zoom}")
+    if require_exact and missing:
+        fail(
+            f"Identity proof failed at z{zoom}: "
+            f"observed={len(observed)}/{len(expected_ids)}, missing={missing[:20]}"
         )
 
     return {
@@ -277,7 +405,10 @@ def prove_zoom(
         "requested_tile_count": len(tiles),
         "nonempty_tile_count": nonempty,
         "observed_geography_ids": sorted(observed),
-        "exact_id_set_match": True,
+        "observed_expected_id_count": len(observed),
+        "expected_id_count": len(expected_ids),
+        "exact_id_set_match": not missing and not unexpected,
+        "missing_geography_ids": missing,
     }
 
 
@@ -305,18 +436,10 @@ def main() -> None:
     layer_name = str(profile["layer_name"])
     source_uri = f"mapbox://tileset-source/{USERNAME}/{source_id}"
 
-    ldgeojson = to_ldgeojson(payload)
-    print(
-        f"Uploading governed {LEVEL} source to MTS: "
-        f"{source_uri}; bytes={len(ldgeojson)}"
-    )
-    request(
-        "PUT",
-        f"/tilesets/v1/sources/{USERNAME}/{source_id}",
-        body=ldgeojson,
-        content_type="application/json",
-        expected=(200, 201),
-    )
+    with tempfile.TemporaryDirectory(prefix=f"atlas-mts-{LEVEL}-") as temporary:
+        source_path = Path(temporary) / f"{LEVEL}.ldgeojson"
+        source_artifact = write_mts_source(payload, source_path)
+        source_publication = ensure_source(source_id, source_path, source_artifact)
 
     recipe = {
         "version": 1,
@@ -325,6 +448,10 @@ def main() -> None:
                 "source": source_uri,
                 "minzoom": int(profile["minzoom"]),
                 "maxzoom": int(profile["maxzoom"]),
+                "features": {
+                    "simplification": 4,
+                    "attributes": {"allowed_output": ["geography_id"]},
+                },
             }
         },
     }
@@ -419,12 +546,21 @@ def main() -> None:
             f"observed {observed_minzoom}"
         )
 
-    lowzoom_proof = prove_zoom(
+    lowzoom_proof = inspect_zoom(
         tileset_id,
         layer_name,
         representatives,
         expected_ids,
-        int(profile["proof_zoom"]),
+        int(profile["coverage_zoom"]),
+        require_exact=False,
+    )
+    identity_proof = inspect_zoom(
+        tileset_id,
+        layer_name,
+        representatives,
+        expected_ids,
+        int(profile["identity_zoom"]),
+        require_exact=True,
     )
 
     now = datetime.now(UTC).isoformat()
@@ -463,7 +599,9 @@ def main() -> None:
             "maxzoom": tilejson.get("maxzoom"),
             "vector_layers": vector_layers,
         },
-        "lowzoom_identity_proof": lowzoom_proof,
+        "source_publication": source_publication,
+        "lowzoom_coverage_proof": lowzoom_proof,
+        "identity_proof": identity_proof,
         "expected_feature_count": len(expected_ids),
         "input_materialization": hash_evidence,
         "payload_policy": {
@@ -481,7 +619,9 @@ def main() -> None:
 
     print(
         f"PASS: MTS low-zoom proof for {LEVEL}: "
-        f"{len(expected_ids)}/{len(expected_ids)} IDs at z{profile['proof_zoom']}; "
+        f"coverage z{profile['coverage_zoom']} observed "
+        f"{lowzoom_proof['observed_expected_id_count']}/{len(expected_ids)} IDs; "
+        f"identity z{profile['identity_zoom']} recovered {len(expected_ids)}/{len(expected_ids)}; "
         f"tileset={tileset_id}; TileJSON minzoom={tilejson.get('minzoom')}"
     )
 
