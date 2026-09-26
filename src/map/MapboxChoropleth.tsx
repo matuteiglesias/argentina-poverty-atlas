@@ -413,26 +413,17 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         })
         try {
           if (!map.getSource(MAP_SOURCE_ID)) {
-            const tilesetId = publishedTransport.mapbox_source.replace(/^mapbox:\/\//, "")
-            const isGovernedMts =
-              tilesetId.endsWith("-mts") &&
-              publishedTransport.minzoom !== null &&
-              publishedTransport.maxzoom !== null
-            const source: VectorSourceSpecification = isGovernedMts
-              ? {
-                  type: "vector",
-                  tiles: [
-                    `https://api.mapbox.com/v4/${tilesetId}/{z}/{x}/{y}.mvt?access_token=${encodeURIComponent(token)}`,
-                  ],
-                  minzoom: publishedTransport.minzoom!,
-                  maxzoom: publishedTransport.maxzoom!,
-                  promoteId: publishedTransport.feature_id_property,
-                }
-              : {
-                  type: "vector",
-                  url: publishedTransport.mapbox_source,
-                  promoteId: publishedTransport.feature_id_property,
-                }
+            const source: VectorSourceSpecification = {
+              type: "vector",
+              url: publishedTransport.mapbox_source,
+              ...(publishedTransport.minzoom !== null
+                ? { minzoom: publishedTransport.minzoom }
+                : {}),
+              ...(publishedTransport.maxzoom !== null
+                ? { maxzoom: publishedTransport.maxzoom }
+                : {}),
+              promoteId: publishedTransport.feature_id_property,
+            }
             map.addSource(MAP_SOURCE_ID, source)
           }
           runtime = createRuntimeJoin(
@@ -478,6 +469,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
               })
             }
           })
+          map.triggerRepaint()
         } catch (error: unknown) {
           runtime?.destroy()
           runtime = null
