@@ -6,6 +6,7 @@ on:
       - agent/mapbox-runtime-reset-diagnostics
     paths:
       - scripts/refresh_mapbox_tile_evidence.py
+      - scripts/verify_mapbox_public_token_tiles.py
       - .github/workflows/refresh-mapbox-diagnostic-evidence.yml
   workflow_dispatch:
 
@@ -22,6 +23,7 @@ jobs:
     timeout-minutes: 10
     env:
       MAPBOX_UPLOAD_TOKEN: ${{ secrets.MAPBOX_UPLOAD_TOKEN }}
+      VITE_MAPBOX_PUBLIC_TOKEN: ${{ secrets.VITE_MAPBOX_PUBLIC_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +43,12 @@ jobs:
           set -euo pipefail
           test -n "$MAPBOX_UPLOAD_TOKEN"
           python scripts/refresh_mapbox_tile_evidence.py
+
+      - name: Verify the same exact tiles with the public browser token
+        run: |
+          set -euo pipefail
+          test -n "$VITE_MAPBOX_PUBLIC_TOKEN"
+          python scripts/verify_mapbox_public_token_tiles.py
 
       - name: Commit diagnostic evidence
         run: |
