@@ -422,7 +422,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
               ? {
                   type: "vector",
                   tiles: [
-                    `https://api.mapbox.com/v4/${tilesetId}/{z}/{x}/{y}.vector.pbf?access_token=${encodeURIComponent(token)}`,
+                    `https://api.mapbox.com/v4/${tilesetId}/{z}/{x}/{y}.mvt?access_token=${encodeURIComponent(token)}`,
                   ],
                   minzoom: publishedTransport.minzoom!,
                   maxzoom: publishedTransport.maxzoom!,
