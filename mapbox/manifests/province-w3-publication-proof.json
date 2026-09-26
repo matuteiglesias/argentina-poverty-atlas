@@ -96,7 +96,25 @@
     "observed_expected_id_count": 24,
     "expected_id_count": 24,
     "exact_id_set_match": true,
-    "missing_geography_ids": []
+    "missing_geography_ids": [],
+    "nonempty_tiles": [
+      {
+        "z": 2,
+        "x": 1,
+        "y": 2,
+        "bytes": 3825,
+        "sha256": "a2cef242e412f54b8611e5d1af37ba7703de47ab5a878af18fc3fc372ddcf3a2",
+        "observed_geography_id_count": 24
+      },
+      {
+        "z": 2,
+        "x": 1,
+        "y": 3,
+        "bytes": 2501,
+        "sha256": "64bdc777dd1c742292aa6dc20f3a21dad2f713f8178ebda4b956e8d4bd83b8ce",
+        "observed_geography_id_count": 1
+      }
+    ]
   },
   "identity_proof": {
     "zoom": 5,

@@ -598,6 +598,24 @@
       "06408",
       "06644",
       "70028"
+    ],
+    "nonempty_tiles": [
+      {
+        "z": 3,
+        "x": 2,
+        "y": 4,
+        "bytes": 25573,
+        "sha256": "d47950bd6d7bf152bdceef15230af3fd40b04ed31f553163d089358dbc0f1e0e",
+        "observed_geography_id_count": 483
+      },
+      {
+        "z": 3,
+        "x": 2,
+        "y": 5,
+        "bytes": 2340,
+        "sha256": "45325ef0c4207a5802ebe9f7e5c04c627a9bf2471af60db648330e730b76961d",
+        "observed_geography_id_count": 34
+      }
     ]
   },
   "identity_proof": {

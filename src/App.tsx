@@ -6,9 +6,10 @@ import {
 } from "@/components/AtlasChrome"
 import { ExplorerPage } from "@/pages/ExplorerPage"
 import { HomePage } from "@/pages/HomePage"
+import { MapboxDiagnosticPage } from "@/pages/MapboxDiagnosticPage"
 import { useAtlasNavigation } from "@/lib/atlasState"
 
-export function App() {
+function AtlasApp() {
   const {
     route,
     state,
@@ -59,4 +60,11 @@ export function App() {
       <Footer level={state.level} />
     </div>
   )
+}
+
+export function App() {
+  if (window.location.pathname === "/diagnostics/mapbox") {
+    return <MapboxDiagnosticPage />
+  }
+  return <AtlasApp />
 }

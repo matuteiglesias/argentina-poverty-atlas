@@ -414,6 +414,7 @@ def inspect_zoom(
     }
     observed: set[str] = set()
     nonempty = 0
+    nonempty_tiles: list[dict[str, Any]] = []
     for tile in sorted(tiles, key=lambda item: (item.x, item.y)):
         raw = load_tile(tileset_id, tile.z, tile.x, tile.y)
         if not raw:
@@ -432,10 +433,23 @@ def inspect_zoom(
         layer = decoded.get(layer_name)
         if not isinstance(layer, dict):
             continue
+        tile_ids: set[str] = set()
         for feature in layer.get("features", []):
             geography_id = (feature.get("properties") or {}).get("geography_id")
             if geography_id is not None:
-                observed.add(str(geography_id))
+                normalized_id = str(geography_id)
+                observed.add(normalized_id)
+                tile_ids.add(normalized_id)
+        nonempty_tiles.append(
+            {
+                "z": tile.z,
+                "x": tile.x,
+                "y": tile.y,
+                "bytes": len(raw),
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "observed_geography_id_count": len(tile_ids),
+            }
+        )
 
     missing = sorted(expected_ids - observed)
     unexpected = sorted(observed - expected_ids)
@@ -456,6 +470,7 @@ def inspect_zoom(
         "zoom": zoom,
         "requested_tile_count": len(tiles),
         "nonempty_tile_count": nonempty,
+        "nonempty_tiles": nonempty_tiles,
         "observed_geography_ids": sorted(observed),
         "observed_expected_id_count": len(observed),
         "expected_id_count": len(expected_ids),
