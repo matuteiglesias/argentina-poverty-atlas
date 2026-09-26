@@ -538,40 +538,33 @@ def main() -> None:
         if has_expected_layer and existing_minzoom <= int(profile["minzoom"]):
             print(
                 f"Found already-published low-zoom MTS tileset {tileset_id}; "
-                "attempting proof-only recovery before any provider rewrite."
+                "running proof-only recovery with no provider rewrite."
             )
-            try:
-                recovered_lowzoom = inspect_zoom(
-                    tileset_id,
-                    layer_name,
-                    representatives,
-                    expected_ids,
-                    int(profile["coverage_zoom"]),
-                    require_exact=False,
-                )
-                recovered_identity = inspect_zoom(
-                    tileset_id,
-                    layer_name,
-                    representatives,
-                    expected_ids,
-                    int(profile["identity_zoom"]),
-                    require_exact=True,
-                )
-            except RuntimeError as exc:
-                print(
-                    "Existing tileset did not satisfy the current proof contract; "
-                    f"republishing recipe: {exc}"
-                )
-            else:
-                recovered_existing = True
-                tilejson = existing_tilejson
-                vector_layers = existing_layers
-                lowzoom_proof = recovered_lowzoom
-                identity_proof = recovered_identity
-                job = {
-                    "stage": "recovered_existing_publish",
-                    "warnings": [],
-                }
+            recovered_lowzoom = inspect_zoom(
+                tileset_id,
+                layer_name,
+                representatives,
+                expected_ids,
+                int(profile["coverage_zoom"]),
+                require_exact=False,
+            )
+            recovered_identity = inspect_zoom(
+                tileset_id,
+                layer_name,
+                representatives,
+                expected_ids,
+                int(profile["identity_zoom"]),
+                require_exact=True,
+            )
+            recovered_existing = True
+            tilejson = existing_tilejson
+            vector_layers = existing_layers
+            lowzoom_proof = recovered_lowzoom
+            identity_proof = recovered_identity
+            job = {
+                "stage": "recovered_existing_publish",
+                "warnings": [],
+            }
 
     if not recovered_existing:
         status, raw = request(
