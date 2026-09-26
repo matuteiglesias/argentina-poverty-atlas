@@ -1,6 +1,5 @@
 import type { GeographyLevel } from "@/data/release"
 import {
-  geometryTransportManifest,
   geometryTransportManifestForLevel,
   isPublishedGeometryTransport,
   type GeometryTransportManifest,
