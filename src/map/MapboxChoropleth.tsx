@@ -1,7 +1,7 @@
 import "mapbox-gl/dist/mapbox-gl.css"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import type { AnyLayer, Map as MapboxMap, MapLayerMouseEvent } from "mapbox-gl"
+import type { AnyLayer, Map as MapboxMap, MapLayerMouseEvent, StyleSpecification } from "mapbox-gl"
 import { Card } from "@/components/ui/card"
 import { labels } from "@/data/releaseCatalog"
 import {
@@ -38,9 +38,25 @@ import { formatPercent } from "@/lib/utils"
 const MAPBOX_GL_VERSION = "3.29.0"
 const MAP_LOAD_TIMEOUT_MS = 15_000
 
+const LIGHTWEIGHT_STYLE: StyleSpecification = {
+  version: 8,
+  name: "Atlas lightweight",
+  sources: {},
+  layers: [
+    {
+      id: "atlas-background",
+      type: "background",
+      paint: { "background-color": "#eef3f8" },
+    },
+  ],
+}
+
 type RuntimeFeature = NonNullable<MapLayerEvent["features"]>[number]
 
-function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
+function createMapRuntimeAdapter(
+  map: MapboxMap,
+  useStandardSlots = true,
+): MapRuntime {
   const handlers = new Map<
     MapLayerEventHandler,
     (event: MapLayerMouseEvent) => void
@@ -64,7 +80,14 @@ function createMapRuntimeAdapter(map: MapboxMap): MapRuntime {
 
   return {
     getLayer: (id) => map.getLayer(id),
-    addLayer: (layer) => map.addLayer(layer as AnyLayer),
+    addLayer: (layer) => {
+      const nextLayer = useStandardSlots
+        ? layer
+        : Object.fromEntries(
+            Object.entries(layer).filter(([key]) => key !== "slot"),
+          )
+      map.addLayer(nextLayer as AnyLayer)
+    },
     setPaintProperty: (layerId, property, value) =>
       setPaintProperty(layerId, property, value),
     setFeatureState: (target, state) => map.setFeatureState(target, state),
@@ -173,6 +196,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const selectRef = useRef(onSelect)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
+  const [renderMode, setRenderMode] = useState<"standard" | "lite">("standard")
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -288,19 +312,27 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       setStatus({ kind: "loading", message: "Inicializando WebGL y el estilo base…" })
       map = new mapboxgl.Map({
         container,
-        style: publishedTransport.style_url,
-        config: {
-          basemap: {
-            show3dObjects: false,
-            showPointOfInterestLabels: false,
-            showTransitLabels: false,
-          },
-        },
+        style:
+          renderMode === "lite"
+            ? LIGHTWEIGHT_STYLE
+            : publishedTransport.style_url,
+        ...(renderMode === "standard"
+          ? {
+              config: {
+                basemap: {
+                  show3dObjects: false,
+                  showPointOfInterestLabels: false,
+                  showTransitLabels: false,
+                },
+              },
+            }
+          : {}),
         center: [-64, -38],
         zoom: state.level === "department_2010" ? 3.1 : 2.8,
         minZoom: 2,
         attributionControl: true,
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
+        renderWorldCopies: false,
       })
       map.on("error", (event) => {
         const detail =
@@ -310,17 +342,44 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         failMap(detail)
       })
       map.on("webglcontextlost", () => {
-        failMap(
-          "El navegador perdió el contexto WebGL. Esto suele ocurrir por presión de GPU o demasiados contextos gráficos activos; cerrá pestañas con mapas/WebGL y reintentá",
-        )
+        if (disposed) return
+        ready = false
+        if (loadTimeout !== null) {
+          window.clearTimeout(loadTimeout)
+          loadTimeout = null
+        }
+        setStatus({
+          kind: "error",
+          message:
+            "El navegador perdió el contexto WebGL. La red y la unión de datos ya habían avanzado; probá el modo liviano o liberá otras pestañas WebGL antes de reintentar. La tabla territorial sigue disponible.",
+        })
       })
       map.on("webglcontextrestored", () => {
-        if (disposed || ready) return
+        if (disposed || !map) return
         setStatus({
           kind: "loading",
-          message: "El contexto WebGL se restauró; esperando que Mapbox complete el estilo…",
+          message: "El contexto WebGL se restauró; reanudando el mapa…",
         })
-        map?.triggerRepaint()
+        window.requestAnimationFrame(() => {
+          if (disposed || !map) return
+          try {
+            map.resize()
+            runtime?.applyState(stateRef.current)
+            map.triggerRepaint()
+            ready = true
+            setStatus({
+              kind: "ready",
+              message: "Mapa listo",
+              transport: publishedTransport,
+            })
+          } catch (error: unknown) {
+            failMap(
+              error instanceof Error
+                ? `No se pudo reanudar el mapa: ${error.message}`
+                : "No se pudo reanudar el mapa",
+            )
+          }
+        })
       })
 
       loadTimeout = window.setTimeout(() => {
@@ -349,11 +408,12 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             map.addSource(MAP_SOURCE_ID, {
               type: "vector",
               url: publishedTransport.mapbox_source,
+              minzoom: 0,
               promoteId: publishedTransport.feature_id_property,
             })
           }
           runtime = createRuntimeJoin(
-            createMapRuntimeAdapter(map),
+            createMapRuntimeAdapter(map, renderMode === "standard"),
             publishedTransport,
             factSource,
             (geographyId) => selectRef.current(geographyId),
@@ -393,7 +453,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       runtimeRef.current = null
       map?.remove()
     }
-  }, [factSource, manifest, retryKey, state.level, transport])
+  }, [factSource, manifest, renderMode, retryKey, state.level, transport])
 
   return (
     <Card className="overflow-hidden">
@@ -458,13 +518,27 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-600">{status.message}</p>
               {status.kind === "error" && (
-                <button
-                  type="button"
-                  className="mt-4 inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
-                  onClick={() => setRetryKey((value) => value + 1)}
-                >
-                  Reintentar mapa
-                </button>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <button
+                    type="button"
+                    className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
+                    onClick={() => setRetryKey((value) => value + 1)}
+                  >
+                    Reintentar mapa
+                  </button>
+                  {renderMode === "standard" && (
+                    <button
+                      type="button"
+                      className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
+                      onClick={() => {
+                        setRenderMode("lite")
+                        setRetryKey((value) => value + 1)
+                      }}
+                    >
+                      Probar modo liviano
+                    </button>
+                  )}
+                </div>
               )}
               {status.kind === "blocked" && (
                 <a
@@ -487,6 +561,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         <span>Mapbox GL JS {MAPBOX_GL_VERSION}</span>
         <span>join: feature-state/geography_id</span>
         <span>transporte: {manifest.status}</span>
+        <span>renderer: {renderMode}</span>
         {status.kind === "ready" && (
           <span>geografía: {status.transport.geography_release_id}</span>
         )}
