@@ -91,12 +91,16 @@ def input_hash_evidence(manifest: dict) -> dict:
         if isinstance(expected_display, str)
         else None
     )
-    drift_accepted = artifact_match is False or display_match is False
+    if display_match is False:
+        fail(
+            "Provider-facing display GeoJSON SHA drifted from the pinned transport artifact: "
+            f"expected {expected_display}, observed {observed_display}"
+        )
+    drift_accepted = artifact_match is False
     if drift_accepted:
         print(
-            "WARNING: publication input bytes drifted from the pinned canonical hashes; "
-            "continuing because the workflow already passed strict source, identity and "
-            "geometry semantic gates."
+            "WARNING: canonical Parquet bytes drifted, but the pinned source semantics and "
+            "provider-facing display GeoJSON are unchanged; continuing with PASS_WITH_WARNINGS."
         )
 
     return {
