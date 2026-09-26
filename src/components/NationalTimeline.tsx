@@ -1,6 +1,8 @@
+import { aggregateGeography } from "@/data/release"
 import { labels } from "@/data/releaseCatalog"
 import {
   getPeriodsForLevel,
+  getReleaseForLevel,
   requireEstimateForLevel,
 } from "@/data/releaseRegistry"
 import type { PeriodId } from "@/data/release"
@@ -19,11 +21,12 @@ const PAD_Y = 34
 
 export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
   const periods = getPeriodsForLevel(state.level)
+  const aggregate = aggregateGeography(getReleaseForLevel(state.level).metadata)
   const values = periods.map((period) => ({
     period,
     value: requireEstimateForLevel(
       state.level,
-      "ARG",
+      aggregate.id,
       period.id,
       state.universe,
       state.concept,
@@ -58,7 +61,7 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
     >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-900">
-          Evolución nacional
+          Evolución · {aggregate.name}
         </p>
         <h2
           id="national-series-title"
@@ -79,7 +82,7 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
           className="h-auto w-full overflow-visible"
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
-          aria-label="Serie nacional por período"
+          aria-label={`Serie de ${aggregate.name} por período`}
         >
           {[0, 0.5, 1].map((fraction) => {
             const value = max - (max - min) * fraction
