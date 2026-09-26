@@ -1,0 +1,122 @@
+[
+  {
+    "id": "02",
+    "name": "Ciudad Autónoma de Buenos Aires",
+    "shortName": "Ciudad Autónoma de Buenos Aires"
+  },
+  {
+    "id": "06",
+    "name": "Buenos Aires",
+    "shortName": "Buenos Aires"
+  },
+  {
+    "id": "10",
+    "name": "Catamarca",
+    "shortName": "Catamarca"
+  },
+  {
+    "id": "14",
+    "name": "Córdoba",
+    "shortName": "Córdoba"
+  },
+  {
+    "id": "18",
+    "name": "Corrientes",
+    "shortName": "Corrientes"
+  },
+  {
+    "id": "22",
+    "name": "Chaco",
+    "shortName": "Chaco"
+  },
+  {
+    "id": "26",
+    "name": "Chubut",
+    "shortName": "Chubut"
+  },
+  {
+    "id": "30",
+    "name": "Entre Ríos",
+    "shortName": "Entre Ríos"
+  },
+  {
+    "id": "34",
+    "name": "Formosa",
+    "shortName": "Formosa"
+  },
+  {
+    "id": "38",
+    "name": "Jujuy",
+    "shortName": "Jujuy"
+  },
+  {
+    "id": "42",
+    "name": "La Pampa",
+    "shortName": "La Pampa"
+  },
+  {
+    "id": "46",
+    "name": "La Rioja",
+    "shortName": "La Rioja"
+  },
+  {
+    "id": "50",
+    "name": "Mendoza",
+    "shortName": "Mendoza"
+  },
+  {
+    "id": "54",
+    "name": "Misiones",
+    "shortName": "Misiones"
+  },
+  {
+    "id": "58",
+    "name": "Neuquén",
+    "shortName": "Neuquén"
+  },
+  {
+    "id": "62",
+    "name": "Río Negro",
+    "shortName": "Río Negro"
+  },
+  {
+    "id": "66",
+    "name": "Salta",
+    "shortName": "Salta"
+  },
+  {
+    "id": "70",
+    "name": "San Juan",
+    "shortName": "San Juan"
+  },
+  {
+    "id": "74",
+    "name": "San Luis",
+    "shortName": "San Luis"
+  },
+  {
+    "id": "78",
+    "name": "Santa Cruz",
+    "shortName": "Santa Cruz"
+  },
+  {
+    "id": "82",
+    "name": "Santa Fe",
+    "shortName": "Santa Fe"
+  },
+  {
+    "id": "86",
+    "name": "Santiago del Estero",
+    "shortName": "Santiago del Estero"
+  },
+  {
+    "id": "90",
+    "name": "Tucumán",
+    "shortName": "Tucumán"
+  },
+  {
+    "id": "94",
+    "name": "Tierra del Fuego, Antártida e Islas del Atlántico Sur",
+    "shortName": "Tierra del Fuego, Antártida e Islas del Atlántico Sur"
+  }
+]
