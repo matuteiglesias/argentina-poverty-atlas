@@ -1,12 +1,14 @@
 export const universes = ["persons", "households"] as const
 export const concepts = ["poverty", "indigence"] as const
 export const estimands = ["fgt0", "fgt1", "fgt2"] as const
-export const geographyLevels = ["province_2010", "department_2010"] as const
+export const geographyLevels = ["province_2010", "department_2010", "eph_agglomerate"] as const
+export const aggregateGeographyLevels = ["national", "eph_coverage"] as const
 
 export type Universe = (typeof universes)[number]
 export type Concept = (typeof concepts)[number]
 export type Estimand = (typeof estimands)[number]
 export type GeographyLevel = (typeof geographyLevels)[number]
+export type AggregateGeographyLevel = (typeof aggregateGeographyLevels)[number]
 export type PeriodId = string
 
 export interface ReleasePeriod {
@@ -27,7 +29,7 @@ export interface PovertyFact {
   universe: Universe
   concept: Concept
   estimand: Estimand
-  geography_level: GeographyLevel | "national"
+  geography_level: GeographyLevel | AggregateGeographyLevel
   geography_id: string
   estimate: number
   uncertainty_status: "not_supplied" | string
@@ -51,7 +53,9 @@ export interface AtlasReleaseMetadata {
   concepts: Concept[]
   estimands: Estimand[]
   geography_level: GeographyLevel
-  national_geography: { id: "ARG"; name: string }
+  aggregate_geography?: { level: AggregateGeographyLevel; id: string; name: string }
+  /** Legacy compatibility for province/department fixture descriptors. */
+  national_geography?: { id: "ARG"; name: string }
   parents: Record<string, string>
   comparability: Record<string, string>
 }
@@ -68,10 +72,25 @@ const geographyProfiles: Record<
 > = {
   province_2010: { pattern: /^\d{2}$/, expectedCount: 24 },
   department_2010: { pattern: /^\d{5}$/, expectedCount: 525 },
+  eph_agglomerate: { pattern: /^\d{2}$/, expectedCount: 32 },
 }
 
 export function geographyProfile(level: GeographyLevel) {
   return geographyProfiles[level]
+}
+
+
+export function aggregateGeography(metadata: AtlasReleaseMetadata) {
+  if (metadata.aggregate_geography) return metadata.aggregate_geography
+  assert(
+    metadata.national_geography?.id === "ARG",
+    "release requires aggregate_geography or legacy national_geography",
+  )
+  return {
+    level: "national" as const,
+    id: "ARG",
+    name: metadata.national_geography.name,
+  }
 }
 
 export function factKey(fact: PovertyFact) {
@@ -97,7 +116,12 @@ export function validateAtlasRelease(release: AtlasRelease) {
     `unsupported geography level ${metadata.geography_level}`,
   )
   assert(metadata.periods.length > 0, "at least one period is required")
-  assert(metadata.national_geography.id === "ARG", "national geography must be ARG")
+  const aggregate = aggregateGeography(metadata)
+  assert(
+    aggregateGeographyLevels.includes(aggregate.level),
+    `unsupported aggregate geography level ${aggregate.level}`,
+  )
+  assert(Boolean(aggregate.id), "aggregate geography ID is required")
 
   const periodIds = new Set(metadata.periods.map((period) => period.id))
   assert(periodIds.size === metadata.periods.length, "period IDs must be unique")
@@ -122,8 +146,11 @@ export function validateAtlasRelease(release: AtlasRelease) {
       `estimate outside [0,1] for ${factKey(fact)}`,
     )
 
-    if (fact.geography_level === "national") {
-      assert(fact.geography_id === "ARG", "national facts must use geography_id ARG")
+    if (fact.geography_level === aggregate.level) {
+      assert(
+        fact.geography_id === aggregate.id,
+        `aggregate facts must use geography_id ${aggregate.id}`,
+      )
     } else {
       assert(
         fact.geography_level === metadata.geography_level,
