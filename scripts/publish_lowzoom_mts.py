@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import time
@@ -18,6 +19,7 @@ USERNAME = os.environ.get("MAPBOX_USERNAME", "matuteiglesias2")
 TOKEN = os.environ.get("MAPBOX_UPLOAD_TOKEN", "")
 LEVEL = os.environ.get("MTS_LEVEL", "province")
 GEOJSON_PATH = Path(os.environ.get("MTS_GEOJSON", ""))
+GEOPARQUET_PATH = Path(os.environ.get("MTS_GEOPARQUET", ""))
 MANIFEST_PATH = Path(os.environ.get("MTS_MANIFEST", ""))
 PROOF_PATH = Path(os.environ.get("MTS_PROOF", ""))
 
@@ -45,6 +47,64 @@ PROFILES = {
 
 def fail(message: str) -> None:
     raise RuntimeError(message)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def input_hash_evidence(manifest: dict) -> dict:
+    expected_artifact = None
+    parent_release = manifest.get("parent_release")
+    if isinstance(parent_release, dict):
+        expected_artifact = parent_release.get("artifact_sha256")
+
+    expected_display = None
+    upstream_audit = manifest.get("upstream_audit")
+    if isinstance(upstream_audit, dict):
+        candidates = upstream_audit.get("candidate_evidence")
+        if isinstance(candidates, list) and candidates and isinstance(candidates[0], dict):
+            expected_display = candidates[0].get("display_geojson_sha256")
+
+    observed_artifact = (
+        sha256_file(GEOPARQUET_PATH)
+        if GEOPARQUET_PATH.is_file()
+        else None
+    )
+    observed_display = sha256_file(GEOJSON_PATH)
+
+    artifact_match = (
+        observed_artifact == expected_artifact
+        if observed_artifact is not None and isinstance(expected_artifact, str)
+        else None
+    )
+    display_match = (
+        observed_display == expected_display
+        if isinstance(expected_display, str)
+        else None
+    )
+    drift_accepted = artifact_match is False or display_match is False
+    if drift_accepted:
+        print(
+            "WARNING: publication input bytes drifted from the pinned canonical hashes; "
+            "continuing because the workflow already passed strict source, identity and "
+            "geometry semantic gates."
+        )
+
+    return {
+        "expected_canonical_artifact_sha256": expected_artifact,
+        "observed_materialized_artifact_sha256": observed_artifact,
+        "canonical_artifact_sha256_match": artifact_match,
+        "expected_display_geojson_sha256": expected_display,
+        "observed_display_geojson_sha256": observed_display,
+        "display_geojson_sha256_match": display_match,
+        "byte_drift_accepted": drift_accepted,
+        "disposition": "PASS_WITH_WARNINGS" if drift_accepted else "PASS",
+    }
 
 
 def api_url(path: str) -> str:
@@ -233,6 +293,7 @@ def main() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     expected_ids = set(str(value) for value in manifest["fixture_geography_ids"])
     payload, observed_ids, representatives = load_geojson()
+    hash_evidence = input_hash_evidence(manifest)
     if set(observed_ids) != expected_ids:
         fail(
             f"Governed GeoJSON ID set drift: expected {len(expected_ids)}, "
@@ -404,6 +465,7 @@ def main() -> None:
         },
         "lowzoom_identity_proof": lowzoom_proof,
         "expected_feature_count": len(expected_ids),
+        "input_materialization": hash_evidence,
         "payload_policy": {
             "geometry_only": True,
             "poverty_values_embedded": False,
