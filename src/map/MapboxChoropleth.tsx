@@ -424,41 +424,54 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             },
           )
 
+          const expectedIds = new Set(publishedTransport.expected_geography_ids)
           const tryReady = (failIfEmpty = false) => {
             if (disposed || !map || !runtime || ready) return
             if (!map.isSourceLoaded(MAP_SOURCE_ID)) return
 
-            const features = map.querySourceFeatures(MAP_SOURCE_ID, {
-              sourceLayer: publishedTransport.source_layer,
-            })
-            const geographyIds = loadedGeographyIds(
-              features as unknown as { properties?: Record<string, unknown> }[],
-              publishedTransport.feature_id_property,
-            )
-            setLoadedFeatureCount(geographyIds.length)
+            try {
+              const features = map.querySourceFeatures(MAP_SOURCE_ID, {
+                sourceLayer: publishedTransport.source_layer,
+              })
+              const geographyIds = loadedGeographyIds(
+                features as unknown as { properties?: Record<string, unknown> }[],
+                publishedTransport.feature_id_property,
+              )
+              const governedIds = geographyIds.filter((id) => expectedIds.has(id))
+              setLoadedFeatureCount(governedIds.length)
 
-            if (geographyIds.length === 0) {
-              if (failIfEmpty) {
-                failMap(
-                  "Mapbox terminó de cargar la fuente, pero no expuso geometrías del source-layer publicado",
-                )
+              if (governedIds.length === 0) {
+                if (failIfEmpty) {
+                  failMap(
+                    "Mapbox terminó de cargar la fuente, pero no expuso geography_id válidos del source-layer publicado",
+                  )
+                }
+                return
               }
-              return
-            }
 
-            runtimeRef.current = runtime
-            runtime.applyState(stateRef.current)
-            map.triggerRepaint()
-            ready = true
-            if (loadTimeout !== null) {
-              window.clearTimeout(loadTimeout)
-              loadTimeout = null
+              runtimeRef.current = runtime
+              runtime.applyState(stateRef.current)
+              map.triggerRepaint()
+              ready = true
+              if (loadTimeout !== null) {
+                window.clearTimeout(loadTimeout)
+                loadTimeout = null
+              }
+              setStatus({
+                kind: "ready",
+                message: "Mapa listo",
+                transport: publishedTransport,
+              })
+            } catch (error: unknown) {
+              runtimeRef.current = null
+              runtime?.destroy()
+              runtime = null
+              failMap(
+                error instanceof Error
+                  ? `Falló la activación del mapa: ${error.message}`
+                  : "Falló la activación del mapa por un error desconocido",
+              )
             }
-            setStatus({
-              kind: "ready",
-              message: "Mapa listo",
-              transport: publishedTransport,
-            })
           }
 
           map.on("sourcedata", (event) => {
