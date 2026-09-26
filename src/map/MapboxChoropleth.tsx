@@ -263,6 +263,19 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     let disposed = false
     let map: MapboxMap | null = null
     let runtime: RuntimeJoin | null = null
+    let loadTimeout: ReturnType<typeof window.setTimeout> | null = null
+
+    const failMap = (message: string) => {
+      if (disposed || runtime) return
+      if (loadTimeout !== null) {
+        window.clearTimeout(loadTimeout)
+        loadTimeout = null
+      }
+      setStatus({
+        kind: "error",
+        message: `${message}. La tabla territorial sigue disponible.`,
+      })
+    }
 
     async function mountMap() {
       const mapboxgl = (await import("mapbox-gl")).default
@@ -277,6 +290,20 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         attributionControl: true,
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
       })
+      map.on("error", (event) => {
+        const detail =
+          event.error instanceof Error
+            ? event.error.message
+            : "Mapbox rechazó o no pudo cargar el estilo/tileset"
+        failMap(detail)
+      })
+
+      loadTimeout = window.setTimeout(() => {
+        failMap(
+          "Mapbox no terminó de cargar el estilo en 15 segundos; revisá el token público, sus scopes y las URL permitidas",
+        )
+      }, 15_000)
+
       map.scrollZoom.disable()
       map.dragRotate.disable()
       map.touchZoomRotate.disableRotation()
@@ -305,20 +332,21 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         )
         runtimeRef.current = runtime
         runtime.applyState(stateRef.current)
+        if (loadTimeout !== null) {
+          window.clearTimeout(loadTimeout)
+          loadTimeout = null
+        }
         setStatus({ kind: "ready", message: "Mapa listo", transport: publishedTransport })
       })
     }
 
     void mountMap().catch((error: unknown) => {
-      if (disposed) return
-      setStatus({
-        kind: "error",
-        message: `${error instanceof Error ? error.message : "Error desconocido"}. La tabla territorial sigue disponible.`,
-      })
+      failMap(error instanceof Error ? error.message : "Error desconocido")
     })
 
     return () => {
       disposed = true
+      if (loadTimeout !== null) window.clearTimeout(loadTimeout)
       runtime?.destroy()
       runtimeRef.current = null
       map?.remove()
