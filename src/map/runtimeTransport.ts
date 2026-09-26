@@ -1,6 +1,5 @@
 import type { GeographyLevel } from "@/data/release"
 import {
-  geometryTransportManifest,
   geometryTransportManifestForLevel,
   isPublishedGeometryTransport,
   type GeometryTransportManifest,
@@ -50,14 +49,25 @@ export function runtimeTransportFromManifest(
   }
 }
 
+const runtimeTransportByLevel: Record<
+  GeographyLevel,
+  RuntimeGeometryTransport | null
+> = {
+  province_2010: runtimeTransportFromManifest(
+    geometryTransportManifestForLevel("province_2010"),
+    "province_2010",
+  ),
+  department_2010: runtimeTransportFromManifest(
+    geometryTransportManifestForLevel("department_2010"),
+    "department_2010",
+  ),
+}
+
 export function runtimeGeometryTransportForLevel(
   level: GeographyLevel,
 ): RuntimeGeometryTransport | null {
-  return runtimeTransportFromManifest(geometryTransportManifestForLevel(level), level)
+  return runtimeTransportByLevel[level]
 }
 
 // Backwards-compatible province seam for the editorial homepage.
-export const runtimeGeometryTransport = runtimeTransportFromManifest(
-  geometryTransportManifest,
-  "province_2010",
-)
+export const runtimeGeometryTransport = runtimeTransportByLevel.province_2010
