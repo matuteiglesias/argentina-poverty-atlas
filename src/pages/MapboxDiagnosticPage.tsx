@@ -73,11 +73,12 @@ export function MapboxDiagnosticPage() {
       }))
       return
     }
+    const diagnosticTile = tile
 
     let disposed = false
     let map: MapboxMap | null = null
 
-    void fetch(vectorTileUrl(fixture.tileset_id, tile, token), {
+    void fetch(vectorTileUrl(fixture.tileset_id, diagnosticTile, token), {
       headers: { Accept: "application/vnd.mapbox-vector-tile" },
     })
       .then(async (response) => {
@@ -107,10 +108,10 @@ export function MapboxDiagnosticPage() {
       map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: MINIMAL_STYLE,
-        center: tileCenter(tile.z, tile.x, tile.y),
-        zoom: tile.z,
-        minZoom: Math.max(0, tile.z - 1),
-        maxZoom: tile.z + 2,
+        center: tileCenter(diagnosticTile.z, diagnosticTile.x, diagnosticTile.y),
+        zoom: diagnosticTile.z,
+        minZoom: Math.max(0, diagnosticTile.z - 1),
+        maxZoom: diagnosticTile.z + 2,
         attributionControl: false,
         renderWorldCopies: false,
       })
