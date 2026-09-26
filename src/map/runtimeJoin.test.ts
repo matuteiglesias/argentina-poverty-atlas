@@ -105,14 +105,15 @@ describe("W4 runtime choropleth join", () => {
     expect([...map.layers.keys()]).toEqual([
       MAP_LAYERS.fill,
       MAP_LAYERS.boundary,
-      MAP_LAYERS.hover,
-      MAP_LAYERS.selected,
     ])
-    expect(map.stateUpdates).toHaveLength(24)
-    const buenosAires = map.stateUpdates.find((update) => update.target.id === "06")
+    expect(map.stateUpdates).toHaveLength(0)
+    const fillUpdate = map.paintUpdates.find(
+      (update) => update.layer === MAP_LAYERS.fill && update.property === "fill-color",
+    )
+    expect(fillUpdate).toBeDefined()
+    expect(JSON.stringify(fillUpdate?.value)).toContain('"06"')
     const sourceFact = getFact("06", state.period, state.universe, state.concept, state.estimand)
-    expect(buenosAires?.state.estimate).toBe(sourceFact?.estimate)
-    expect(buenosAires?.state.selected).toBe(true)
+    expect(sourceFact?.estimate).toBeTypeOf("number")
 
     map.emit("click", MAP_LAYERS.fill, {
       features: [{ id: "06", properties: { geography_id: "06" } }],
@@ -137,11 +138,12 @@ describe("W4 runtime choropleth join", () => {
     )
 
     expect(map.layers.size).toBe(layerCount)
-    expect(map.stateUpdates).toHaveLength(48)
+    expect(map.stateUpdates).toHaveLength(0)
     expect(map.paintUpdates).toHaveLength(2)
+    expect(map.paintUpdates[0].value).not.toEqual(map.paintUpdates[1].value)
   })
 
-  it("keeps hover transient and selection durable", () => {
+  it("keeps hover interaction transient without feature-state churn", () => {
     const map = new MockMap()
     const hovered: Array<string | null> = []
     createRuntimeJoin(
@@ -157,18 +159,12 @@ describe("W4 runtime choropleth join", () => {
     })
     expect(map.cursor).toBe("pointer")
     expect(hovered).toEqual(["14"])
-    expect(map.stateUpdates.at(-1)).toMatchObject({
-      target: { id: "14" },
-      state: { hovered: true },
-    })
+    expect(map.stateUpdates).toHaveLength(0)
 
     map.emit("mouseleave", MAP_LAYERS.fill, {})
     expect(map.cursor).toBe("")
     expect(hovered).toEqual(["14", null])
-    expect(map.stateUpdates.at(-1)).toMatchObject({
-      target: { id: "14" },
-      state: { hovered: false },
-    })
+    expect(map.stateUpdates).toHaveLength(0)
   })
 
   it("uses a release-wide legend domain independent of period and universe", () => {
