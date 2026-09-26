@@ -66,16 +66,17 @@ Mapbox provides rendering and geometry delivery. Scientific authority remains up
 
 ## Technology direction
 
-The W1 application seed uses the current React + TypeScript Vite template family, Tailwind CSS and local shadcn/ui-style primitives. Mapbox remains deliberately absent until the geometry transport wave.
+The application uses the current React + TypeScript Vite template family, Tailwind CSS, local shadcn/ui-style primitives and Mapbox GL JS behind a dedicated map module.
 
 ```text
 Vite + React + TypeScript
 Tailwind + shadcn/ui-style local components
+Mapbox GL JS
 Vitest
 static/Vercel-compatible deployment
 ```
 
-No backend, database, auth or CMS is required until a concrete product need appears.
+Mapbox remains optional for deterministic CI verification: the data projection and exact-ID join contracts are tested without a browser token. A live map requires the separately governed public runtime configuration. No backend, database, auth or CMS is required until a concrete product need appears.
 
 ## Local development
 
@@ -94,23 +95,23 @@ npm run verify
 
 That command runs lint, TypeScript checking, unit tests and the production build. No Mapbox token or other credential is required.
 
-The W1 UI uses an in-memory synthetic fixture to exercise public route/query state, headline metrics, a time-series placeholder, all 24 jurisdiction IDs, province selection/detail, and an accessible tabular fallback. W2 will replace that module with a deterministic fixture release artifact without changing the presentation boundary.
+The UI is data-driven from validated static release projections. The checked-in projection path verifies release identity, checksums, scientific status and exact geography joins before build; runtime components remain independent of the upstream producer implementation. Synthetic/demo releases and research releases retain their own explicit status and limitations.
 
-## First observable target
+## Current completion edge
 
-The first meaningful end-to-end proof is:
+The application and data boundary now implement the intended end-to-end seam:
 
 ```text
-deterministic synthetic province poverty fixture
+validated poverty release projection
         +
-one exact 24-jurisdiction Geography Release
+exact governed geography IDs
         ↓
 Mapbox runtime exact-ID join
         ↓
-one choropleth in the atlas UI
+one choropleth and accessible non-map view
 ```
 
-Changing period or poverty → indigence should recolor **the same map instance**. It must not create a new Mapbox style or tileset.
+Changing period, concept, universe or estimand updates the same runtime map rather than creating a new style or tileset. The remaining province W3 gate is operational: publish and record the geometry-only Mapbox transport, then verify exact IDs in the restricted public browser. See `docs/W3_GEOMETRY_TRANSPORT.md`.
 
 ## Security note
 
@@ -118,4 +119,6 @@ Do not copy credentials from legacy Poverty notebooks. A historical Mapbox write
 
 ## Status
 
-**W1 frontend application seed in progress on top of the merged W0 repository baseline.** The structural public UI remains fixture-driven and requires no Mapbox credential; W0's external account actions remain separately governed. See `docs/DELIVERY_PLAN.md` for the W0–W8 program.
+The frontend shell, deterministic release projection, producer-independent release adapter and exact-ID map runtime are implemented. The application supports explicit synthetic/demo and research-release states and can be verified without Mapbox credentials.
+
+The live province Mapbox transport remains fail-closed at `ready_for_publication` until provider publication and restricted-browser proof are recorded. See `docs/W3_GEOMETRY_TRANSPORT.md` for that gate and `docs/DELIVERY_PLAN.md` for the broader W0–W8 program.
