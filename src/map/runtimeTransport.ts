@@ -13,6 +13,8 @@ export interface RuntimeGeometryTransport {
   source_layer: string
   style_url: "mapbox://styles/mapbox/standard"
   expected_geography_ids: string[]
+  minzoom: number | null
+  maxzoom: number | null
 }
 
 function levelFromManifest(manifest: GeometryTransportManifest): GeographyLevel {
@@ -40,6 +42,13 @@ export function runtimeTransportFromManifest(
     )
   }
 
+  const zoomProfile =
+    level === "province_2010"
+      ? { minzoom: 0, maxzoom: 9 }
+      : level === "department_2010"
+        ? { minzoom: 2, maxzoom: 11 }
+        : { minzoom: null, maxzoom: null }
+
   return {
     geography_level: level,
     geography_release_id: `${manifest.parent_release.geography_id}@${manifest.parent_release.release_version}`,
@@ -48,6 +57,7 @@ export function runtimeTransportFromManifest(
     source_layer: manifest.mapbox.source_layer,
     style_url: "mapbox://styles/mapbox/standard",
     expected_geography_ids: [...manifest.fixture_geography_ids],
+    ...zoomProfile,
   }
 }
 
