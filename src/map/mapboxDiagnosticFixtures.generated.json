@@ -4,14 +4,62 @@
     "province_2010": {
       "tileset_id": "matuteiglesias2.atlas-prov-b9fcf6f90f28-mts",
       "source_layer": "province_2010",
-      "known_nonempty_tile": null,
-      "all_lowzoom_nonempty_tiles": []
+      "known_nonempty_tile": {
+        "z": 2,
+        "x": 1,
+        "y": 2,
+        "bytes_server_proof": 3825,
+        "sha256_server_proof": "a2cef242e412f54b8611e5d1af37ba7703de47ab5a878af18fc3fc372ddcf3a2",
+        "observed_geography_id_count_server": 24
+      },
+      "all_lowzoom_nonempty_tiles": [
+        {
+          "z": 2,
+          "x": 1,
+          "y": 2,
+          "bytes_server_proof": 3825,
+          "sha256_server_proof": "a2cef242e412f54b8611e5d1af37ba7703de47ab5a878af18fc3fc372ddcf3a2",
+          "observed_geography_id_count_server": 24
+        },
+        {
+          "z": 2,
+          "x": 1,
+          "y": 3,
+          "bytes_server_proof": 2501,
+          "sha256_server_proof": "64bdc777dd1c742292aa6dc20f3a21dad2f713f8178ebda4b956e8d4bd83b8ce",
+          "observed_geography_id_count_server": 1
+        }
+      ]
     },
     "department_2010": {
       "tileset_id": "matuteiglesias2.atlas-dept-c9184f47fd46-mts",
       "source_layer": "department_2010",
-      "known_nonempty_tile": null,
-      "all_lowzoom_nonempty_tiles": []
+      "known_nonempty_tile": {
+        "z": 3,
+        "x": 2,
+        "y": 4,
+        "bytes_server_proof": 25573,
+        "sha256_server_proof": "d47950bd6d7bf152bdceef15230af3fd40b04ed31f553163d089358dbc0f1e0e",
+        "observed_geography_id_count_server": 483
+      },
+      "all_lowzoom_nonempty_tiles": [
+        {
+          "z": 3,
+          "x": 2,
+          "y": 4,
+          "bytes_server_proof": 25573,
+          "sha256_server_proof": "d47950bd6d7bf152bdceef15230af3fd40b04ed31f553163d089358dbc0f1e0e",
+          "observed_geography_id_count_server": 483
+        },
+        {
+          "z": 3,
+          "x": 2,
+          "y": 5,
+          "bytes_server_proof": 2340,
+          "sha256_server_proof": "45325ef0c4207a5802ebe9f7e5c04c627a9bf2471af60db648330e730b76961d",
+          "observed_geography_id_count_server": 34
+        }
+      ]
     }
   }
 }
