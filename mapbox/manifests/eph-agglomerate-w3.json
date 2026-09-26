@@ -1,0 +1,77 @@
+{
+  "schema": "argentina-poverty-atlas.geometry-transport/v1",
+  "transport_id": "eph-agglomerate-w3",
+  "status": "blocked_upstream",
+  "inspected_at": "2026-09-26",
+  "atlas_base_commit": "pending-g6-branch",
+  "fixture_geography_ids": [
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "12",
+    "13",
+    "14",
+    "15",
+    "17",
+    "18",
+    "19",
+    "20",
+    "22",
+    "23",
+    "25",
+    "26",
+    "27",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "36",
+    "38",
+    "91",
+    "93"
+  ],
+  "upstream_audit": {
+    "repository": "matuteiglesias/argentina-geography",
+    "commit_sha": "feat/eph-agglomerate-first-class",
+    "required_level": "agglomerate",
+    "blocker_issue": "https://github.com/matuteiglesias/argentina-geography/pull/42",
+    "finding": "First-class EPH agglomerate identity/geometry contract is implemented, but real G1 materialization remains blocked on exact A7 parent reconstruction/custody. Atlas must not publish a tileset before the governed 32-feature release exists.",
+    "candidate_evidence": [
+      {
+        "dataset_id": "arggeo.indec.eph.census2010.agglomerate-footprint",
+        "feature_count": 32,
+        "eligible_as_w3_parent": false,
+        "identity_rule": "geography_id = eph_agglomerate_id; no administrative parent",
+        "membership_rule": "radio_2010_id -> eph_agglomerate_id from official A7 direct relation; geometry never decides membership"
+      }
+    ]
+  },
+  "parent_release": null,
+  "mapbox": {
+    "style_url": "mapbox://styles/mapbox/standard",
+    "tileset_id": null,
+    "source_layer": null,
+    "feature_id_property": "geography_id",
+    "published_feature_count": null,
+    "publication_time": null,
+    "publication_job_id": null
+  },
+  "payload_policy": {
+    "geometry_only": true,
+    "poverty_values_embedded": false,
+    "required_feature_property": "geography_id"
+  },
+  "external_gates": {
+    "dedicated_browser_token": "required_for_interactive_browser_proof",
+    "publication_credential": "required_after_G1_materialization",
+    "w0_issue": "https://github.com/matuteiglesias/argentina-geography/pull/42"
+  }
+}
