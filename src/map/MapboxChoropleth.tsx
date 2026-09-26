@@ -294,6 +294,16 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     let runtime: RuntimeJoin | null = null
     let loadTimeout: ReturnType<typeof window.setTimeout> | null = null
     let ready = false
+    let tryReadyAfterRestore: (() => void) | null = null
+
+    const armLoadTimeout = () => {
+      if (loadTimeout !== null) window.clearTimeout(loadTimeout)
+      loadTimeout = window.setTimeout(() => {
+        failMap(
+          "Mapbox no terminó de cargar una geometría utilizable en 15 segundos; la red respondió, así que revisá WebGL/GPU y el estado de la fuente",
+        )
+      }, MAP_LOAD_TIMEOUT_MS)
+    }
 
     const failMap = (message: string) => {
       if (disposed || ready) return
@@ -347,49 +357,36 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       map.on("webglcontextlost", () => {
         if (disposed) return
         ready = false
+        runtimeRef.current = null
         if (loadTimeout !== null) {
           window.clearTimeout(loadTimeout)
           loadTimeout = null
         }
         setStatus({
-          kind: "error",
+          kind: "loading",
           message:
-            "El navegador perdió el contexto WebGL. La red y la unión de datos ya habían avanzado; probá el modo liviano o liberá otras pestañas WebGL antes de reintentar. La tabla territorial sigue disponible.",
+            "Firefox perdió temporalmente el contexto WebGL; esperando la restauración antes de volver a habilitar el mapa…",
         })
       })
       map.on("webglcontextrestored", () => {
         if (disposed || !map) return
+        ready = false
+        runtimeRef.current = null
         setStatus({
           kind: "loading",
-          message: "El contexto WebGL se restauró; reanudando el mapa…",
+          message:
+            "WebGL fue restaurado; verificando de nuevo la fuente y las geometrías antes de habilitar el mapa…",
         })
+        armLoadTimeout()
         window.requestAnimationFrame(() => {
           if (disposed || !map) return
-          try {
-            map.resize()
-            runtime?.applyState(stateRef.current)
-            map.triggerRepaint()
-            ready = true
-            setStatus({
-              kind: "ready",
-              message: "Mapa listo",
-              transport: publishedTransport,
-            })
-          } catch (error: unknown) {
-            failMap(
-              error instanceof Error
-                ? `No se pudo reanudar el mapa: ${error.message}`
-                : "No se pudo reanudar el mapa",
-            )
-          }
+          map.resize()
+          map.triggerRepaint()
+          tryReadyAfterRestore?.()
         })
       })
 
-      loadTimeout = window.setTimeout(() => {
-        failMap(
-          "Mapbox no terminó de cargar el estilo en 15 segundos; la red respondió, así que revisá WebGL/GPU y el estado del estilo",
-        )
-      }, MAP_LOAD_TIMEOUT_MS)
+      armLoadTimeout()
 
       map.scrollZoom.disable()
       map.dragRotate.disable()
@@ -474,10 +471,11 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             }
           }
 
+          tryReadyAfterRestore = () => tryReady(false)
           map.on("sourcedata", (event) => {
             if (event.sourceId === MAP_SOURCE_ID) tryReady(false)
           })
-          map.once("idle", () => tryReady(true))
+          map.on("idle", () => tryReady(true))
           tryReady(false)
         } catch (error: unknown) {
           runtime?.destroy()
@@ -499,6 +497,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     return () => {
       disposed = true
       if (loadTimeout !== null) window.clearTimeout(loadTimeout)
+      tryReadyAfterRestore = null
       runtime?.destroy()
       runtimeRef.current = null
       map?.remove()
