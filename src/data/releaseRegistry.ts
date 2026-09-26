@@ -145,6 +145,7 @@ function validatePeriodFacts(
   period: PeriodId,
   facts: PovertyFact[],
 ) {
+  const aggregate = aggregateGeography(release.metadata)
   validateAtlasRelease({
     metadata: release.metadata,
     geographies: release.geographies,
@@ -155,7 +156,7 @@ function validatePeriodFacts(
       (fact) =>
         fact.period === period &&
         fact.geography_level === release.metadata.geography_level &&
-        fact.geography_id !== "ARG",
+        fact.geography_id !== aggregate.id,
     ),
     `${release.metadata.release_id}/${period} contains facts outside its territorial partition`,
   )
