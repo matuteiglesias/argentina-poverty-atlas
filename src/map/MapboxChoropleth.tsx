@@ -408,7 +408,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             map.addSource(MAP_SOURCE_ID, {
               type: "vector",
               url: publishedTransport.mapbox_source,
-              minzoom: 0,
               promoteId: publishedTransport.feature_id_property,
             })
           }
