@@ -15,6 +15,7 @@ import {
   type MapRuntime,
 } from "@/map/runtimeJoin"
 import {
+  runtimeGeometryTransportForLevel,
   runtimeTransportFromManifest,
   type RuntimeGeometryTransport,
 } from "@/map/runtimeTransport"
@@ -188,6 +189,17 @@ describe("W4 runtime choropleth join", () => {
         fixtureRelease.geographies.map((item) => item.id),
       ),
     ).toThrow(/exactly 24 geography IDs|exactly match/)
+  })
+
+  it("returns one stable runtime transport object per geography level", () => {
+    const provinceA = runtimeGeometryTransportForLevel("province_2010")
+    const provinceB = runtimeGeometryTransportForLevel("province_2010")
+    const departmentA = runtimeGeometryTransportForLevel("department_2010")
+    const departmentB = runtimeGeometryTransportForLevel("department_2010")
+
+    expect(provinceA).toBe(provinceB)
+    expect(departmentA).toBe(departmentB)
+    expect(provinceA).not.toBe(departmentA)
   })
 
   it("does not create runtime transport from an unpublished W3 manifest", () => {
