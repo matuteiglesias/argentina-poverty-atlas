@@ -43,6 +43,10 @@ import { formatPercent } from "@/lib/utils"
 
 const MAPBOX_GL_VERSION = "3.29.0"
 const MAP_LOAD_TIMEOUT_MS = 15_000
+const ARGENTINA_DISPLAY_BOUNDS: [[number, number], [number, number]] = [
+  [-73.6, -55.3],
+  [-53.5, -21.7],
+]
 
 const LIGHTWEIGHT_STYLE: StyleSpecification = {
   version: 8,
@@ -58,6 +62,52 @@ const LIGHTWEIGHT_STYLE: StyleSpecification = {
 }
 
 type RuntimeFeature = NonNullable<MapLayerEvent["features"]>[number]
+
+interface RuntimeTileJSON {
+  tiles?: unknown
+  scheme?: unknown
+  bounds?: unknown
+  minzoom?: unknown
+  maxzoom?: unknown
+}
+
+function appendPublicToken(template: string, token: string) {
+  if (template.includes("access_token=")) return template
+  return `${template}${template.includes("?") ? "&" : "?"}access_token=${encodeURIComponent(token)}`
+}
+
+async function resolveGovernedVectorSource(
+  transport: RuntimeGeometryTransport,
+  token: string,
+): Promise<{ source: VectorSourceSpecification; providerBounds: unknown }> {
+  const tilesetId = transport.mapbox_source.replace(/^mapbox:\/\//, "")
+  const response = await fetch(
+    `https://api.mapbox.com/v4/${encodeURIComponent(tilesetId)}.json?secure&access_token=${encodeURIComponent(token)}`,
+  )
+  if (!response.ok) {
+    throw new Error(
+      `Mapbox TileJSON respondió HTTP ${response.status} para el transporte publicado`,
+    )
+  }
+  const tilejson = (await response.json()) as RuntimeTileJSON
+  if (
+    !Array.isArray(tilejson.tiles) ||
+    tilejson.tiles.length === 0 ||
+    !tilejson.tiles.every((item) => typeof item === "string")
+  ) {
+    throw new Error("Mapbox TileJSON no expuso plantillas de tiles utilizables")
+  }
+
+  const source: VectorSourceSpecification = {
+    type: "vector",
+    tiles: tilejson.tiles.map((template) => appendPublicToken(template, token)),
+    ...(transport.minzoom !== null ? { minzoom: transport.minzoom } : {}),
+    ...(transport.maxzoom !== null ? { maxzoom: transport.maxzoom } : {}),
+    ...(tilejson.scheme === "tms" ? { scheme: "tms" as const } : {}),
+    promoteId: transport.feature_id_property,
+  }
+  return { source, providerBounds: tilejson.bounds ?? null }
+}
 
 function createMapRuntimeAdapter(
   map: MapboxMap,
@@ -204,6 +254,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [retryKey, setRetryKey] = useState(0)
   const [renderMode, setRenderMode] = useState<"standard" | "lite">("standard")
   const [loadedSourceFeatureCount, setLoadedSourceFeatureCount] = useState<number | null>(null)
+  const [providerBoundsPresent, setProviderBoundsPresent] = useState<boolean | null>(null)
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -271,6 +322,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   useEffect(() => {
     setHoveredId(null)
     setLoadedSourceFeatureCount(null)
+    setProviderBoundsPresent(null)
     setStatus(
       transport
         ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -405,27 +457,27 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       )
       window.requestAnimationFrame(() => map?.resize())
 
-      map.once("load", () => {
+      map.once("load", async () => {
         if (disposed || !map) return
         setStatus({
           kind: "loading",
-          message: "Estilo listo; uniendo geometría y estimaciones…",
+          message: "Estilo listo; resolviendo tiles publicados…",
         })
         try {
           if (!map.getSource(MAP_SOURCE_ID)) {
-            const source: VectorSourceSpecification = {
-              type: "vector",
-              url: publishedTransport.mapbox_source,
-              ...(publishedTransport.minzoom !== null
-                ? { minzoom: publishedTransport.minzoom }
-                : {}),
-              ...(publishedTransport.maxzoom !== null
-                ? { maxzoom: publishedTransport.maxzoom }
-                : {}),
-              promoteId: publishedTransport.feature_id_property,
-            }
+            const { source, providerBounds } = await resolveGovernedVectorSource(
+              publishedTransport,
+              token,
+            )
+            if (disposed || !map) return
+            setProviderBoundsPresent(providerBounds !== null)
             map.addSource(MAP_SOURCE_ID, source)
           }
+          map.resize()
+          map.fitBounds(ARGENTINA_DISPLAY_BOUNDS, {
+            padding: 24,
+            duration: 0,
+          })
           runtime = createRuntimeJoin(
             createMapRuntimeAdapter(map, renderMode === "standard"),
             publishedTransport,
@@ -444,8 +496,8 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           }
           setStatus({ kind: "ready", message: "Mapa listo", transport: publishedTransport })
 
-          map.once("idle", () => {
-            if (disposed || !map) return
+          const inspectLoadedFeatures = () => {
+            if (disposed || !map || !map.isSourceLoaded(MAP_SOURCE_ID)) return
             const features = map.querySourceFeatures(MAP_SOURCE_ID, {
               sourceLayer: publishedTransport.source_layer,
             })
@@ -465,10 +517,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
               setStatus({
                 kind: "error",
                 message:
-                  "El estilo y el tileset cargaron, pero Mapbox no entregó geometrías para el viewport actual. La tabla territorial sigue disponible.",
+                  "Mapbox terminó de cargar los tiles del viewport pero no expuso ninguna geometría del source-layer esperado. La tabla territorial sigue disponible.",
               })
             }
+          }
+          map.on("sourcedata", (event) => {
+            if (event.sourceId === MAP_SOURCE_ID) inspectLoadedFeatures()
           })
+          map.once("idle", inspectLoadedFeatures)
           map.triggerRepaint()
         } catch (error: unknown) {
           runtime?.destroy()
@@ -603,6 +659,10 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         <span>join: feature-state/geography_id</span>
         <span>transporte: {manifest.status}</span>
         <span>renderer: {renderMode}</span>
+        <span>source: tilejson-sanitized</span>
+        {providerBoundsPresent !== null && (
+          <span>provider-bounds: {providerBoundsPresent ? "ignored" : "none"}</span>
+        )}
         {loadedSourceFeatureCount !== null && (
           <span>features cargadas: {loadedSourceFeatureCount}</span>
         )}
