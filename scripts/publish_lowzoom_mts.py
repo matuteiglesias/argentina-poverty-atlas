@@ -606,7 +606,7 @@ def main() -> None:
             if raw:
                 print(raw.decode("utf-8", errors="replace")[:500])
 
-            publish = request_json(
+        publish = request_json(
             "POST",
             f"/tilesets/v1/{tileset_id}/publish",
             expected=(200, 201, 202),
