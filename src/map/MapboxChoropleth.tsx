@@ -460,7 +460,12 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             })
             const visibleIds = new Set(
               features
-                .map((feature) => feature.properties?.[publishedTransport.feature_id_property])
+                .map((feature) => {
+                  const properties = (feature as unknown as {
+                    properties?: Record<string, unknown>
+                  }).properties
+                  return properties?.[publishedTransport.feature_id_property]
+                })
                 .filter((value): value is string => typeof value === "string"),
             )
             setLoadedSourceFeatureCount(visibleIds.size)
