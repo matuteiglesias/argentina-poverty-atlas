@@ -1,6 +1,7 @@
 import {
   concepts,
   estimands,
+  aggregateGeography,
   validateAtlasRelease,
   type AtlasRelease,
   type AtlasReleaseMetadata,
@@ -22,7 +23,9 @@ export interface AtlasReleaseDescriptor {
   geographies: ReleaseGeography[]
   metadataUrl: string
   geographiesUrl: string
-  nationalUrl: string
+  aggregateUrl?: string
+  /** Legacy compatibility with existing generated descriptors. */
+  nationalUrl?: string
   manifestUrl: string
   factsByPeriod: Record<PeriodId, string>
   legendMax: Record<string, number>
@@ -46,6 +49,7 @@ export function legendDomainsFromFacts(facts: readonly PovertyFact[]) {
         .filter(
           (fact) =>
             fact.geography_level !== "national" &&
+            fact.geography_level !== "eph_coverage" &&
             fact.concept === concept &&
             fact.estimand === estimand,
         )
@@ -67,7 +71,7 @@ export function descriptorFromEmbeddedRelease(
     geographies: release.geographies,
     metadataUrl: `embedded:${release.metadata.release_id}:metadata`,
     geographiesUrl: `embedded:${release.metadata.release_id}:geographies`,
-    nationalUrl: `embedded:${release.metadata.release_id}:national`,
+    aggregateUrl: `embedded:${release.metadata.release_id}:aggregate`,
     manifestUrl: `embedded:${release.metadata.release_id}:manifest`,
     factsByPeriod: Object.fromEntries(
       release.metadata.periods.map((period) => [
@@ -94,7 +98,11 @@ export function validateReleaseDescriptor(
   })
   invariant(Boolean(descriptor.metadataUrl), "metadataUrl is required")
   invariant(Boolean(descriptor.geographiesUrl), "geographiesUrl is required")
-  invariant(Boolean(descriptor.nationalUrl), "nationalUrl is required")
+  invariant(
+    Boolean(descriptor.aggregateUrl ?? descriptor.nationalUrl),
+    "aggregateUrl or legacy nationalUrl is required",
+  )
+  aggregateGeography(descriptor.metadata)
   invariant(Boolean(descriptor.manifestUrl), "manifestUrl is required")
 
   const periodIds = descriptor.metadata.periods.map((period) => period.id)
