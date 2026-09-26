@@ -34,6 +34,7 @@ import {
   type RuntimeGeometryTransport,
 } from "@/map/runtimeTransport"
 import { formatPercent } from "@/lib/utils"
+import { loadedGeographyIds } from "@/map/sourceReadiness"
 
 const MAPBOX_GL_VERSION = "3.29.0"
 const MAP_LOAD_TIMEOUT_MS = 15_000
@@ -197,6 +198,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
   const [renderMode, setRenderMode] = useState<"standard" | "lite">("standard")
+  const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -263,6 +265,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
 
   useEffect(() => {
     setHoveredId(null)
+    setLoadedFeatureCount(null)
     setStatus(
       transport
         ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -397,11 +400,11 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       )
       window.requestAnimationFrame(() => map?.resize())
 
-      map.once("style.load", () => {
+      map.once("load", () => {
         if (disposed || !map) return
         setStatus({
           kind: "loading",
-          message: "Estilo listo; uniendo geometría y estimaciones…",
+          message: "Estilo listo; cargando geometría territorial…",
         })
         try {
           if (!map.getSource(MAP_SOURCE_ID)) {
@@ -420,14 +423,62 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
               if (!disposed) setHoveredId(geographyId)
             },
           )
-          runtimeRef.current = runtime
-          runtime.applyState(stateRef.current)
-          ready = true
-          if (loadTimeout !== null) {
-            window.clearTimeout(loadTimeout)
-            loadTimeout = null
+
+          const expectedIds = new Set(publishedTransport.expected_geography_ids)
+          const tryReady = (failIfEmpty = false) => {
+            if (disposed || !map || !runtime || ready) return
+            if (!map.isSourceLoaded(MAP_SOURCE_ID)) return
+
+            try {
+              const features = map.querySourceFeatures(MAP_SOURCE_ID, {
+                sourceLayer: publishedTransport.source_layer,
+              })
+              const geographyIds = loadedGeographyIds(
+                features as unknown as { properties?: Record<string, unknown> }[],
+                publishedTransport.feature_id_property,
+              )
+              const governedIds = geographyIds.filter((id) => expectedIds.has(id))
+              setLoadedFeatureCount(governedIds.length)
+
+              if (governedIds.length === 0) {
+                if (failIfEmpty) {
+                  failMap(
+                    "Mapbox terminó de cargar la fuente, pero no expuso geography_id válidos del source-layer publicado",
+                  )
+                }
+                return
+              }
+
+              runtimeRef.current = runtime
+              runtime.applyState(stateRef.current)
+              map.triggerRepaint()
+              ready = true
+              if (loadTimeout !== null) {
+                window.clearTimeout(loadTimeout)
+                loadTimeout = null
+              }
+              setStatus({
+                kind: "ready",
+                message: "Mapa listo",
+                transport: publishedTransport,
+              })
+            } catch (error: unknown) {
+              runtimeRef.current = null
+              runtime?.destroy()
+              runtime = null
+              failMap(
+                error instanceof Error
+                  ? `Falló la activación del mapa: ${error.message}`
+                  : "Falló la activación del mapa por un error desconocido",
+              )
+            }
           }
-          setStatus({ kind: "ready", message: "Mapa listo", transport: publishedTransport })
+
+          map.on("sourcedata", (event) => {
+            if (event.sourceId === MAP_SOURCE_ID) tryReady(false)
+          })
+          map.once("idle", () => tryReady(true))
+          tryReady(false)
         } catch (error: unknown) {
           runtime?.destroy()
           runtime = null
@@ -561,6 +612,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         <span>join: feature-state/geography_id</span>
         <span>transporte: {manifest.status}</span>
         <span>renderer: {renderMode}</span>
+        {loadedFeatureCount !== null && (
+          <span>features cargadas: {loadedFeatureCount}</span>
+        )}
         {status.kind === "ready" && (
           <span>geografía: {status.transport.geography_release_id}</span>
         )}
