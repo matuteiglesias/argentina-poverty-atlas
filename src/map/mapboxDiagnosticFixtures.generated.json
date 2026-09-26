@@ -1,0 +1,17 @@
+{
+  "schema": "argentina-poverty-atlas.mapbox-browser-diagnostic/v1",
+  "levels": {
+    "province_2010": {
+      "tileset_id": "matuteiglesias2.atlas-prov-b9fcf6f90f28-mts",
+      "source_layer": "province_2010",
+      "known_nonempty_tile": null,
+      "all_lowzoom_nonempty_tiles": []
+    },
+    "department_2010": {
+      "tileset_id": "matuteiglesias2.atlas-dept-c9184f47fd46-mts",
+      "source_layer": "department_2010",
+      "known_nonempty_tile": null,
+      "all_lowzoom_nonempty_tiles": []
+    }
+  }
+}
