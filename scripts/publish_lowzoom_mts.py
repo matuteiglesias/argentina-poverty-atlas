@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import os
@@ -294,10 +295,17 @@ def ensure_source(source_id: str, source_path: Path, source_artifact: dict) -> d
     """Treat source IDs as immutable content-addressed transport slots and reuse them."""
     existing = get_source_info(source_id)
     if existing is not None:
+        provider_size = existing.get("size", existing.get("source_size"))
+        if isinstance(provider_size, int) and provider_size != int(source_artifact["size_bytes"]):
+            fail(
+                f"Existing MTS source {source_id} has size {provider_size}, "
+                f"but current deterministic transport artifact has "
+                f"{source_artifact['size_bytes']} bytes. Refusing ambiguous source reuse."
+            )
         print(
             "Reusing existing MTS source "
             f"{existing.get('id', source_id)}; files={existing.get('files')}, "
-            f"size={existing.get('size', existing.get('source_size'))}"
+            f"size={provider_size}"
         )
         return {
             "action": "reused",
@@ -323,14 +331,31 @@ def ensure_source(source_id: str, source_path: Path, source_artifact: dict) -> d
     }
 
 
+def try_load_tilejson(tileset_id: str) -> dict | None:
+    response = requests.get(
+        f"https://api.mapbox.com/v4/{tileset_id}.json",
+        params={"secure": "", "access_token": TOKEN},
+        headers={"Accept": "application/json"},
+        timeout=90,
+    )
+    if response.status_code == 404:
+        return None
+    if response.status_code != 200:
+        fail(
+            f"TileJSON {tileset_id} failed HTTP {response.status_code}: "
+            f"{response.text[:1000]}"
+        )
+    value = response.json()
+    if not isinstance(value, dict):
+        fail(f"TileJSON {tileset_id} returned a non-object response")
+    return value
+
+
 def load_tilejson(tileset_id: str) -> dict:
-    query = urllib.parse.urlencode({"secure": "", "access_token": TOKEN})
-    url = f"https://api.mapbox.com/v4/{tileset_id}.json?{query}"
     last_error = "unknown"
     for _ in range(60):
         try:
-            with urllib.request.urlopen(url, timeout=90) as response:
-                value = json.loads(response.read().decode("utf-8"))
+            value = try_load_tilejson(tileset_id)
             if isinstance(value, dict) and value.get("vector_layers"):
                 return value
             last_error = "TileJSON has no vector_layers yet"
@@ -341,19 +366,33 @@ def load_tilejson(tileset_id: str) -> dict:
 
 
 def load_tile(tileset_id: str, z: int, x: int, y: int) -> bytes:
-    query = urllib.parse.urlencode({"access_token": TOKEN})
-    url = f"https://api.mapbox.com/v4/{tileset_id}/{z}/{x}/{y}.mvt?{query}"
-    req = urllib.request.Request(url, method="GET")
-    try:
-        with urllib.request.urlopen(req, timeout=90) as response:
-            return response.read()
-    except urllib.error.HTTPError as exc:
-        if exc.code == 404:
-            return b""
-        detail = exc.read().decode("utf-8", errors="replace")[:1000]
-        raise RuntimeError(
-            f"Vector tile z{z}/{x}/{y} failed HTTP {exc.code}: {detail}"
-        ) from None
+    response = requests.get(
+        f"https://api.mapbox.com/v4/{tileset_id}/{z}/{x}/{y}.mvt",
+        params={"access_token": TOKEN},
+        headers={"Accept": "application/vnd.mapbox-vector-tile"},
+        timeout=90,
+    )
+    if response.status_code == 404:
+        return b""
+    if response.status_code != 200:
+        fail(
+            f"Vector tile z{z}/{x}/{y} failed HTTP {response.status_code}: "
+            f"{response.text[:1000]}"
+        )
+
+    # requests normally decodes HTTP Content-Encoding automatically. Mapbox vector
+    # tiles are commonly gzip-compressed at rest/transport, so retain a defensive
+    # magic-byte fallback for nonstandard proxies or clients.
+    raw = response.content
+    if raw.startswith(b"\x1f\x8b"):
+        try:
+            raw = gzip.decompress(raw)
+        except OSError as exc:
+            fail(
+                f"Vector tile z{z}/{x}/{y} advertised/contained gzip bytes "
+                f"but decompression failed: {exc}"
+            )
+    return raw
 
 
 def inspect_zoom(
@@ -380,7 +419,16 @@ def inspect_zoom(
         if not raw:
             continue
         nonempty += 1
-        decoded = mapbox_vector_tile.decode(raw)
+        try:
+            decoded = mapbox_vector_tile.decode(raw)
+        except Exception as exc:
+            prefix_hex = raw[:16].hex()
+            prefix_text = raw[:80].decode("utf-8", errors="replace")
+            fail(
+                f"Vector tile decode failed at z{tile.z}/{tile.x}/{tile.y}; "
+                f"bytes={len(raw)}, first16={prefix_hex}, "
+                f"text_prefix={prefix_text!r}: {exc}"
+            )
         layer = decoded.get(layer_name)
         if not isinstance(layer, dict):
             continue
@@ -475,97 +523,153 @@ def main() -> None:
             "no poverty values embedded."
         ),
     }
-    status, raw = request(
-        "POST",
-        f"/tilesets/v1/{tileset_id}",
-        body=json.dumps(create_payload).encode("utf-8"),
-        content_type="application/json",
-        expected=(200, 201, 409),
-    )
-    if status == 409:
-        print(f"MTS tileset already exists; updating recipe: {tileset_id}")
-        request_json(
-            "PATCH",
-            f"/tilesets/v1/{tileset_id}/recipe",
-            payload=recipe,
-            expected=(204,),
-        )
-        request_json(
-            "PATCH",
-            f"/tilesets/v1/{tileset_id}",
-            payload={"name": profile["name"], "private": False},
-            expected=(200, 204),
-        )
-    else:
-        print(f"Created MTS tileset: {tileset_id}")
-        if raw:
-            print(raw.decode("utf-8", errors="replace")[:500])
-
-    publish = request_json(
-        "POST",
-        f"/tilesets/v1/{tileset_id}/publish",
-        expected=(200, 201, 202),
-    )
-    job_id = publish.get("jobId")
-    if not isinstance(job_id, str) or not job_id:
-        fail(f"MTS publish did not return jobId: {publish}")
-    print(f"MTS publish queued: tileset={tileset_id}, job={job_id}")
-
+    existing_tilejson = try_load_tilejson(tileset_id)
+    recovered_existing = False
+    job_id: str | None = None
     job: dict | None = None
-    for poll in range(240):
-        job = request_json(
-            "GET",
-            f"/tilesets/v1/{tileset_id}/jobs/{job_id}",
-            expected=(200,),
+
+    if existing_tilejson is not None:
+        existing_layers = existing_tilejson.get("vector_layers")
+        has_expected_layer = isinstance(existing_layers, list) and any(
+            isinstance(layer, dict) and layer.get("id") == layer_name
+            for layer in existing_layers
         )
-        stage = job.get("stage")
-        if poll % 6 == 0 or stage in {"success", "failed", "superseded"}:
-            print(f"MTS job stage={stage!r} poll={poll + 1}/240")
-        if stage == "success":
-            break
-        if stage in {"failed", "superseded"}:
-            fail(
-                f"MTS publish ended at stage={stage}: "
-                f"errors={job.get('errors')}, warnings={job.get('warnings')}"
+        existing_minzoom = int(existing_tilejson.get("minzoom", 99))
+        if has_expected_layer and existing_minzoom <= int(profile["minzoom"]):
+            print(
+                f"Found already-published low-zoom MTS tileset {tileset_id}; "
+                "attempting proof-only recovery before any provider rewrite."
             )
-        time.sleep(5)
-    else:
-        fail("MTS publish did not finish within 20 minutes")
+            try:
+                recovered_lowzoom = inspect_zoom(
+                    tileset_id,
+                    layer_name,
+                    representatives,
+                    expected_ids,
+                    int(profile["coverage_zoom"]),
+                    require_exact=False,
+                )
+                recovered_identity = inspect_zoom(
+                    tileset_id,
+                    layer_name,
+                    representatives,
+                    expected_ids,
+                    int(profile["identity_zoom"]),
+                    require_exact=True,
+                )
+            except RuntimeError as exc:
+                print(
+                    "Existing tileset did not satisfy the current proof contract; "
+                    f"republishing recipe: {exc}"
+                )
+            else:
+                recovered_existing = True
+                tilejson = existing_tilejson
+                vector_layers = existing_layers
+                lowzoom_proof = recovered_lowzoom
+                identity_proof = recovered_identity
+                job = {
+                    "stage": "recovered_existing_publish",
+                    "warnings": [],
+                }
 
-    tilejson = load_tilejson(tileset_id)
-    vector_layers = tilejson.get("vector_layers")
-    if not isinstance(vector_layers, list) or not any(
-        isinstance(layer, dict) and layer.get("id") == layer_name
-        for layer in vector_layers
-    ):
-        fail(
-            f"TileJSON does not expose expected layer {layer_name!r}: "
-            f"{vector_layers!r}"
+    if not recovered_existing:
+        status, raw = request(
+            "POST",
+            f"/tilesets/v1/{tileset_id}",
+            body=json.dumps(create_payload).encode("utf-8"),
+            content_type="application/json",
+            expected=(200, 201, 400),
         )
+        if status == 400:
+            detail = raw.decode("utf-8", errors="replace")
+            if "exist" not in detail.lower():
+                fail(
+                    f"MTS tileset create failed HTTP 400 for {tileset_id}: "
+                    f"{detail[:1000]}"
+                )
+            print(f"MTS tileset already exists; updating recipe: {tileset_id}")
+            request_json(
+                "PATCH",
+                f"/tilesets/v1/{tileset_id}/recipe",
+                payload=recipe,
+                expected=(204,),
+            )
+            request_json(
+                "PATCH",
+                f"/tilesets/v1/{tileset_id}",
+                payload={"name": profile["name"], "private": False},
+                expected=(200, 204),
+            )
+        else:
+            print(f"Created MTS tileset: {tileset_id}")
+            if raw:
+                print(raw.decode("utf-8", errors="replace")[:500])
 
-    observed_minzoom = int(tilejson.get("minzoom", 99))
-    if observed_minzoom > int(profile["minzoom"]):
-        fail(
-            f"TileJSON minzoom drift: expected <= {profile['minzoom']}, "
-            f"observed {observed_minzoom}"
+            publish = request_json(
+            "POST",
+            f"/tilesets/v1/{tileset_id}/publish",
+            expected=(200, 201, 202),
         )
+        job_id = publish.get("jobId")
+        if not isinstance(job_id, str) or not job_id:
+            fail(f"MTS publish did not return jobId: {publish}")
+        print(f"MTS publish queued: tileset={tileset_id}, job={job_id}")
 
-    lowzoom_proof = inspect_zoom(
-        tileset_id,
-        layer_name,
-        representatives,
-        expected_ids,
-        int(profile["coverage_zoom"]),
-        require_exact=False,
-    )
-    identity_proof = inspect_zoom(
-        tileset_id,
-        layer_name,
-        representatives,
-        expected_ids,
-        int(profile["identity_zoom"]),
-        require_exact=True,
-    )
+        for poll in range(240):
+            job = request_json(
+                "GET",
+                f"/tilesets/v1/{tileset_id}/jobs/{job_id}",
+                expected=(200,),
+            )
+            stage = job.get("stage")
+            if poll % 6 == 0 or stage in {"success", "failed", "superseded"}:
+                print(f"MTS job stage={stage!r} poll={poll + 1}/240")
+            if stage == "success":
+                break
+            if stage in {"failed", "superseded"}:
+                fail(
+                    f"MTS publish ended at stage={stage}: "
+                    f"errors={job.get('errors')}, warnings={job.get('warnings')}"
+                )
+            time.sleep(5)
+        else:
+            fail("MTS publish did not finish within 20 minutes")
+
+        tilejson = load_tilejson(tileset_id)
+        vector_layers = tilejson.get("vector_layers")
+        if not isinstance(vector_layers, list) or not any(
+            isinstance(layer, dict) and layer.get("id") == layer_name
+            for layer in vector_layers
+        ):
+            fail(
+                f"TileJSON does not expose expected layer {layer_name!r}: "
+                f"{vector_layers!r}"
+            )
+
+        observed_minzoom = int(tilejson.get("minzoom", 99))
+        if observed_minzoom > int(profile["minzoom"]):
+            fail(
+                f"TileJSON minzoom drift: expected <= {profile['minzoom']}, "
+                f"observed {observed_minzoom}"
+            )
+
+        lowzoom_proof = inspect_zoom(
+            tileset_id,
+            layer_name,
+            representatives,
+            expected_ids,
+            int(profile["coverage_zoom"]),
+            require_exact=False,
+        )
+        identity_proof = inspect_zoom(
+            tileset_id,
+            layer_name,
+            representatives,
+            expected_ids,
+            int(profile["identity_zoom"]),
+            require_exact=True,
+        )
 
     now = datetime.now(UTC).isoformat()
     manifest["mapbox"].update(
@@ -597,6 +701,7 @@ def main() -> None:
             "id": job_id,
             "stage": job.get("stage") if isinstance(job, dict) else None,
             "warnings": job.get("warnings", []) if isinstance(job, dict) else [],
+            "recovered_existing_publish": recovered_existing,
         },
         "tilejson": {
             "minzoom": tilejson.get("minzoom"),
