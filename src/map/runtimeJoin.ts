@@ -12,8 +12,6 @@ export const MAP_SOURCE_ID = "atlas-provinces"
 export const MAP_LAYERS = {
   fill: "poverty-fill",
   boundary: "poverty-border",
-  hover: "poverty-hover",
-  selected: "poverty-selected",
 } as const
 
 export const CHOROPLETH_COLORS = [
@@ -98,14 +96,69 @@ export function getLegendModel(
 
 export function buildFillColorExpression(legend: LegendModel): unknown[] {
   return [
-    "case",
-    ["==", ["feature-state", "hasData"], true],
-    [
-      "interpolate",
-      ["linear"],
-      ["feature-state", "estimate"],
-      ...legend.stops.flatMap((stop) => [stop.value, stop.color]),
-    ],
+    "interpolate",
+    ["linear"],
+    ["get", "__atlas_estimate"],
+    ...legend.stops.flatMap((stop) => [stop.value, stop.color]),
+  ]
+}
+
+function clamp01(value: number) {
+  return Math.max(0, Math.min(1, value))
+}
+
+function parseHexColor(color: string) {
+  const value = color.replace("#", "")
+  if (!/^[0-9a-f]{6}$/i.test(value)) return null
+  return {
+    r: Number.parseInt(value.slice(0, 2), 16),
+    g: Number.parseInt(value.slice(2, 4), 16),
+    b: Number.parseInt(value.slice(4, 6), 16),
+  }
+}
+
+function hexChannel(value: number) {
+  return Math.round(value).toString(16).padStart(2, "0")
+}
+
+export function colorForEstimate(legend: LegendModel, estimate: number) {
+  const stops = legend.stops
+  if (stops.length === 0) return NO_DATA_COLOR
+  if (estimate <= stops[0].value) return stops[0].color
+  if (estimate >= stops[stops.length - 1].value) return stops[stops.length - 1].color
+
+  for (let index = 1; index < stops.length; index += 1) {
+    const right = stops[index]
+    const left = stops[index - 1]
+    if (estimate > right.value) continue
+    const leftRgb = parseHexColor(left.color)
+    const rightRgb = parseHexColor(right.color)
+    if (!leftRgb || !rightRgb || right.value === left.value) return right.color
+    const weight = clamp01((estimate - left.value) / (right.value - left.value))
+    const mix = (a: number, b: number) => a + (b - a) * weight
+    return `#${hexChannel(mix(leftRgb.r, rightRgb.r))}${hexChannel(mix(leftRgb.g, rightRgb.g))}${hexChannel(mix(leftRgb.b, rightRgb.b))}`
+  }
+  return stops[stops.length - 1].color
+}
+
+export function buildGeographyColorExpression(
+  transport: RuntimeGeometryTransport,
+  source: RuntimeFactSource,
+  state: AtlasState,
+): unknown[] {
+  const legend = source.legendForState(state)
+  const matches: unknown[] = []
+  for (const geography of source.geographies) {
+    const fact = source.factForState(state, geography.id)
+    matches.push(
+      geography.id,
+      fact ? colorForEstimate(legend, fact.estimate) : NO_DATA_COLOR,
+    )
+  }
+  return [
+    "match",
+    ["get", transport.feature_id_property],
+    ...matches,
     NO_DATA_COLOR,
   ]
 }
@@ -161,16 +214,8 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
       slot: "middle",
       paint: {
         "fill-color": NO_DATA_COLOR,
-        "fill-color-transition": { duration: 260, delay: 0 },
-        "fill-opacity": [
-          "case",
-          ["==", ["feature-state", "selected"], true],
-          0.94,
-          ["==", ["feature-state", "hovered"], true],
-          0.9,
-          0.82,
-        ],
-        "fill-opacity-transition": { duration: 150, delay: 0 },
+        "fill-color-transition": { duration: 220, delay: 0 },
+        "fill-opacity": 0.88,
       },
     },
     {
@@ -180,53 +225,11 @@ export function buildLayerSpecs(transport: RuntimeGeometryTransport) {
       slot: "top",
       paint: {
         "line-color": "#ffffff",
-        "line-opacity": 0.88,
-        "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.65, 5, 1.1],
-      },
-    },
-    {
-      id: MAP_LAYERS.hover,
-      type: "line",
-      ...shared,
-      slot: "top",
-      paint: {
-        "line-color": "#334155",
-        "line-opacity": [
-          "case",
-          ["==", ["feature-state", "hovered"], true],
-          1,
-          0,
-        ],
-        "line-opacity-transition": { duration: 90, delay: 0 },
-        "line-width": 2.25,
-      },
-    },
-    {
-      id: MAP_LAYERS.selected,
-      type: "line",
-      ...shared,
-      slot: "top",
-      paint: {
-        "line-color": "#020617",
-        "line-opacity": [
-          "case",
-          ["==", ["feature-state", "selected"], true],
-          1,
-          0,
-        ],
-        "line-opacity-transition": { duration: 120, delay: 0 },
-        "line-width": 4,
+        "line-opacity": 0.82,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.55, 5, 0.95],
       },
     },
   ]
-}
-
-function featureTarget(transport: RuntimeGeometryTransport, id: string) {
-  return {
-    source: MAP_SOURCE_ID,
-    sourceLayer: transport.source_layer,
-    id,
-  }
 }
 
 function eventGeographyId(
@@ -256,13 +259,7 @@ export function createRuntimeJoin(
 
   const setHovered = (nextId: string | null) => {
     if (hoveredId === nextId) return
-    if (hoveredId) {
-      map.setFeatureState(featureTarget(transport, hoveredId), { hovered: false })
-    }
     hoveredId = nextId
-    if (hoveredId) {
-      map.setFeatureState(featureTarget(transport, hoveredId), { hovered: true })
-    }
     map.setCursor?.(hoveredId ? "pointer" : "")
     onHover(hoveredId)
   }
@@ -293,19 +290,8 @@ export function createRuntimeJoin(
       map.setPaintProperty(
         MAP_LAYERS.fill,
         "fill-color",
-        buildFillColorExpression(legend),
+        buildGeographyColorExpression(transport, source, state),
       )
-
-      for (const geography of source.geographies) {
-        const fact = source.factForState(state, geography.id)
-        map.setFeatureState(featureTarget(transport, geography.id), {
-          hasData: fact !== null,
-          estimate: fact?.estimate ?? 0,
-          qualityStatus: fact?.quality_status ?? "no_data",
-          warningCount: fact?.warning_codes?.length ?? 0,
-          selected: state.place === geography.id,
-        })
-      }
       return legend
     },
     setHovered,
