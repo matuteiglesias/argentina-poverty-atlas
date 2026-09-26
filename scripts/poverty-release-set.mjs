@@ -15,7 +15,9 @@ export const REQUIRED_RELEASE_FILES = [
 export const GEOGRAPHY_PROFILES = {
   province_2010: { pattern: /^\d{2}$/, expectedCount: 24 },
   department_2010: { pattern: /^\d{5}$/, expectedCount: 525 },
+  eph_agglomerate: { pattern: /^\d{2}$/, expectedCount: 32 },
 }
+const NON_SPATIAL_LEVELS = new Set(["national", "eph_coverage"])
 
 const EXPECTED_HEADERS = [
   "release_id",
@@ -141,7 +143,9 @@ export async function verifyDetachedRelease(directory) {
 
   const keys = new Set()
   const spatialLevels = new Set()
+  const aggregateIdentities = new Set()
   const periods = new Set()
+  const aggregateKey = `${releases[0].aggregate.level}|${releases[0].aggregate.id}`
   const releaseIds = new Set()
   const frameVintages = new Set()
   const universes = new Set()
@@ -171,8 +175,8 @@ export async function verifyDetachedRelease(directory) {
     if (row.unit !== "proportion" || row.uncertainty_status !== "not_supplied") {
       fail(`unsupported fact semantics ${key}`)
     }
-    if (row.geography_level === "national") {
-      if (row.geography_id !== "ARG") fail("invalid national ID")
+    if (NON_SPATIAL_LEVELS.has(row.geography_level)) {
+      aggregateIdentities.add(`${row.geography_level}|${row.geography_id}`)
     } else {
       spatialLevels.add(row.geography_level)
     }
@@ -185,6 +189,9 @@ export async function verifyDetachedRelease(directory) {
   }
 
   if (spatialLevels.size !== 1) fail("each detached release must contain exactly one spatial geography level")
+  if (aggregateIdentities.size !== 1) {
+    fail("each detached release must contain exactly one aggregate geography identity")
+  }
   if (periods.size !== 1) fail("each detached release must contain exactly one estimation period")
   if (releaseIds.size !== 1) fail("fact rows must share one release_id")
   if (frameVintages.size !== 1) fail("fact rows must share one frame_vintage")
@@ -227,6 +234,23 @@ export async function verifyDetachedRelease(directory) {
   const manifestLevel = manifest.geography_level
   if (manifestLevel !== undefined && manifestLevel !== geographyLevel) {
     fail("manifest geography level differs from facts")
+  }
+
+  const [aggregateLevel, aggregateId] = [...aggregateIdentities][0].split("|")
+  if (aggregateLevel === "national") {
+    if (aggregateId !== "ARG") fail("legacy national aggregate must use ARG")
+    if (manifest.aggregate_geography !== undefined) {
+      fail("legacy national/ARG release must not declare aggregate_geography")
+    }
+  } else {
+    const declared = manifest.aggregate_geography
+    if (
+      !declared ||
+      declared.level !== aggregateLevel ||
+      declared.id !== aggregateId
+    ) {
+      fail("manifest aggregate_geography differs from aggregate facts")
+    }
   }
 
   const period = [...periods][0]
@@ -291,6 +315,11 @@ export async function verifyDetachedRelease(directory) {
     estimands: normalizedEstimands,
     rows: parsed.rows,
     facts: normalizedFacts,
+    aggregate: {
+      level: aggregateLevel,
+      id: aggregateId,
+      name: aggregateLevel === "national" ? "Argentina" : "Total aglomerados EPH",
+    },
   }
 }
 
@@ -313,6 +342,9 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
     if (release.universes.join("|") !== universeKey) fail("release set universe cubes differ")
     if (release.concepts.join("|") !== conceptKey) fail("release set concept cubes differ")
     if (release.estimands.join("|") !== estimandKey) fail("release set estimand cubes differ")
+    if (`${release.aggregate.level}|${release.aggregate.id}` !== aggregateKey) {
+      fail("release set aggregate geography identities differ")
+    }
     if (periods.has(release.period)) fail(`duplicate release-set period ${release.period}`)
     periods.add(release.period)
   }
@@ -367,7 +399,10 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
       concepts: [...ordered[0].concepts],
       estimands: [...ordered[0].estimands],
       geography_level: level,
-      national_geography: { id: "ARG", name: "Argentina" },
+      aggregate_geography: { ...ordered[0].aggregate },
+      ...(ordered[0].aggregate.level === "national" && ordered[0].aggregate.id === "ARG"
+        ? { national_geography: { id: "ARG", name: "Argentina" } }
+        : {}),
       parents: Object.fromEntries(
         ordered.map((release) => [release.period, String(release.manifest.release_id)]),
       ),
