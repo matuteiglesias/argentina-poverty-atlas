@@ -564,12 +564,12 @@
   },
   "mapbox": {
     "style_url": "mapbox://styles/mapbox/standard",
-    "tileset_id": "matuteiglesias2.arg-dept-indec2010-c9184f47fd46",
-    "source_layer": "Argentina departments - INDEC Census 2010 c9184f47fd46",
+    "tileset_id": "matuteiglesias2.atlas-dept-c9184f47fd46-mts",
+    "source_layer": "department_2010",
     "feature_id_property": "geography_id",
     "published_feature_count": 525,
-    "publication_time": "2026-09-25T14:30:32.358Z",
-    "publication_job_id": "cmuh25qkw00i71nt0t9ixcjac"
+    "publication_time": "2026-09-26T19:59:31.312654+00:00",
+    "publication_job_id": "tng5qqsu0izgonl2v5lwzijqx"
   },
   "payload_policy": {
     "geometry_only": true,
