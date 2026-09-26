@@ -16,8 +16,10 @@ export interface RuntimeGeometryTransport {
 }
 
 function levelFromManifest(manifest: GeometryTransportManifest): GeographyLevel {
-  if (manifest.parent_release?.level === "department") return "department_2010"
-  if (manifest.upstream_audit.required_level === "department") return "department_2010"
+  const level =
+    manifest.parent_release?.level ?? manifest.upstream_audit.required_level
+  if (level === "department") return "department_2010"
+  if (level === "agglomerate") return "eph_agglomerate"
   return "province_2010"
 }
 
@@ -60,6 +62,10 @@ const runtimeTransportByLevel: Record<
   department_2010: runtimeTransportFromManifest(
     geometryTransportManifestForLevel("department_2010"),
     "department_2010",
+  ),
+  eph_agglomerate: runtimeTransportFromManifest(
+    geometryTransportManifestForLevel("eph_agglomerate"),
+    "eph_agglomerate",
   ),
 }
 

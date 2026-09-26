@@ -45,6 +45,66 @@ describe("W2 deterministic fixture release", () => {
     expect(fact.warning_codes).toEqual(["fixture_quality_warning"])
   })
 
+
+  it("accepts EPH agglomerate facts with EPH_TOTAL instead of national ARG", () => {
+    const ids = [
+      "02","03","04","05","06","07","08","09","10","12","13","14","15","17",
+      "18","19","20","22","23","25","26","27","29","30","31","32","33","34",
+      "36","38","91","93",
+    ]
+    const release: AtlasRelease = {
+      metadata: {
+        schema_version: "atlas-poverty-release-set/v1",
+        release_id: "aglo-test",
+        scientific_status: "research_estimate",
+        not_for_interpretation: true,
+        periods: [{ id: "2024-Q3", label: "2024-Q3" }],
+        universes: ["persons", "households"],
+        concepts: ["poverty", "indigence"],
+        estimands: ["fgt0", "fgt1", "fgt2"],
+        geography_level: "eph_agglomerate",
+        aggregate_geography: {
+          level: "eph_coverage",
+          id: "EPH_TOTAL",
+          name: "Total aglomerados EPH",
+        },
+        parents: {},
+        comparability: {},
+      },
+      geographies: ids.map((id) => ({ id, name: id, shortName: id })),
+      facts: [
+        {
+          period: "2024-Q3",
+          universe: "persons",
+          concept: "poverty",
+          estimand: "fgt0",
+          geography_level: "eph_agglomerate",
+          geography_id: "32",
+          estimate: 0.31,
+          uncertainty_status: "not_supplied",
+          quality_status: "research_estimate",
+        },
+        {
+          period: "2024-Q3",
+          universe: "persons",
+          concept: "poverty",
+          estimand: "fgt0",
+          geography_level: "eph_coverage",
+          geography_id: "EPH_TOTAL",
+          estimate: 0.38,
+          uncertainty_status: "not_supplied",
+          quality_status: "research_estimate",
+        },
+      ],
+    }
+    expect(() => validateAtlasRelease(release)).not.toThrow()
+    expect(
+      release.facts.some(
+        (fact) => fact.geography_level === "national" || fact.geography_id === "ARG",
+      ),
+    ).toBe(false)
+  })
+
   it("rejects a duplicate fact key", () => {
     const release = cloneRelease()
     release.facts.push(structuredClone(release.facts[0]))

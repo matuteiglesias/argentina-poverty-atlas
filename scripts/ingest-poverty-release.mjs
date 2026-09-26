@@ -62,7 +62,10 @@ function singleReleaseProjection(release) {
       concepts: [...release.concepts],
       estimands: [...release.estimands],
       geography_level: release.geographyLevel,
-      national_geography: { id: "ARG", name: "Argentina" },
+      aggregate_geography: { ...release.aggregate },
+      ...(release.aggregate.level === "national" && release.aggregate.id === "ARG"
+        ? { national_geography: { id: "ARG", name: "Argentina" } }
+        : {}),
       parents: parentStrings(release.manifest.parents),
       comparability: {
         frame_vintage: release.frameVintage,
@@ -111,25 +114,29 @@ async function writePublicRelease(release) {
 
   const metadataJson = json(release.metadata)
   const geographiesJson = json(release.geographies)
-  const nationalFacts = release.facts.filter(
-    (fact) => fact.geography_level === "national" && fact.geography_id === "ARG",
+  const aggregate = release.metadata.aggregate_geography
+  if (!aggregate) fail(`${release.metadata.release_id} lacks aggregate_geography`)
+  const aggregateFacts = release.facts.filter(
+    (fact) =>
+      fact.geography_level === aggregate.level &&
+      fact.geography_id === aggregate.id,
   )
-  const expectedNational =
+  const expectedAggregate =
     release.metadata.periods.length *
     release.metadata.universes.length *
     release.metadata.concepts.length *
     release.metadata.estimands.length
-  if (nationalFacts.length !== expectedNational) {
+  if (aggregateFacts.length !== expectedAggregate) {
     fail(
-      `${release.metadata.release_id} must expose exactly ${expectedNational} explicit national facts`,
+      `${release.metadata.release_id} must expose exactly ${expectedAggregate} explicit aggregate facts`,
     )
   }
-  const nationalJson = json(nationalFacts)
+  const aggregateJson = json(aggregateFacts)
 
   const files = {
     "metadata.json": sha256(Buffer.from(metadataJson)),
     "geographies.json": sha256(Buffer.from(geographiesJson)),
-    "national.json": sha256(Buffer.from(nationalJson)),
+    "aggregate.json": sha256(Buffer.from(aggregateJson)),
   }
   const factsByPeriod = {}
 
@@ -174,7 +181,7 @@ async function writePublicRelease(release) {
 
   await writeFile(path.join(publicDir, "metadata.json"), metadataJson)
   await writeFile(path.join(publicDir, "geographies.json"), geographiesJson)
-  await writeFile(path.join(publicDir, "national.json"), nationalJson)
+  await writeFile(path.join(publicDir, "aggregate.json"), aggregateJson)
   await writeFile(path.join(publicDir, "manifest.json"), json(manifest))
 
   return {
@@ -184,7 +191,7 @@ async function writePublicRelease(release) {
     not_for_interpretation: true,
     metadata: `/data/releases/${release.metadata.release_id}/metadata.json`,
     geographies: `/data/releases/${release.metadata.release_id}/geographies.json`,
-    national: `/data/releases/${release.metadata.release_id}/national.json`,
+    aggregate: `/data/releases/${release.metadata.release_id}/aggregate.json`,
     facts_by_period: factsByPeriod,
     legend_max: legendDomains(release),
     manifest: `/data/releases/${release.metadata.release_id}/manifest.json`,
@@ -215,7 +222,7 @@ function descriptorProjection(release, entry) {
     geographies: release.geographies,
     metadataUrl: entry.metadata,
     geographiesUrl: entry.geographies,
-    nationalUrl: entry.national,
+    aggregateUrl: entry.aggregate,
     manifestUrl: entry.manifest,
     factsByPeriod: entry.facts_by_period,
     legendMax: entry.legend_max,
@@ -320,6 +327,53 @@ async function loadGeographyLabels(directory) {
   return { departments, provinces }
 }
 
+
+async function loadAgglomerateLabels(directory) {
+  const manifestPath = path.join(directory, "manifest.json")
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"))
+  if (
+    manifest?.dataset?.dataset_id !==
+    "arggeo.indec.eph.census2010.agglomerate-footprint"
+  ) {
+    fail(
+      "AGGLOMERATE_GEOGRAPHY_RELEASE_DIR is not the governed EPH agglomerate release",
+    )
+  }
+  if (manifest?.agglomerate_identity?.feature_count !== 32) {
+    fail("EPH agglomerate geography release must contain exactly 32 identities")
+  }
+  const displayName = manifest?.artifacts?.display_geojson
+  const expectedDisplayHash = manifest?.display_derivative?.content_sha256
+  if (typeof displayName !== "string" || typeof expectedDisplayHash !== "string") {
+    fail("EPH agglomerate geography release lacks governed display derivative identity")
+  }
+  const displayBytes = await readFile(path.join(directory, displayName))
+  if (sha256(displayBytes) !== expectedDisplayHash) {
+    fail("EPH agglomerate geography display derivative checksum mismatch")
+  }
+  const display = JSON.parse(displayBytes.toString("utf8"))
+  if (display?.type !== "FeatureCollection" || !Array.isArray(display.features)) {
+    fail("EPH agglomerate geography display derivative is not a FeatureCollection")
+  }
+  if (display.features.length !== 32) {
+    fail(`EPH agglomerate display derivative has ${display.features.length} features`)
+  }
+
+  const labels = new Map()
+  for (const feature of display.features) {
+    const properties = feature?.properties ?? {}
+    const id = String(properties.geography_id ?? "")
+    const name = String(properties.display_name ?? "").trim()
+    if (!/^\d{2}$/.test(id) || !name) {
+      fail(`invalid EPH agglomerate display label ${id}/${name}`)
+    }
+    if (labels.has(id)) fail(`duplicate EPH agglomerate display label ${id}`)
+    labels.set(id, { id, name, shortName: name })
+  }
+  if (labels.size !== 32) fail("EPH agglomerate labels must cover exactly 32 identities")
+  return labels
+}
+
 function enrichGeographies(release, labelMap) {
   const observed = new Set(release.geographies.map((geography) => geography.id))
   const expected = new Set(labelMap.keys())
@@ -397,6 +451,21 @@ async function commissionedBatchProjections(batchRoot) {
   return [province, department]
 }
 
+
+async function enrichReleaseWithGovernedLabels(release) {
+  if (release.metadata.geography_level === "eph_agglomerate") {
+    const geographyRoot = process.env.AGGLOMERATE_GEOGRAPHY_RELEASE_DIR?.trim()
+    if (!geographyRoot) {
+      fail(
+        "eph_agglomerate publication requires AGGLOMERATE_GEOGRAPHY_RELEASE_DIR",
+      )
+    }
+    const labels = await loadAgglomerateLabels(path.resolve(geographyRoot))
+    return enrichGeographies(release, labels)
+  }
+  return release
+}
+
 async function main() {
   const batchRoot = process.env.POVERTY_BATCH_ROOT?.trim()
   if (batchRoot) {
@@ -459,11 +528,15 @@ async function main() {
       directories.map((directory) => path.resolve(directory)),
       { expectedPeriods: CANONICAL_EIGHT_PERIODS },
     )
-    if (release.metadata.geography_level !== "department_2010") {
-      fail("legacy multi-release ingest currently requires department_2010")
+    if (
+      release.metadata.geography_level !== "department_2010" &&
+      release.metadata.geography_level !== "eph_agglomerate"
+    ) {
+      fail("legacy multi-release ingest requires department_2010 or eph_agglomerate")
     }
   }
 
+  release = await enrichReleaseWithGovernedLabels(release)
   const entries = await writePublicCollection([release], release)
   await writeGeneratedCollection([release], entries)
   console.log(

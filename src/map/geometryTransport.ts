@@ -1,3 +1,4 @@
+import agglomerateManifestJson from "../../mapbox/manifests/eph-agglomerate-w3.json"
 import departmentManifestJson from "../../mapbox/manifests/department-w3.json"
 import provinceManifestJson from "../../mapbox/manifests/province-w3.json"
 import type { GeographyLevel } from "@/data/release"
@@ -17,6 +18,11 @@ const TRANSPORT_PROFILES = {
     datasetId: "arggeo.indec.census.2010.department-footprint",
     expectedCount: 525,
   },
+  eph_agglomerate: {
+    parentLevel: "agglomerate",
+    datasetId: "arggeo.indec.eph.census2010.agglomerate-footprint",
+    expectedCount: 32,
+  },
 } as const
 
 export interface PinnedParentRelease {
@@ -25,7 +31,7 @@ export interface PinnedParentRelease {
   dataset_id: string
   geography_id: string | null
   release_version: string
-  level: "province" | "department"
+  level: "province" | "department" | "agglomerate"
   source_snapshot_sha256: string
   artifact_sha256: string
   feature_count: number
@@ -255,9 +261,11 @@ export function validateGeometryTransportManifest(
 
 const provinceManifestIds = (provinceManifestJson.fixture_geography_ids ?? []) as string[]
 const departmentManifestIds = (departmentManifestJson.fixture_geography_ids ?? []) as string[]
+const agglomerateManifestIds = (agglomerateManifestJson.fixture_geography_ids ?? []) as string[]
 
 export const provinceGeometryIds = [...provinceManifestIds]
 export const departmentGeometryIds = [...departmentManifestIds]
+export const agglomerateGeometryIds = [...agglomerateManifestIds]
 
 export const geometryTransportManifest = validateGeometryTransportManifest(
   provinceManifestJson,
@@ -272,9 +280,17 @@ export const departmentGeometryTransportManifest =
     "department_2010",
   )
 
+export const agglomerateGeometryTransportManifest =
+  validateGeometryTransportManifest(
+    agglomerateManifestJson,
+    agglomerateGeometryIds,
+    "eph_agglomerate",
+  )
+
 const manifestByLevel: Record<GeographyLevel, GeometryTransportManifest> = {
   province_2010: geometryTransportManifest,
   department_2010: departmentGeometryTransportManifest,
+  eph_agglomerate: agglomerateGeometryTransportManifest,
 }
 
 export function geometryTransportManifestForLevel(

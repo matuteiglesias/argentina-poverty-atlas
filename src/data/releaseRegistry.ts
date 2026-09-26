@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { activeReleases } from "@/data/activeReleases"
 import {
+  aggregateGeography,
   concepts,
   estimands,
   geographyLevels,
@@ -79,7 +80,7 @@ export function getGeography(
   return getGeographiesForLevel(level).find((geography) => geography.id === id) ?? null
 }
 
-const nationalIndexes = new Map<GeographyLevel, Map<string, PovertyFact>>()
+const aggregateIndexes = new Map<GeographyLevel, Map<string, PovertyFact>>()
 const periodIndexes = new Map<string, Map<string, PovertyFact>>()
 const inFlight = new Map<string, Promise<void>>()
 
@@ -112,10 +113,11 @@ function indexFacts(facts: readonly PovertyFact[]) {
   )
 }
 
-function validateNationalFacts(
+function validateAggregateFacts(
   release: AtlasReleaseDescriptor,
   facts: PovertyFact[],
 ) {
+  const aggregate = aggregateGeography(release.metadata)
   validateAtlasRelease({
     metadata: release.metadata,
     geographies: release.geographies,
@@ -123,15 +125,17 @@ function validateNationalFacts(
   })
   invariant(
     facts.every(
-      (fact) => fact.geography_level === "national" && fact.geography_id === "ARG",
+      (fact) =>
+        fact.geography_level === aggregate.level &&
+        fact.geography_id === aggregate.id,
     ),
-    `${release.metadata.release_id} national.json contains territorial facts`,
+    `${release.metadata.release_id} aggregate facts contain territorial rows`,
   )
   const expected =
     release.metadata.periods.length * universes.length * concepts.length * estimands.length
   invariant(
     facts.length === expected,
-    `${release.metadata.release_id} national.json must contain exactly ${expected} facts`,
+    `${release.metadata.release_id} aggregate partition must contain exactly ${expected} facts`,
   )
   return facts
 }
@@ -141,6 +145,7 @@ function validatePeriodFacts(
   period: PeriodId,
   facts: PovertyFact[],
 ) {
+  const aggregate = aggregateGeography(release.metadata)
   validateAtlasRelease({
     metadata: release.metadata,
     geographies: release.geographies,
@@ -151,7 +156,7 @@ function validatePeriodFacts(
       (fact) =>
         fact.period === period &&
         fact.geography_level === release.metadata.geography_level &&
-        fact.geography_id !== "ARG",
+        fact.geography_id !== aggregate.id,
     ),
     `${release.metadata.release_id}/${period} contains facts outside its territorial partition`,
   )
@@ -166,9 +171,12 @@ async function fetchFacts(url: string): Promise<PovertyFact[]> {
   return value as PovertyFact[]
 }
 
-function embeddedNationalFacts(release: AtlasReleaseDescriptor) {
+function embeddedAggregateFacts(release: AtlasReleaseDescriptor) {
+  const aggregate = aggregateGeography(release.metadata)
   return (release.embeddedFacts ?? []).filter(
-    (fact) => fact.geography_level === "national",
+    (fact) =>
+      fact.geography_level === aggregate.level &&
+      fact.geography_id === aggregate.id,
   )
 }
 
@@ -183,17 +191,17 @@ function embeddedPeriodFacts(
   )
 }
 
-async function loadNationalFacts(level: GeographyLevel) {
-  if (nationalIndexes.has(level)) return
-  const key = `${level}|national`
+async function loadAggregateFacts(level: GeographyLevel) {
+  if (aggregateIndexes.has(level)) return
+  const key = `${level}|aggregate`
   const existing = inFlight.get(key)
   if (existing) return existing
   const release = getReleaseForLevel(level)
   const task = (async () => {
     const facts = release.embeddedFacts
-      ? embeddedNationalFacts(release)
-      : await fetchFacts(release.nationalUrl)
-    nationalIndexes.set(level, indexFacts(validateNationalFacts(release, [...facts])))
+      ? embeddedAggregateFacts(release)
+      : await fetchFacts(release.aggregateUrl ?? release.nationalUrl!)
+    aggregateIndexes.set(level, indexFacts(validateAggregateFacts(release, [...facts])))
   })().finally(() => inFlight.delete(key))
   inFlight.set(key, task)
   return task
@@ -221,13 +229,13 @@ async function loadPeriodFacts(level: GeographyLevel, period: PeriodId) {
 }
 
 export async function loadReleaseData(level: GeographyLevel, period: PeriodId) {
-  await Promise.all([loadNationalFacts(level), loadPeriodFacts(level, period)])
+  await Promise.all([loadAggregateFacts(level), loadPeriodFacts(level, period)])
 }
 
 export async function loadAllPeriodsForLevel(level: GeographyLevel) {
   const periods = getPeriodsForLevel(level)
   await Promise.all([
-    loadNationalFacts(level),
+    loadAggregateFacts(level),
     ...periods.map((period) => loadPeriodFacts(level, period.id)),
   ])
 }
@@ -280,9 +288,10 @@ export function getFactForLevel(
   concept: Concept,
   estimand: Estimand,
 ): PovertyFact | null {
+  const aggregate = aggregateGeography(getReleaseForLevel(level).metadata)
   const index =
-    geographyId === "ARG"
-      ? nationalIndexes.get(level)
+    geographyId === aggregate.id
+      ? aggregateIndexes.get(level)
       : periodIndexes.get(periodCacheKey(level, period))
   return (
     index?.get(factLookupKey(geographyId, period, universe, concept, estimand)) ?? null
@@ -338,4 +347,5 @@ export function getLegendMaxForLevel(
 export const geographyLevelLabels: Record<GeographyLevel, string> = {
   province_2010: "Provincias",
   department_2010: "Departamentos",
+  eph_agglomerate: "Aglomerados EPH",
 }

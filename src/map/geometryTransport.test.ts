@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  agglomerateGeometryIds,
+  agglomerateGeometryTransportManifest,
   departmentGeometryIds,
   departmentGeometryTransportManifest,
   geometryTransportManifest,
@@ -62,6 +64,23 @@ describe("W3 geometry transport manifest", () => {
     ).toBe(departmentGeometryTransportManifest)
     expect(departmentGeometryTransportManifest.parent_release?.feature_count).toBe(525)
     expect(departmentGeometryTransportManifest.payload_policy.poverty_values_embedded).toBe(false)
+  })
+
+
+  it("registers the exact 32-code EPH agglomerate transport as blocked until G1", () => {
+    expect(agglomerateGeometryIds).toHaveLength(32)
+    expect(new Set(agglomerateGeometryIds).size).toBe(32)
+    expect(agglomerateGeometryIds.every((id) => /^\d{2}$/.test(id))).toBe(true)
+    expect(
+      validateGeometryTransportManifest(
+        agglomerateGeometryTransportManifest,
+        agglomerateGeometryIds,
+        "eph_agglomerate",
+      ),
+    ).toBe(agglomerateGeometryTransportManifest)
+    expect(agglomerateGeometryTransportManifest.status).toBe("blocked_upstream")
+    expect(agglomerateGeometryTransportManifest.parent_release).toBeNull()
+    expect(agglomerateGeometryTransportManifest.mapbox.tileset_id).toBeNull()
   })
 
   it("rejects department ID width drift", () => {
