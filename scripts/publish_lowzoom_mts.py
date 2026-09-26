@@ -447,7 +447,6 @@ def inspect_zoom(
                 "y": tile.y,
                 "bytes": len(raw),
                 "sha256": hashlib.sha256(raw).hexdigest(),
-                "observed_geography_ids": sorted(tile_ids),
                 "observed_geography_id_count": len(tile_ids),
             }
         )
