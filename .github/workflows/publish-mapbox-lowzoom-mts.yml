@@ -177,13 +177,12 @@ jobs:
               print(
                   "::warning title=Normalized geography SHA drift::"
                   f"expected {expected_artifact}, observed {observed_artifact}; "
-                  "accepted for this publication because source/semantic gates passed"
+                  "accepted because the pinned source and byte-stable display derivative still match"
               )
           if observed_display != expected_display:
-              print(
-                  "::warning title=Display GeoJSON SHA drift::"
-                  f"expected {expected_display}, observed {observed_display}; "
-                  "accepted for this publication because exact IDs and geometry gates passed"
+              raise SystemExit(
+                  "display GeoJSON drift is transport-significant and remains a hard gate: "
+                  f"expected {expected_display}, observed {observed_display}"
               )
 
           summary = Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null"))
@@ -197,10 +196,10 @@ jobs:
               handle.write(
                   f"- display GeoJSON SHA match: **{observed_display == expected_display}**\n"
               )
-              if observed_artifact != expected_artifact or observed_display != expected_display:
+              if observed_artifact != expected_artifact:
                   handle.write(
-                      "- disposition: **PASS_WITH_WARNINGS** — byte drift accepted only after "
-                      "strict source/identity/geometry validation.\n"
+                      "- disposition: **PASS_WITH_WARNINGS** — only canonical Parquet bytes drifted; "
+                      "the provider-facing display GeoJSON remains exactly pinned.\n"
                   )
           PY
 
