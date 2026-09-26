@@ -129,7 +129,17 @@ def main() -> None:
                 f"missing={missing[:20]}, extra={extra[:20]}"
             )
 
-        coverage["nonempty_tiles"] = nonempty_tiles
+        coverage["nonempty_tiles"] = [
+            {
+                "z": item["z"],
+                "x": item["x"],
+                "y": item["y"],
+                "bytes": item["bytes"],
+                "sha256": item["sha256"],
+                "observed_geography_id_count": item["observed_geography_id_count"],
+            }
+            for item in nonempty_tiles
+        ]
         chosen = max(
             nonempty_tiles,
             key=lambda item: (
