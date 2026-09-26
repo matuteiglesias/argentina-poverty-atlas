@@ -28,6 +28,8 @@ interface BrowserFetchResult {
   status: number | null
   contentType: string | null
   bytes: number | null
+  sha256: string | null
+  matchesServerProof: boolean | null
   error: string | null
 }
 
@@ -53,6 +55,8 @@ export function MapboxDiagnosticPage() {
     status: null,
     contentType: null,
     bytes: null,
+    sha256: null,
+    matchesServerProof: null,
     error: null,
   })
   const [sourceResult, setSourceResult] = useState<SourceResult>({
@@ -82,12 +86,22 @@ export function MapboxDiagnosticPage() {
       headers: { Accept: "application/vnd.mapbox-vector-tile" },
     })
       .then(async (response) => {
-        const bytes = (await response.arrayBuffer()).byteLength
+        const payload = await response.arrayBuffer()
+        const bytes = payload.byteLength
+        const digest = await crypto.subtle.digest("SHA-256", payload)
+        const sha256 = [...new Uint8Array(digest)]
+          .map((value) => value.toString(16).padStart(2, "0"))
+          .join("")
         if (disposed) return
         setFetchResult({
           status: response.status,
           contentType: response.headers.get("content-type"),
           bytes,
+          sha256,
+          matchesServerProof:
+            response.ok &&
+            bytes === diagnosticTile.bytes_server_proof &&
+            sha256 === diagnosticTile.sha256_server_proof,
           error: response.ok ? null : `HTTP ${response.status}`,
         })
       })
@@ -97,6 +111,8 @@ export function MapboxDiagnosticPage() {
           status: null,
           contentType: null,
           bytes: null,
+          sha256: null,
+          matchesServerProof: null,
           error: error instanceof Error ? error.message : "Fetch desconocido",
         })
       })
@@ -265,6 +281,15 @@ export function MapboxDiagnosticPage() {
               <DiagnosticRow
                 label="bytes browser"
                 value={fetchResult.bytes === null ? "—" : String(fetchResult.bytes)}
+              />
+              <DiagnosticRow label="sha256 browser" value={fetchResult.sha256 ?? "—"} />
+              <DiagnosticRow
+                label="match server proof"
+                value={
+                  fetchResult.matchesServerProof === null
+                    ? "pendiente"
+                    : String(fetchResult.matchesServerProof)
+                }
               />
               <DiagnosticRow label="error" value={fetchResult.error ?? "ninguno"} />
             </DiagnosticCard>
