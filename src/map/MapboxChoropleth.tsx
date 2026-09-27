@@ -81,9 +81,9 @@ function waitForNonZeroBox(element: HTMLElement): Promise<{ width: number; heigh
   })
 }
 
-const LIGHTWEIGHT_STYLE: StyleSpecification = {
+const BLANK_STYLE: StyleSpecification = {
   version: 8,
-  name: "Atlas lightweight",
+  name: "Atlas blank fallback",
   sources: {},
   layers: [
     {
@@ -98,7 +98,7 @@ type RuntimeFeature = NonNullable<MapLayerEvent["features"]>[number]
 
 function createMapRuntimeAdapter(
   map: MapboxMap,
-  useStandardSlots = true,
+  placement: "standard" | "classic" | "blank",
 ): MapRuntime {
   const handlers = new Map<
     MapLayerEventHandler,
@@ -124,12 +124,29 @@ function createMapRuntimeAdapter(
   return {
     getLayer: (id) => map.getLayer(id),
     addLayer: (layer) => {
-      const nextLayer = useStandardSlots
-        ? layer
-        : Object.fromEntries(
-            Object.entries(layer).filter(([key]) => key !== "slot"),
-          )
-      map.addLayer(nextLayer as AnyLayer)
+      if (placement === "standard") {
+        map.addLayer(layer as AnyLayer)
+        return
+      }
+
+      const nextLayer = Object.fromEntries(
+        Object.entries(layer).filter(([key]) => key !== "slot"),
+      )
+      if (placement === "blank") {
+        map.addLayer(nextLayer as AnyLayer)
+        return
+      }
+
+      const styleLayers = map.getStyle().layers ?? []
+      const layerId = String(nextLayer.id ?? "")
+      const beforeId =
+        layerId === MAP_LAYERS.fill
+          ? styleLayers.find((candidate) =>
+              candidate.type === "line" || candidate.type === "symbol"
+            )?.id
+          : styleLayers.find((candidate) => candidate.type === "symbol")?.id
+
+      map.addLayer(nextLayer as AnyLayer, beforeId)
     },
     setPaintProperty: (layerId, property, value) =>
       setPaintProperty(layerId, property, value),
@@ -239,7 +256,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const selectRef = useRef(onSelect)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
-  const [renderMode, setRenderMode] = useState<"standard" | "lite">("lite")
+  const [renderMode, setRenderMode] = useState<"light" | "blank" | "standard">("light")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
   const effectRunRef = useRef(0)
   const [probe, setProbe] = useState({
@@ -393,9 +410,11 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       map = new mapboxgl.Map({
         container,
         style:
-          renderMode === "lite"
-            ? LIGHTWEIGHT_STYLE
-            : publishedTransport.style_url,
+          renderMode === "light"
+            ? "mapbox://styles/mapbox/light-v11?optimize=true"
+            : renderMode === "blank"
+              ? BLANK_STYLE
+              : publishedTransport.style_url,
         ...(renderMode === "standard"
           ? {
               config: {
@@ -501,7 +520,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             })
           }
           runtime = createRuntimeJoin(
-            createMapRuntimeAdapter(map, renderMode === "standard"),
+            createMapRuntimeAdapter(
+              map,
+              renderMode === "standard"
+                ? "standard"
+                : renderMode === "light"
+                  ? "classic"
+                  : "blank",
+            ),
             publishedTransport,
             factSource,
             (geographyId) => selectRef.current(geographyId),
@@ -627,9 +653,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           <p className="mt-1 text-sm text-slate-600">
             {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
           </p>
-          <p className="mt-1 font-mono text-[10px] leading-4 text-slate-400">
-            probe · status={status.kind} · effect={probe.effectRun} · canvas={probe.canvas} · source={probe.source} · layers={probe.layers} · source-events={probe.sourceEvents} · features={loadedFeatureCount ?? "—"}
-          </p>
         </div>
         {selectedGeography && selectedValue !== null ? (
           <div className="rounded-xl border border-slate-900/10 bg-slate-50 px-3 py-2 text-sm sm:text-right">
@@ -698,27 +721,28 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
                   >
                     Reintentar mapa
                   </button>
-                  {renderMode === "standard" ? (
+                  {renderMode !== "blank" && (
                     <button
                       type="button"
                       className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
                       onClick={() => {
-                        setRenderMode("lite")
+                        setRenderMode("blank")
                         setRetryKey((value) => value + 1)
                       }}
                     >
-                      Volver al renderer liviano
+                      Usar fondo simple
                     </button>
-                  ) : (
+                  )}
+                  {renderMode !== "light" && (
                     <button
                       type="button"
                       className="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
                       onClick={() => {
-                        setRenderMode("standard")
+                        setRenderMode("light")
                         setRetryKey((value) => value + 1)
                       }}
                     >
-                      Probar mapa base
+                      Probar mapa base liviano
                     </button>
                   )}
                 </div>
@@ -744,7 +768,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         <span>Mapbox GL JS {MAPBOX_GL_VERSION}</span>
         <span>join: feature-state/geography_id</span>
         <span>transporte: {manifest.status}</span>
-        <span>renderer: {renderMode}</span>
+        <span>
+          base: {renderMode === "light" ? "Mapbox Light v11" : renderMode === "blank" ? "simple" : "Mapbox Standard"}
+        </span>
         {loadedFeatureCount !== null && (
           <span>features cargadas: {loadedFeatureCount}</span>
         )}
