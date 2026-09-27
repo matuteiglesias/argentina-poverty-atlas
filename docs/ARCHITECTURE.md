@@ -82,7 +82,7 @@ A frontend deployment must not mutate either scientific parent.
 
 ## Atlas release
 
-The atlas should eventually build a small, deterministic presentation release:
+The atlas builds a small, deterministic presentation release/projection:
 
 ```text
 atlas_manifest.json
@@ -211,7 +211,7 @@ No database, auth, server action or API should be introduced without a concrete 
 
 - Fail visibly on incompatible geography IDs.
 - Never render partial coverage as complete coverage without a warning/state.
-- Keep scientific-status metadata next to the release.
+- Keep scientific-status, `not_for_interpretation`, estimand and downstream-operation permissions next to the release.
 - Keep fixture status globally visible.
 - Preserve Mapbox attribution and data/provider attribution.
 - Prefer deterministic build artifacts over mutable Studio state.
