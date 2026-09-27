@@ -41,6 +41,19 @@ const EXPECTED_UNIVERSES = ["households", "persons"]
 const EXPECTED_CONCEPTS = ["indigence", "poverty"]
 const EXPECTED_ESTIMANDS = ["fgt0", "fgt1", "fgt2"]
 const ACCEPTED_STATUSES = new Set(["research_estimate", "synthetic_fixture"])
+const CAPABILITY_SCHEMA = "poverty-estimate-capabilities/v2"
+const INTERPRETATION_MODES = new Set([
+  "demo_only",
+  "commissioning_only",
+  "research_public",
+])
+const OPERATION_RULES = {
+  point_estimates: new Set(["authorized", "demo_only"]),
+  population_counts: new Set(["not_authorized"]),
+  uncertainty_intervals: new Set(["not_authorized"]),
+  inferential_ranking: new Set(["not_authorized"]),
+  temporal_comparison: new Set(["descriptive_only", "demo_only"]),
+}
 
 function fail(message) {
   throw new Error(`Poverty release ingest failed: ${message}`)
@@ -70,6 +83,92 @@ function exactSet(left, right) {
 function normalizedDimension(value, fallback) {
   if (!Array.isArray(value) || value.length === 0) return [...fallback]
   return [...value].map(String).sort()
+}
+
+function canonicalJson(value) {
+  return JSON.stringify(value, Object.keys(value).sort())
+}
+
+function validateCapabilityContract(capabilities, manifest, rows) {
+  if (capabilities.schema_version !== CAPABILITY_SCHEMA) {
+    fail("unsupported capabilities schema")
+  }
+  if (capabilities.release_id !== manifest.release_id) {
+    fail("capabilities release identity mismatch")
+  }
+  if (capabilities.scientific_status !== manifest.scientific_status) {
+    fail("capabilities scientific status mismatch")
+  }
+  if (capabilities.not_for_interpretation !== manifest.not_for_interpretation) {
+    fail("capabilities interpretation status mismatch")
+  }
+
+  const estimand = capabilities.estimand_contract
+  if (!estimand || estimand.measure !== "proportion") {
+    fail("capabilities must authorize proportion estimands only")
+  }
+  if (estimand.population_mass_authority !== null) {
+    fail("current capability contract must not claim population-mass authority")
+  }
+  if (estimand.household_total_authority !== false) {
+    fail("current capability contract must not claim household-total authority")
+  }
+  const observedWeightSemantics = [...new Set(rows.map((row) => row.weight_semantics))].sort()
+  const observedDesignIds = [...new Set(rows.map((row) => row.design_id))].sort()
+  const observedUniverses = [...new Set(rows.map((row) => row.universe))].sort()
+  if (
+    observedWeightSemantics.length !== 1 ||
+    estimand.analysis_weight_semantics !== observedWeightSemantics[0]
+  ) {
+    fail("capability analysis-weight semantics differ from facts")
+  }
+  if (JSON.stringify(estimand.design_ids) !== JSON.stringify(observedDesignIds)) {
+    fail("capability design IDs differ from facts")
+  }
+  if (JSON.stringify(estimand.universes) !== JSON.stringify(observedUniverses)) {
+    fail("capability universes differ from facts")
+  }
+
+  const permissions = capabilities.permissions
+  if (!permissions || !INTERPRETATION_MODES.has(permissions.interpretation)) {
+    fail("capabilities require a supported interpretation permission")
+  }
+  const operations = permissions.operations
+  if (!operations || Object.keys(operations).sort().join("|") !== Object.keys(OPERATION_RULES).sort().join("|")) {
+    fail("capability operation set mismatch")
+  }
+  for (const [name, allowed] of Object.entries(OPERATION_RULES)) {
+    if (!allowed.has(operations[name])) {
+      fail(`unsupported ${name} permission`)
+    }
+  }
+  if (operations.population_counts !== "not_authorized") {
+    fail("population counts require an upstream population-mass authority")
+  }
+  if (
+    manifest.uncertainty_status === "not_supplied" &&
+    (operations.uncertainty_intervals !== "not_authorized" ||
+      operations.inferential_ranking !== "not_authorized")
+  ) {
+    fail("uncertainty and inferential ranking must fail closed")
+  }
+  if (manifest.scientific_status === "synthetic_fixture") {
+    if (manifest.not_for_interpretation !== true || permissions.interpretation !== "demo_only") {
+      fail("synthetic fixture permissions are inconsistent")
+    }
+  } else if (manifest.not_for_interpretation === true) {
+    if (permissions.interpretation !== "commissioning_only") {
+      fail("not_for_interpretation research release must be commissioning_only")
+    }
+  } else if (permissions.interpretation !== "research_public") {
+    fail("interpretable research release must be research_public")
+  }
+
+  return {
+    estimand_contract: structuredClone(estimand),
+    permissions: structuredClone(permissions),
+    not_for_interpretation: capabilities.not_for_interpretation,
+  }
 }
 
 function geographyMetadata(capabilities, ids, geographyLevel) {
@@ -127,9 +226,6 @@ export async function verifyDetachedRelease(directory) {
   const geography = JSON.parse(
     await readFile(path.join(dir, "geography_join_contract.json"), "utf8"),
   )
-  if (capabilities.schema_version !== "poverty-estimate-capabilities/v1") {
-    fail("unsupported capabilities schema")
-  }
   if (geography.join_semantics !== "exact_governed_id") fail("unsupported geography join semantics")
   if (geography.geometry_embedded === true) fail("poverty release cannot embed geometry")
   if (geography.numeric_coercion_allowed === true) fail("numeric geography coercion is forbidden")
@@ -282,6 +378,12 @@ export async function verifyDetachedRelease(directory) {
   if (capabilityConcepts.join("|") !== normalizedConcepts.join("|")) fail("capabilities concepts differ")
   if (capabilityEstimands.join("|") !== normalizedEstimands.join("|")) fail("capabilities estimands differ")
 
+  const capabilityContract = validateCapabilityContract(
+    capabilities,
+    manifest,
+    parsed.rows,
+  )
+
   const normalizedFacts = parsed.rows.map((row) => ({
     period: row.estimation_period,
     universe: row.universe,
@@ -319,6 +421,7 @@ export async function verifyDetachedRelease(directory) {
       id: aggregateId,
       name: aggregateLevel === "national" ? "Argentina" : "Total aglomerados EPH",
     },
+    ...capabilityContract,
   }
 }
 
@@ -335,6 +438,9 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
   const estimandKey = releases[0].estimands.join("|")
   const periods = new Set()
   const aggregateKey = `${releases[0].aggregate.level}|${releases[0].aggregate.id}`
+  const estimandContractKey = JSON.stringify(releases[0].estimand_contract)
+  const permissionsKey = JSON.stringify(releases[0].permissions)
+  const interpretationFlag = releases[0].not_for_interpretation
 
   for (const release of releases) {
     if (release.geographyLevel !== level) fail("release set mixes geography levels")
@@ -344,6 +450,15 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
     if (release.estimands.join("|") !== estimandKey) fail("release set estimand cubes differ")
     if (`${release.aggregate.level}|${release.aggregate.id}` !== aggregateKey) {
       fail("release set aggregate geography identities differ")
+    }
+    if (JSON.stringify(release.estimand_contract) !== estimandContractKey) {
+      fail("release set estimand contracts differ")
+    }
+    if (JSON.stringify(release.permissions) !== permissionsKey) {
+      fail("release set capability permissions differ")
+    }
+    if (release.not_for_interpretation !== interpretationFlag) {
+      fail("release set interpretation permissions differ")
     }
     if (periods.has(release.period)) fail(`duplicate release-set period ${release.period}`)
     periods.add(release.period)
@@ -393,7 +508,9 @@ export function projectVerifiedReleaseSet(releases, options = {}) {
         ordered.every((release) => release.manifest.scientific_status === "research_estimate")
           ? "research_estimate"
           : "synthetic_fixture",
-      not_for_interpretation: true,
+      not_for_interpretation: interpretationFlag,
+      estimand_contract: structuredClone(ordered[0].estimand_contract),
+      permissions: structuredClone(ordered[0].permissions),
       periods: ordered.map((release) => ({ id: release.period, label: release.period })),
       universes: [...ordered[0].universes],
       concepts: [...ordered[0].concepts],
