@@ -77,7 +77,8 @@ If no uncertainty exists:
 uncertainty_status = not_supplied
 ```
 
-The UI must not derive an interval from absence.
+The UI must not derive an interval from absence. It also must not infer ranking certainty,
+significance, or comparative certainty from point estimates alone.
 
 ## Quality fields
 
@@ -99,6 +100,23 @@ Every atlas-consumable scientific release must expose or be projected into metad
 {
   "release_id": "...",
   "scientific_status": "synthetic_fixture | research_estimate | ...",
+  "not_for_interpretation": true,
+  "estimand_contract": {
+    "measure": "proportion",
+    "analysis_weight_semantics": "...",
+    "population_mass_authority": null,
+    "household_total_authority": false
+  },
+  "permissions": {
+    "interpretation": "demo_only | commissioning_only | research_public",
+    "operations": {
+      "point_estimates": "authorized | demo_only",
+      "population_counts": "not_authorized",
+      "uncertainty_intervals": "not_authorized",
+      "inferential_ranking": "not_authorized",
+      "temporal_comparison": "descriptive_only | demo_only"
+    }
+  },
   "periods": ["..."],
   "universes": ["persons", "households"],
   "concepts": ["poverty", "indigence"],
@@ -172,6 +190,21 @@ All fixture metadata must include:
 scientific_status = synthetic_fixture
 not_for_interpretation = true
 ```
+
+## Presentation permissions
+
+Availability and presentation authority are separate. A fact can exist and still be
+restricted to commissioning/inspection.
+
+The current Atlas adapter fails closed when the permission object is absent or inconsistent.
+In particular:
+
+- `commissioning_only` suppresses the ordinary national headline;
+- `population_counts = not_authorized` forbids derived poor-person/poor-household counts;
+- `uncertainty_intervals = not_authorized` and `inferential_ranking = not_authorized`
+  prevent the UI from manufacturing inferential claims;
+- `temporal_comparison = descriptive_only` permits a descriptive series but not
+  significance/change-certainty language.
 
 ## Comparability metadata
 
