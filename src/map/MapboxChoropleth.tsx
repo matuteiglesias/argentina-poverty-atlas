@@ -312,6 +312,8 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     let loadTimeout: ReturnType<typeof window.setTimeout> | null = null
     let ready = false
     let tryReadyAfterRestore: (() => void) | null = null
+    let resizeObserver: ResizeObserver | null = null
+    let lastObservedSize = ""
 
     const armLoadTimeout = () => {
       if (loadTimeout !== null) window.clearTimeout(loadTimeout)
@@ -364,10 +366,27 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
         renderWorldCopies: false,
       })
-      setProbe((current) => ({
-        ...current,
-        canvas: `${container.clientWidth}×${container.clientHeight}`,
-      }))
+      const syncContainerSize = () => {
+        if (disposed || !map) return
+        const width = container.clientWidth
+        const height = container.clientHeight
+        const size = `${width}×${height}`
+        if (size !== lastObservedSize) {
+          lastObservedSize = size
+          setProbe((current) => ({ ...current, canvas: size }))
+        }
+        if (width <= 0 || height <= 0) return
+        map.resize()
+        map.triggerRepaint()
+        tryReadyAfterRestore?.()
+      }
+
+      resizeObserver = new ResizeObserver(() => {
+        window.requestAnimationFrame(syncContainerSize)
+      })
+      resizeObserver.observe(container)
+      syncContainerSize()
+
       map.on("error", (event) => {
         const detail =
           event.error instanceof Error
@@ -416,7 +435,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         new mapboxgl.NavigationControl({ showCompass: false, visualizePitch: false }),
         "top-right",
       )
-      window.requestAnimationFrame(() => map?.resize())
+      window.requestAnimationFrame(syncContainerSize)
 
       map.once("load", () => {
         if (disposed || !map) return
@@ -538,6 +557,8 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       disposed = true
       if (loadTimeout !== null) window.clearTimeout(loadTimeout)
       tryReadyAfterRestore = null
+      resizeObserver?.disconnect()
+      resizeObserver = null
       runtime?.destroy()
       runtimeRef.current = null
       map?.remove()
@@ -575,7 +596,10 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         )}
       </div>
 
-      <div className="relative h-[26rem] bg-slate-100 sm:h-[34rem] lg:h-[40rem]">
+      <div
+        className="relative bg-slate-100"
+        style={{ height: "clamp(26rem, 62vh, 40rem)" }}
+      >
         <div
           ref={containerRef}
           className="absolute inset-0"
