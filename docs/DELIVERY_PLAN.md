@@ -9,7 +9,8 @@ The map/publication last mile is closed:
 - **W3 complete:** province and department geometry-only MTS transports are published and independently identity-proved (24/24 provinces; 525/525 departments at the identity zoom).
 - **W4 complete:** the exact-ID browser join is commissioned with the real public token; production waits for a nonzero canvas and source/geography readiness before becoming interactive.
 - **W5 map surface complete enough for public use:** the default renderer uses Mapbox Light v11 for contextual basemap detail with a blank-style reliability fallback.
-- **W6/W7 path active:** the public app consumes governed research-release projections rather than using the synthetic fixture as public truth.
+- **W6 complete:** the app consumes governed Poverty release projections without producer-code import and now verifies `poverty-estimate-capabilities/v2`.
+- **W7 publication gate remains explicit:** real research projections exist, but ordinary public statistical presentation is permitted only when the upstream release declares `research_public`. Current legacy projections fail closed to commissioning mode.
 
 The fixture remains a deterministic regression surface. Future work should treat geometry transport and browser map architecture as stable infrastructure unless a new release violates their explicit contracts.
 
@@ -163,26 +164,32 @@ Required:
 
 **DoD:** swapping fixture source package for a verified compatible Poverty release is an artifact-selection change, not a frontend rewrite.
 
-## W7 — First real poverty release
+## W7 — First public-interpretable research release
 
-**Dependency:** approved real population frame + welfare release + poverty lines/method have produced one real Poverty estimate release.
+Real governed research projections are already integrated. That is no longer the missing
+proof.
+
+The remaining W7 question is publication permission.
 
 Required:
 
-- pin exact scientific release;
-- verify geography compatibility;
-- expose research-estimate/not-official labeling;
-- review choropleth domain against the real distribution rather than automatically reusing fixture thresholds;
-- inspect coverage and quality warnings;
-- confirm national headline and province comparisons against release facts;
-- deploy as a separately identifiable atlas release;
-- preserve the fixture/demo mode for tests, not public default.
+- consume a current `poverty-estimate-capabilities/v2` bundle;
+- preserve its estimand and operation permissions exactly;
+- require `permissions.interpretation = research_public` before rendering an ordinary national headline;
+- keep counts, uncertainty intervals and inferential ranking disabled unless a future producer schema explicitly authorizes them;
+- keep temporal presentation within the declared comparison permission;
+- verify geography compatibility, coverage, quality warnings and release lineage;
+- preserve fixture/demo mode for deterministic tests.
 
-**DoD:** first real research atlas release is public, reproducible and traceable.
+A `research_estimate` with `not_for_interpretation=true` is a valid commissioning
+surface, not a failed release and not a public-statistic override opportunity.
+
+**DoD:** an upstream-authorized `research_public` release is projected, reproducible and
+traceable without Atlas expanding its scientific authority.
 
 ## W8 — Legacy public migration/decommission
 
-Only after W7 is proven.
+Only after the public-interpretation W7 gate is proven.
 
 Required:
 
