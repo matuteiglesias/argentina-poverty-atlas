@@ -50,8 +50,9 @@
   ],
   "capability_discovery": {
     "file": "capabilities.json",
-    "schema_version": "poverty-estimate-capabilities/v1",
-    "selector_policy": "offer_only_declared_availability_cells"
+    "schema_version": "poverty-estimate-capabilities/v2",
+    "selector_policy": "offer_only_declared_availability_cells",
+    "permission_policy": "fail_closed_unless_declared"
   },
   "scientific_rules": {
     "browser_aggregation_allowed": false,
@@ -60,7 +61,11 @@
     "numeric_geography_coercion_allowed": false,
     "manufacture_uncertainty_allowed": false,
     "synthetic_fixture_requires_demo_label": true,
-    "research_estimate_requires_non_official_label": true
+    "research_estimate_requires_non_official_label": true,
+    "population_counts_without_upstream_authority_allowed": false,
+    "inferential_ranking_without_uncertainty_allowed": false,
+    "ordinary_headline_requires_research_public": true,
+    "temporal_comparison_requires_declared_permission": true
   },
   "unknown_semantics_policy": "reject_until_profile_is_versioned",
   "supported_geography_profiles": {
@@ -71,6 +76,11 @@
     "department_2010": {
       "id_regex": "^[0-9]{5}$",
       "expected_geographies": 525
+    },
+    "eph_agglomerate": {
+      "id_regex": "^[0-9]{2}$",
+      "expected_geographies": 32,
+      "aggregate_identity": "eph_coverage/EPH_TOTAL"
     }
   },
   "presentation_release_set": {
