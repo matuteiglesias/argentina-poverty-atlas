@@ -52,12 +52,12 @@ export function derivePresentationPermissions(
     pointInspection:
       declared.operations.point_estimates === "authorized" ||
       declared.operations.point_estimates === "demo_only",
-    populationCounts:
-      declared.operations.population_counts !== "not_authorized",
-    uncertaintyIntervals:
-      declared.operations.uncertainty_intervals !== "not_authorized",
-    inferentialRanking:
-      declared.operations.inferential_ranking !== "not_authorized",
+    // The current capability schema intentionally has no positive state for
+    // these operations. A future schema evolution must widen both the type and
+    // this adapter before the UI can expose them.
+    populationCounts: false,
+    uncertaintyIntervals: false,
+    inferentialRanking: false,
     temporalComparison: declared.operations.temporal_comparison,
   }
 }
