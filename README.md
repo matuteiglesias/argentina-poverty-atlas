@@ -17,11 +17,11 @@ poverty-estimate-release/v2        argentina-geography
                     Mapbox + web UI
 ```
 
-## Fixture-first development
+## Deterministic fixture + public research releases
 
-The first complete atlas will use **synthetic data for all 24 Argentine jurisdictions** and several synthetic periods.
+A synthetic 24-jurisdiction fixture remains in the repository as the deterministic development and regression surface. The public atlas now consumes governed research releases independently of that fixture.
 
-That fixture exists to prove the real architecture end-to-end:
+The fixture continues to prove the architecture end-to-end:
 
 - national headline;
 - time series;
@@ -36,7 +36,7 @@ That fixture exists to prove the real architecture end-to-end:
 
 > **Fixture values are demonstration data only. They are not poverty estimates and must never be presented as observed, research or official statistics.**
 
-When real sampler/model/poverty releases arrive, replacing the fixture should be an artifact-selection change rather than a frontend rewrite.
+Real sampler/model/poverty releases now enter through that same artifact-selection boundary rather than a frontend rewrite.
 
 ## Product direction
 
@@ -111,7 +111,7 @@ Mapbox runtime exact-ID join
 one choropleth and accessible non-map view
 ```
 
-Changing period, concept, universe or estimand updates the same runtime map rather than creating a new style or tileset. The remaining province W3 gate is operational: publish and record the geometry-only Mapbox transport, then verify exact IDs in the restricted public browser. See `docs/W3_GEOMETRY_TRANSPORT.md`.
+Changing period, concept, universe or estimand updates the same runtime map rather than creating a new style or tileset. Province and department geometry transports are published through Mapbox MTS and independently proved against exact governed IDs. The browser runtime has also been commissioned against the real public token. See `docs/W3_GEOMETRY_TRANSPORT.md` and `docs/W4_RUNTIME_CHOROPLETH.md`.
 
 ## Security note
 
@@ -119,6 +119,6 @@ Do not copy credentials from legacy Poverty notebooks. A historical Mapbox write
 
 ## Status
 
-The frontend shell, deterministic release projection, producer-independent release adapter and exact-ID map runtime are implemented. The application supports explicit synthetic/demo and research-release states and can be verified without Mapbox credentials.
+The frontend shell, deterministic release projection, producer-independent release adapter, exact-ID map runtime, province and department MTS transports, browser commissioning surface, responsive map lifecycle and lightweight basemap are implemented.
 
-The live province Mapbox transport remains fail-closed at `ready_for_publication` until provider publication and restricted-browser proof are recorded. See `docs/W3_GEOMETRY_TRANSPORT.md` for that gate and `docs/DELIVERY_PLAN.md` for the broader W0–W8 program.
+The public map defaults to Mapbox Light v11 beneath atlas-owned choropleth layers, with a blank-style fallback that preserves the scientific map if the basemap path degrades. Provider publication and browser proofs are recorded in the checked-in manifests/proofs; CI remains token-free for deterministic verification.
