@@ -2,7 +2,7 @@
 
 Public interactive atlas for governed poverty estimates in Argentina.
 
-The goal is simple to state: let a visitor understand **how much poverty is estimated, how it changes over time, where it is concentrated, and where the number comes from**—without exposing the implementation complexity required to produce a defensible estimate.
+The goal is simple to state: when an upstream release authorizes public interpretation, let a visitor understand **how much poverty is estimated, how it changes over time, where it is concentrated, and where the number comes from**—without exposing the implementation complexity required to produce a defensible estimate. Releases that remain commissioning-only are still inspectable, but the Atlas suppresses ordinary statistical presentation.
 
 The atlas is the presentation and map-delivery layer of a larger scientific system. It consumes versioned poverty and geography releases; it does **not** calculate poverty, train models, sample Census microdata, produce poverty lines or own geographic authority.
 
@@ -42,10 +42,10 @@ Real sampler/model/poverty releases now enter through that same artifact-selecti
 
 This should feel like a modern illustrated statistical atlas—not an internal dashboard.
 
-The default visitor journey is:
+For a `research_public` release, the default visitor journey is:
 
 1. read a national poverty estimate and context;
-2. see its evolution through time;
+2. see its permitted descriptive evolution through time;
 3. explore territorial variation on a map;
 4. inspect a province;
 5. open methodology, quality and lineage when desired;
@@ -95,7 +95,11 @@ npm run verify
 
 That command runs lint, TypeScript checking, unit tests and the production build. No Mapbox token or other credential is required.
 
-The UI is data-driven from validated static release projections. The checked-in projection path verifies release identity, checksums, scientific status and exact geography joins before build; runtime components remain independent of the upstream producer implementation. Synthetic/demo releases and research releases retain their own explicit status and limitations.
+The UI is data-driven from validated static release projections. New ingest requires
+`poverty-estimate-capabilities/v2` and preserves the producer's interpretation/operation
+permissions into Atlas metadata. Runtime components consume those permissions rather than
+re-deriving scientific authority. Older checked-in projections that predate the permission
+object fail closed to commissioning presentation.
 
 ## Current completion edge
 
@@ -111,7 +115,10 @@ Mapbox runtime exact-ID join
 one choropleth and accessible non-map view
 ```
 
-Changing period, concept, universe or estimand updates the same runtime map rather than creating a new style or tileset. Province and department geometry transports are published through Mapbox MTS and independently proved against exact governed IDs. The browser runtime has also been commissioned against the real public token. See `docs/W3_GEOMETRY_TRANSPORT.md` and `docs/W4_RUNTIME_CHOROPLETH.md`.
+Changing period, concept, universe or estimand updates the same runtime map rather than creating a new style or tileset. Province and department geometry transports are published through Mapbox MTS and independently proved against exact governed IDs. The browser runtime has also been commissioned against the real public token. Release
+presentation is separately governed by the Poverty capability contract: map readiness does
+not imply publication permission. See `docs/W3_GEOMETRY_TRANSPORT.md`,
+`docs/W4_RUNTIME_CHOROPLETH.md` and `docs/POVERTY_RELEASE_BOUNDARY.md`.
 
 ## Security note
 
@@ -119,6 +126,12 @@ Do not copy credentials from legacy Poverty notebooks. A historical Mapbox write
 
 ## Status
 
-The frontend shell, deterministic release projection, producer-independent release adapter, exact-ID map runtime, province and department MTS transports, browser commissioning surface, responsive map lifecycle and lightweight basemap are implemented.
+The frontend shell, deterministic release projection, producer-independent release adapter, exact-ID map runtime, province and department MTS transports, browser commissioning surface, responsive map lifecycle, lightweight basemap and capability-driven presentation gate are implemented.
+
+Current checked-in real research projections predate the v2 permission object, so the
+browser treats them as `legacy_fail_closed → commissioning`: point values remain
+inspectable, while the ordinary national headline is suppressed. A future re-projection
+from current capability-v2 bundles will use declared permissions; Atlas never upgrades
+`commissioning_only` to `research_public` on its own.
 
 The public map defaults to Mapbox Light v11 beneath atlas-owned choropleth layers, with a blank-style fallback that preserves the scientific map if the basemap path degrades. Provider publication and browser proofs are recorded in the checked-in manifests/proofs; CI remains token-free for deterministic verification.
