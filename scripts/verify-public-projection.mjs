@@ -5,22 +5,10 @@ import { fileURLToPath } from "node:url"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const publicRoot = path.join(root, "public")
-const CANONICAL_PERIODS = [
-  "2024-Q1",
-  "2024-Q2",
-  "2024-Q3",
-  "2024-Q4",
-  "2025-Q1",
-  "2025-Q2",
-  "2025-Q3",
-  "2025-Q4",
-]
 const PROFILES = {
   province_2010: { count: 24, id: /^\d{2}$/ },
   department_2010: { count: 525, id: /^\d{5}$/ },
 }
-const EXPECTED_NATIONAL_FACTS = 8 * 2 * 2 * 3
-
 function fail(message) {
   throw new Error(`Public projection verification failed: ${message}`)
 }
@@ -49,6 +37,26 @@ function exactArray(actual, expected) {
     actual.length === expected.length &&
     actual.every((value, index) => value === expected[index])
   )
+}
+
+function validatePeriodEnvelope(periods, level) {
+  invariant(Array.isArray(periods) && periods.length > 0, `${level} periods must be nonempty`)
+  const parsed = periods.map((period) => {
+    const match = /^(20\d{2})-Q([1-4])$/.exec(String(period))
+    invariant(Boolean(match), `${level} has invalid period ${period}`)
+    return { id: String(period), ordinal: Number(match[1]) * 4 + Number(match[2]) }
+  })
+  invariant(
+    new Set(parsed.map((item) => item.id)).size === parsed.length,
+    `${level} periods contain duplicates`,
+  )
+  for (let index = 1; index < parsed.length; index += 1) {
+    invariant(
+      parsed[index].ordinal === parsed[index - 1].ordinal + 1,
+      `${level} periods must form one ordered contiguous quarterly envelope`,
+    )
+  }
+  return parsed.map((item) => item.id)
 }
 
 function factCellKey(fact) {
@@ -95,15 +103,16 @@ async function verifyRelease(entry) {
 
   const metadata = await readJson(publicPath(entry.metadata))
   const geographies = await readJson(publicPath(entry.geographies))
-  const national = await readJson(publicPath(entry.national))
+  const aggregateUrl = entry.aggregate ?? entry.national
+  invariant(Boolean(aggregateUrl), `${level} catalog requires aggregate or legacy national URL`)
+  const aggregateFacts = await readJson(publicPath(aggregateUrl))
   const manifest = await readJson(publicPath(entry.manifest))
 
   invariant(metadata.release_id === entry.release_id, `${level} release_id drift`)
   invariant(metadata.geography_level === level, `${level} metadata level drift`)
-  const periods = metadata.periods.map((item) => item.id)
-  invariant(
-    exactArray(periods, CANONICAL_PERIODS),
-    `${level} periods must be exactly ${CANONICAL_PERIODS.join(", ")}`,
+  const periods = validatePeriodEnvelope(
+    metadata.periods.map((item) => item.id),
+    level,
   )
 
   invariant(Array.isArray(geographies), `${level} geographies.json must be an array`)
@@ -129,7 +138,7 @@ async function verifyRelease(entry) {
   invariant(manifest.release_id === entry.release_id, `${level} manifest release drift`)
   invariant(manifest.geography_level === level, `${level} manifest level drift`)
   invariant(manifest.geography_count === profile.count, `${level} manifest geography count drift`)
-  invariant(manifest.period_count === 8, `${level} manifest period count drift`)
+  invariant(manifest.period_count === periods.length, `${level} manifest period count drift`)
 
   for (const [relative, expectedHash] of Object.entries(manifest.files ?? {})) {
     const bytes = await readFile(path.join(path.dirname(publicPath(entry.manifest)), relative))
@@ -139,28 +148,29 @@ async function verifyRelease(entry) {
     )
   }
 
+  const expectedAggregateFacts = periods.length * 2 * 2 * 3
   invariant(
-    Array.isArray(national) && national.length === EXPECTED_NATIONAL_FACTS,
-    `${level} national.json must contain exactly ${EXPECTED_NATIONAL_FACTS} facts`,
+    Array.isArray(aggregateFacts) && aggregateFacts.length === expectedAggregateFacts,
+    `${level} aggregate facts must contain exactly ${expectedAggregateFacts} facts`,
   )
-  const nationalKeys = new Set()
-  for (const fact of national) {
-    invariant(fact.geography_level === "national", `${level} national.json contains territorial fact`)
-    invariant(fact.geography_id === "ARG", `${level} national fact is not ARG`)
-    invariant(CANONICAL_PERIODS.includes(fact.period), `${level} national fact has invalid period`)
+  const aggregateKeys = new Set()
+  for (const fact of aggregateFacts) {
+    invariant(fact.geography_level === "national", `${level} aggregate file contains territorial fact`)
+    invariant(fact.geography_id === "ARG", `${level} aggregate fact is not ARG`)
+    invariant(periods.includes(fact.period), `${level} aggregate fact has invalid period`)
     const key = [fact.period, factCellKey(fact)].join("|")
-    invariant(!nationalKeys.has(key), `${level} duplicate national fact ${key}`)
-    nationalKeys.add(key)
+    invariant(!aggregateKeys.has(key), `${level} duplicate aggregate fact ${key}`)
+    aggregateKeys.add(key)
   }
-  invariant(nationalKeys.size === EXPECTED_NATIONAL_FACTS, `${level} national cube incomplete`)
+  invariant(aggregateKeys.size === expectedAggregateFacts, `${level} aggregate cube incomplete`)
 
   const factPeriods = Object.keys(entry.facts_by_period ?? {})
   invariant(
-    exactArray(factPeriods, CANONICAL_PERIODS),
-    `${level} facts_by_period must expose exactly eight canonical quarters`,
+    exactArray(factPeriods, periods),
+    `${level} facts_by_period differs from metadata periods`,
   )
 
-  for (const period of CANONICAL_PERIODS) {
+  for (const period of periods) {
     const factsUrl = entry.facts_by_period[period]
     const facts = await readJson(publicPath(factsUrl))
     const expectedCount = profile.count * 2 * 2 * 3
@@ -185,10 +195,10 @@ async function verifyRelease(entry) {
     level,
     release_id: entry.release_id,
     geographies: profile.count,
-    periods: 8,
-    national_facts: EXPECTED_NATIONAL_FACTS,
+    periods: periods.length,
+    national_facts: expectedAggregateFacts,
     territorial_facts:
-      profile.count * 8 * 2 * 2 * 3,
+      profile.count * periods.length * 2 * 2 * 3,
   }
 }
 
