@@ -20,6 +20,7 @@ import {
 import {
   createRuntimeJoin,
   getLegendModelFromMax,
+  MAP_LAYERS,
   MAP_SOURCE_ID,
   NO_DATA_COLOR,
   type MapLayerEvent,
@@ -199,6 +200,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [retryKey, setRetryKey] = useState(0)
   const [renderMode, setRenderMode] = useState<"standard" | "lite">("lite")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
+  const effectRunRef = useRef(0)
+  const [probe, setProbe] = useState({
+    effectRun: 0,
+    canvas: "—",
+    source: "absent",
+    layers: "absent",
+    sourceEvents: 0,
+  })
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -266,6 +275,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   useEffect(() => {
     setHoveredId(null)
     setLoadedFeatureCount(null)
+    effectRunRef.current += 1
+    setProbe({
+      effectRun: effectRunRef.current,
+      canvas: "—",
+      source: "absent",
+      layers: "absent",
+      sourceEvents: 0,
+    })
     setStatus(
       transport
         ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -347,6 +364,10 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
         renderWorldCopies: false,
       })
+      setProbe((current) => ({
+        ...current,
+        canvas: `${container.clientWidth}×${container.clientHeight}`,
+      }))
       map.on("error", (event) => {
         const detail =
           event.error instanceof Error
@@ -421,10 +442,24 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             },
           )
 
+          setProbe((current) => ({
+            ...current,
+            source: map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
+            layers:
+              map?.getLayer(MAP_LAYERS.fill) && map?.getLayer(MAP_LAYERS.boundary)
+                ? "fill+border"
+                : "missing",
+          }))
+
           const expectedIds = new Set(publishedTransport.expected_geography_ids)
           const tryReady = (failIfEmpty = false) => {
             if (disposed || !map || !runtime || ready) return
-            if (!map.isSourceLoaded(MAP_SOURCE_ID)) return
+            const sourceLoaded = map.isSourceLoaded(MAP_SOURCE_ID)
+            setProbe((current) => ({
+              ...current,
+              source: sourceLoaded ? "loaded" : map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
+            }))
+            if (!sourceLoaded) return
 
             try {
               const features = map.querySourceFeatures(MAP_SOURCE_ID, {
@@ -473,7 +508,12 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
 
           tryReadyAfterRestore = () => tryReady(false)
           map.on("sourcedata", (event) => {
-            if (event.sourceId === MAP_SOURCE_ID) tryReady(false)
+            if (event.sourceId !== MAP_SOURCE_ID) return
+            setProbe((current) => ({
+              ...current,
+              sourceEvents: current.sourceEvents + 1,
+            }))
+            tryReady(false)
           })
           map.on("idle", () => tryReady(true))
           tryReady(false)
@@ -516,6 +556,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           </h2>
           <p className="mt-1 text-sm text-slate-600">
             {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
+          </p>
+          <p className="mt-1 font-mono text-[10px] leading-4 text-slate-400">
+            probe · status={status.kind} · effect={probe.effectRun} · canvas={probe.canvas} · source={probe.source} · layers={probe.layers} · source-events={probe.sourceEvents} · features={loadedFeatureCount ?? "—"}
           </p>
         </div>
         {selectedGeography && selectedValue !== null ? (
