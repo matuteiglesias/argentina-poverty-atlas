@@ -2,6 +2,17 @@
 
 The atlas should be built through bounded waves that each produce an observable proof. Do not wait for real ML/sampling outputs before building the public experience.
 
+## Current execution edge — 2026-09-27
+
+The map/publication last mile is closed:
+
+- **W3 complete:** province and department geometry-only MTS transports are published and independently identity-proved (24/24 provinces; 525/525 departments at the identity zoom).
+- **W4 complete:** the exact-ID browser join is commissioned with the real public token; production waits for a nonzero canvas and source/geography readiness before becoming interactive.
+- **W5 map surface complete enough for public use:** the default renderer uses Mapbox Light v11 for contextual basemap detail with a blank-style reliability fallback.
+- **W6/W7 path active:** the public app consumes governed research-release projections rather than using the synthetic fixture as public truth.
+
+The fixture remains a deterministic regression surface. Future work should treat geometry transport and browser map architecture as stable infrastructure unless a new release violates their explicit contracts.
+
 ## W0 — Security and legacy Mapbox census
 
 **Mission:** establish safe credentials and understand what already exists before publishing anything new.
