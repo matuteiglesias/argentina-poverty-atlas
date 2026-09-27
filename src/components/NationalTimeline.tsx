@@ -1,5 +1,6 @@
 import { aggregateGeography } from "@/data/release"
 import { labels } from "@/data/releaseCatalog"
+import { derivePresentationPermissions } from "@/data/releasePermissions"
 import {
   getPeriodsForLevel,
   getReleaseForLevel,
@@ -21,7 +22,11 @@ const PAD_Y = 34
 
 export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
   const periods = getPeriodsForLevel(state.level)
-  const aggregate = aggregateGeography(getReleaseForLevel(state.level).metadata)
+  const release = getReleaseForLevel(state.level)
+  const presentation = derivePresentationPermissions(release.metadata)
+  const mayCompareAcrossPeriods =
+    presentation.temporalComparison !== "not_authorized"
+  const aggregate = aggregateGeography(release.metadata)
   const values = periods.map((period) => ({
     period,
     value: requireEstimateForLevel(
@@ -61,16 +66,20 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
     >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-900">
-          Evolución · {aggregate.name}
+          {mayCompareAcrossPeriods ? "Serie descriptiva" : "Selector temporal"} · {aggregate.name}
         </p>
         <h2
           id="national-series-title"
           className="mt-3 max-w-xl font-serif text-4xl font-semibold leading-tight tracking-[-0.025em] text-slate-950 sm:text-5xl"
         >
-          Una cifra necesita historia para tener contexto.
+          {mayCompareAcrossPeriods
+            ? "Una cifra necesita historia para tener contexto."
+            : "Elegí el período sin inferir una trayectoria."}
         </h2>
         <p className="mt-5 max-w-xl text-base leading-7 text-slate-600">
-          La serie conserva la misma definición y el mismo release territorial de la vista actual. Elegí un período para llevar esa lectura al territorio.
+          {mayCompareAcrossPeriods
+            ? "La serie es descriptiva: conserva la definición del release, pero no implica significancia ni certeza sobre cambios entre períodos."
+            : "El release activo no autoriza comparación temporal. El selector sigue disponible para inspeccionar cada período por separado."}
         </p>
         <p className="mt-5 text-sm font-medium text-slate-800">
           {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
@@ -110,18 +119,21 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
             )
           })}
 
-          <path
-            d={linePath}
-            fill="none"
-            stroke="currentColor"
-            className="text-sky-950"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          {mayCompareAcrossPeriods && (
+            <path
+              d={linePath}
+              fill="none"
+              stroke="currentColor"
+              className="text-sky-950"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
 
           {points.map((point) => {
             const selected = point.period.id === state.period
+            if (!mayCompareAcrossPeriods && !selected) return null
             return (
               <g key={point.period.id}>
                 <circle
@@ -176,7 +188,7 @@ export function NationalTimeline({ state, onChange }: NationalTimelineProps) {
                       : "mt-0.5 block text-slate-400"
                   }
                 >
-                  {formatPercent(value)}
+                  {mayCompareAcrossPeriods ? formatPercent(value) : "Seleccionar"}
                 </span>
               </button>
             )
