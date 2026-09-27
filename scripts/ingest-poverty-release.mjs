@@ -9,16 +9,6 @@ import {
 } from "./poverty-release-set.mjs"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
-const CANONICAL_EIGHT_PERIODS = [
-  "2024-Q1",
-  "2024-Q2",
-  "2024-Q3",
-  "2024-Q4",
-  "2025-Q1",
-  "2025-Q2",
-  "2025-Q3",
-  "2025-Q4",
-]
 
 function fail(message) {
   throw new Error(`Poverty release ingest failed: ${message}`)
@@ -28,6 +18,60 @@ function sha256(bytes) {
 }
 function json(value) {
   return `${JSON.stringify(value, null, 2)}\n`
+}
+
+function validatePeriodEnvelope(periods, label = "period envelope") {
+  if (!Array.isArray(periods) || periods.length === 0) fail(`${label} must be nonempty`)
+  const parsed = periods.map((period) => {
+    const match = /^(20\d{2})-Q([1-4])$/.exec(String(period))
+    if (!match) fail(`${label} contains invalid period ${period}`)
+    return { id: String(period), ordinal: Number(match[1]) * 4 + Number(match[2]) }
+  })
+  if (new Set(parsed.map((item) => item.id)).size !== parsed.length) {
+    fail(`${label} contains duplicate periods`)
+  }
+  for (let index = 1; index < parsed.length; index += 1) {
+    if (parsed[index].ordinal !== parsed[index - 1].ordinal + 1) {
+      fail(`${label} must be one ordered contiguous quarterly envelope`)
+    }
+  }
+  return parsed.map((item) => item.id)
+}
+
+function releaseRangeSlug(periods) {
+  const validated = validatePeriodEnvelope(periods)
+  const slug = (period) => period.toLowerCase().replace("-", "")
+  return `${slug(validated[0])}-${slug(validated[validated.length - 1])}`
+}
+
+function releaseSetId(level, periods) {
+  return `atlas-poverty-release-set-${level.replace("_2010", "")}-${releaseRangeSlug(periods)}-v1`
+}
+
+async function commissionedBatchPeriods(batchRoot) {
+  const manifest = JSON.parse(
+    await readFile(path.join(batchRoot, "batch_manifest.json"), "utf8"),
+  )
+  if (manifest?.schema_version !== "department-poverty-batch/v1") {
+    fail("POVERTY_BATCH_ROOT batch_manifest.json has unsupported schema")
+  }
+  if (manifest?.geography_level !== "department_2010") {
+    fail("POVERTY_BATCH_ROOT batch_manifest.json must declare department_2010")
+  }
+  if (!Array.isArray(manifest.periods)) {
+    fail("POVERTY_BATCH_ROOT batch_manifest.json requires periods")
+  }
+  const periods = validatePeriodEnvelope(
+    manifest.periods.map((item) => item?.period),
+    "commissioned batch periods",
+  )
+  if (
+    manifest.all_period_qa?.period_count !== undefined &&
+    Number(manifest.all_period_qa.period_count) !== periods.length
+  ) {
+    fail("commissioned batch period count differs from all_period_qa")
+  }
+  return periods
 }
 
 function parentStrings(value) {
@@ -112,6 +156,7 @@ function legendDomains(release) {
 async function writePublicRelease(release) {
   const publicDir = path.join(root, "public/data/releases", release.metadata.release_id)
   const factsDir = path.join(publicDir, "facts")
+  await rm(publicDir, { recursive: true, force: true })
   await mkdir(factsDir, { recursive: true })
 
   const metadataJson = json(release.metadata)
@@ -204,7 +249,6 @@ async function writePublicRelease(release) {
 
 async function writePublicCollection(releases, defaultRelease) {
   const releasesRoot = path.join(root, "public/data/releases")
-  await rm(releasesRoot, { recursive: true, force: true })
   await mkdir(releasesRoot, { recursive: true })
   const entries = []
   for (const release of releases) entries.push(await writePublicRelease(release))
@@ -398,6 +442,27 @@ function enrichGeographies(release, labelMap) {
 }
 
 function assertNationalCompatibility(province, department) {
+  const provincePeriods = validatePeriodEnvelope(
+    province.metadata.periods.map((period) => period.id),
+    "province release periods",
+  )
+  const departmentPeriods = validatePeriodEnvelope(
+    department.metadata.periods.map((period) => period.id),
+    "department release periods",
+  )
+  if (JSON.stringify(provincePeriods) !== JSON.stringify(departmentPeriods)) {
+    fail("province/department release periods differ")
+  }
+  if (
+    JSON.stringify(province.metadata.estimand_contract) !==
+      JSON.stringify(department.metadata.estimand_contract) ||
+    JSON.stringify(province.metadata.permissions) !==
+      JSON.stringify(department.metadata.permissions) ||
+    province.metadata.not_for_interpretation !== department.metadata.not_for_interpretation
+  ) {
+    fail("province/department release capability contracts differ")
+  }
+
   const key = (fact) =>
     [fact.period, fact.universe, fact.concept, fact.estimand].join("|")
   const provinceNational = new Map(
@@ -410,8 +475,18 @@ function assertNationalCompatibility(province, department) {
       .filter((fact) => fact.geography_level === "national")
       .map((fact) => [key(fact), fact.estimate]),
   )
-  if (provinceNational.size !== 96 || departmentNational.size !== 96) {
-    fail("commissioned level sets must each expose exactly 96 national facts")
+  const expectedNationalFacts =
+    provincePeriods.length *
+    province.metadata.universes.length *
+    province.metadata.concepts.length *
+    province.metadata.estimands.length
+  if (
+    provinceNational.size !== expectedNationalFacts ||
+    departmentNational.size !== expectedNationalFacts
+  ) {
+    fail(
+      `commissioned level sets must each expose exactly ${expectedNationalFacts} national facts`,
+    )
   }
   for (const [cell, value] of provinceNational) {
     const other = departmentNational.get(cell)
@@ -426,21 +501,22 @@ async function commissionedBatchProjections(batchRoot) {
   if (!geographyRoot) {
     fail("POVERTY_BATCH_ROOT requires DEPARTMENT_GEOGRAPHY_RELEASE_DIR for governed display labels")
   }
+  const periods = await commissionedBatchPeriods(batchRoot)
   const labels = await loadGeographyLabels(path.resolve(geographyRoot))
-  const departmentDirectories = CANONICAL_EIGHT_PERIODS.map((period) =>
+  const departmentDirectories = periods.map((period) =>
     path.join(batchRoot, "releases", period),
   )
-  const provinceDirectories = CANONICAL_EIGHT_PERIODS.map((period) =>
+  const provinceDirectories = periods.map((period) =>
     path.join(batchRoot, "province-oracles", period),
   )
   const [departmentRaw, provinceRaw] = await Promise.all([
     verifyAndProjectReleaseSet(departmentDirectories, {
-      expectedPeriods: CANONICAL_EIGHT_PERIODS,
-      releaseId: "atlas-poverty-release-set-department-2024q1-2025q4-v1",
+      expectedPeriods: periods,
+      releaseId: releaseSetId("department_2010", periods),
     }),
     verifyAndProjectReleaseSet(provinceDirectories, {
-      expectedPeriods: CANONICAL_EIGHT_PERIODS,
-      releaseId: "atlas-poverty-release-set-province-2024q1-2025q4-v1",
+      expectedPeriods: periods,
+      releaseId: releaseSetId("province_2010", periods),
     }),
   ])
   if (departmentRaw.metadata.geography_level !== "department_2010") {
@@ -481,7 +557,7 @@ async function main() {
     const entries = await writePublicCollection(releases, defaultRelease)
     await writeGeneratedCollection(releases, entries)
     console.log(
-      `Ingested commissioned 8Q collection: ${releases.map((release) => `${release.metadata.geography_level}=${release.facts.length}`).join(", ")}`,
+      `Ingested commissioned ${releases[0].metadata.periods.length}Q collection: ${releases.map((release) => `${release.metadata.geography_level}=${release.facts.length}`).join(", ")}`,
     )
     return
   }
@@ -530,7 +606,10 @@ async function main() {
   } else {
     release = await verifyAndProjectReleaseSet(
       directories.map((directory) => path.resolve(directory)),
-      { expectedPeriods: CANONICAL_EIGHT_PERIODS },
+    )
+    validatePeriodEnvelope(
+      release.metadata.periods.map((period) => period.id),
+      "legacy multi-release periods",
     )
     if (
       release.metadata.geography_level !== "department_2010" &&
