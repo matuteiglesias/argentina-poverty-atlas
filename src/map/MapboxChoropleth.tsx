@@ -258,14 +258,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [retryKey, setRetryKey] = useState(0)
   const [renderMode, setRenderMode] = useState<"light" | "blank" | "standard">("light")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
-  const effectRunRef = useRef(0)
-  const [, setProbe] = useState({
-    effectRun: 0,
-    canvas: "—",
-    source: "absent",
-    layers: "absent",
-    sourceEvents: 0,
-  })
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -333,14 +325,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   useEffect(() => {
     setHoveredId(null)
     setLoadedFeatureCount(null)
-    effectRunRef.current += 1
-    setProbe({
-      effectRun: effectRunRef.current,
-      canvas: "—",
-      source: "absent",
-      layers: "absent",
-      sourceEvents: 0,
-    })
     setStatus(
       transport
         ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -402,10 +386,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       setStatus({ kind: "loading", message: "Esperando una superficie visible para el mapa…" })
       const initialBox = await waitForNonZeroBox(container)
       if (disposed) return
-      setProbe((current) => ({
-        ...current,
-        canvas: `${initialBox.width}×${initialBox.height}`,
-      }))
       setStatus({ kind: "loading", message: "Inicializando WebGL y el estilo base…" })
       map = new mapboxgl.Map({
         container,
@@ -442,7 +422,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         const size = `${width}×${height}`
         if (size !== lastObservedSize) {
           lastObservedSize = size
-          setProbe((current) => ({ ...current, canvas: size }))
         }
         map.resize()
         map.triggerRepaint()
@@ -536,23 +515,10 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             },
           )
 
-          setProbe((current) => ({
-            ...current,
-            source: map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
-            layers:
-              map?.getLayer(MAP_LAYERS.fill) && map?.getLayer(MAP_LAYERS.boundary)
-                ? "fill+border"
-                : "missing",
-          }))
-
           const expectedIds = new Set(publishedTransport.expected_geography_ids)
           const tryReady = (failIfEmpty = false) => {
             if (disposed || !map || !runtime || ready) return
             const sourceLoaded = map.isSourceLoaded(MAP_SOURCE_ID)
-            setProbe((current) => ({
-              ...current,
-              source: sourceLoaded ? "loaded" : map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
-            }))
             if (!sourceLoaded) return
 
             try {
@@ -603,10 +569,6 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           tryReadyAfterRestore = () => tryReady(false)
           map.on("sourcedata", (event) => {
             if (event.sourceId !== MAP_SOURCE_ID) return
-            setProbe((current) => ({
-              ...current,
-              sourceEvents: current.sourceEvents + 1,
-            }))
             tryReady(false)
           })
           map.on("idle", () => tryReady(true))

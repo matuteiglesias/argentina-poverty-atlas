@@ -169,7 +169,9 @@ This replaces the legacy pattern of creating separate tilesets/styles/HTML pages
 
 ## Basemap
 
-Prefer a stable Mapbox-maintained basemap (Mapbox Standard unless a concrete compatibility issue appears) with atlas-owned runtime layers above it.
+Use a stable Mapbox-maintained **Light v11** 2D basemap with atlas-owned runtime layers inserted above/between its contextual layers. The choropleth is authoritative; the basemap is orientation context.
+
+A minimal blank style is retained as a reliability fallback, so basemap degradation cannot take down the scientific surface. Mapbox Standard is not required for production rendering.
 
 The atlas should not clone the entire basemap style merely to change the poverty variable.
 
@@ -196,7 +198,10 @@ build time:
 browser:
   load catalog
   load selected fact data
+  wait for a nonzero map container
   initialize one Mapbox instance
+  load the governed geometry source
+  verify governed geography IDs are observable
   join selected measure to geometry
 ```
 
