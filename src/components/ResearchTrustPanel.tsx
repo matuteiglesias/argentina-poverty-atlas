@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { labels } from "@/data/releaseCatalog"
+import { derivePresentationPermissions } from "@/data/releasePermissions"
 import {
   getGeography,
   getReleaseForLevel,
@@ -21,6 +22,7 @@ function humanizeKey(value: string) {
 export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPanelProps) {
   const [copied, setCopied] = useState<"citation" | "url" | null>(null)
   const release = getReleaseForLevel(state.level)
+  const presentation = derivePresentationPermissions(release.metadata)
   const transport = geometryTransportManifestForLevel(state.level)
   const selected = getGeography(state.level, state.place)
   const releaseId = release.metadata.release_id
@@ -34,11 +36,13 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
       `release ${releaseId}`,
       `${place}, ${periodLabel}`,
       `${labels.concepts[state.concept]}, ${labels.universes[state.universe]}, ${labels.estimands[state.estimand]}`,
-      release.metadata.scientific_status === "synthetic_fixture"
+      presentation.mode === "demo"
         ? "datos sintéticos de demostración; no interpretar como estimación real u oficial"
-        : "estimación de investigación; no es una estadística oficial de INDEC",
+        : presentation.mode === "commissioning"
+          ? "release de investigación en modo de comisión; valores inspeccionables, sin lectura pública ordinaria"
+          : "estimación de investigación; no es una estadística oficial de INDEC",
     ].join(". ")
-  }, [periodLabel, release.metadata.scientific_status, releaseId, selected, state.concept, state.estimand, state.universe])
+  }, [periodLabel, presentation.mode, releaseId, selected, state.concept, state.estimand, state.universe])
 
   async function copy(kind: "citation" | "url", value: string) {
     try {
@@ -56,8 +60,10 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-950">Estado científico</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            {release.metadata.scientific_status === "synthetic_fixture" ? (
+            {presentation.mode === "demo" ? (
               <><strong className="font-semibold text-slate-900">Datos sintéticos.</strong> La estructura reproduce el contrato del atlas, pero los valores no deben interpretarse como pobreza observada o estimada.</>
+            ) : presentation.mode === "commissioning" ? (
+              <><strong className="font-semibold text-slate-900">Modo de comisión.</strong> Los valores quedan disponibles para inspección técnica, pero el release no autoriza una presentación estadística pública ordinaria.</>
             ) : (
               <><strong className="font-semibold text-slate-900">Estimación de investigación.</strong> No es una estadística oficial de INDEC; mantiene activas las limitaciones de transporte y método.</>
             )}
@@ -66,7 +72,9 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-950">Incertidumbre</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            No provista en este release. El atlas no fabrica intervalos, errores estándar ni precisión visual cuando el productor no los entrega.
+            {presentation.uncertaintyIntervals
+              ? "El release autoriza la presentación de incertidumbre provista por el productor."
+              : "No autorizada en este release. El atlas no fabrica intervalos, errores estándar ni precisión visual cuando el productor no los entrega."}
           </p>
         </div>
         <div>
@@ -132,6 +140,8 @@ export function ResearchTrustPanel({ state, compact = false }: ResearchTrustPane
               <div><dt className="inline text-slate-500">schema: </dt><dd className="inline font-mono text-xs text-slate-800">{release.metadata.schema_version}</dd></div>
               <div><dt className="inline text-slate-500">nivel: </dt><dd className="inline font-mono text-xs text-slate-800">{release.metadata.geography_level}</dd></div>
               <div><dt className="inline text-slate-500">not_for_interpretation: </dt><dd className="inline font-mono text-xs text-slate-800">{String(release.metadata.not_for_interpretation)}</dd></div>
+              <div><dt className="inline text-slate-500">presentation: </dt><dd className="inline font-mono text-xs text-slate-800">{presentation.mode}</dd></div>
+              <div><dt className="inline text-slate-500">permissions source: </dt><dd className="inline font-mono text-xs text-slate-800">{presentation.source}</dd></div>
             </dl>
           </div>
           <div>
