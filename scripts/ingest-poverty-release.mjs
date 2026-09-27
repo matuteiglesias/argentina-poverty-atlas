@@ -56,7 +56,9 @@ function singleReleaseProjection(release) {
       schema_version: release.manifest.schema_version,
       release_id: release.manifest.release_id,
       scientific_status: release.manifest.scientific_status,
-      not_for_interpretation: true,
+      not_for_interpretation: release.not_for_interpretation,
+      estimand_contract: structuredClone(release.estimand_contract),
+      permissions: structuredClone(release.permissions),
       periods: [{ id: release.period, label: release.period }],
       universes: [...release.universes],
       concepts: [...release.concepts],
@@ -168,6 +170,7 @@ async function writePublicRelease(release) {
     period: item.period,
     release_id: item.manifest.release_id,
     scientific_status: item.manifest.scientific_status,
+    not_for_interpretation: item.not_for_interpretation,
   }))
   const manifest = {
     schema_version: "atlas-public-partitioned-release-manifest/v1",
@@ -188,7 +191,8 @@ async function writePublicRelease(release) {
     release_id: release.metadata.release_id,
     scientific_status: release.metadata.scientific_status,
     geography_level: release.metadata.geography_level,
-    not_for_interpretation: true,
+    not_for_interpretation: release.metadata.not_for_interpretation,
+    permissions: release.metadata.permissions,
     metadata: `/data/releases/${release.metadata.release_id}/metadata.json`,
     geographies: `/data/releases/${release.metadata.release_id}/geographies.json`,
     aggregate: `/data/releases/${release.metadata.release_id}/aggregate.json`,
