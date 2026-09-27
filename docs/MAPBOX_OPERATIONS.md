@@ -85,11 +85,21 @@ The fill layer reads `feature-state.estimate` through a sequential interpolation
 
 ## Basemap
 
-Start with Mapbox Standard unless testing finds a concrete incompatibility.
+The commissioned default is **Mapbox Light v11** as a quiet classic 2D basemap beneath atlas-owned poverty layers. It provides roads, labels, coastlines and orientation without making Mapbox Standard's richer import/3D renderer a prerequisite for the scientific surface.
 
-The basemap should be visually quiet enough for the statistical layer to dominate.
+Layer ordering is intentional: poverty fill sits beneath contextual line/symbol layers where practical, while atlas boundaries/interaction remain legible.
 
-Do not clone/own a full classic style merely to change poverty colors.
+A minimal blank style is retained as a reliability fallback. If the contextual basemap fails, the scientific overlay should continue to render without changing the geometry transport or poverty release.
+
+Mapbox Standard may remain available for experimentation, but it is not the production dependency.
+
+Do not clone/own a full basemap style merely to change poverty colors.
+
+### Browser lifecycle invariant
+
+Do not construct the Mapbox instance until its DOM container has nonzero width and height. Commissioning reproduced a blank-but-data-ready map with a container reported as `806×0`; the geometry source, layers and all province IDs were already loaded.
+
+The production runtime therefore waits for a nonzero box and keeps Mapbox synchronized with `ResizeObserver`. A WebGL context restoration must re-enter source/geography readiness checks; it must not directly declare the map ready.
 
 ## Choropleth scales
 
