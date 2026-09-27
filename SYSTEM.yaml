@@ -56,18 +56,18 @@ security:
   secret_mapbox_credentials: CI/secret-store only
   committed_secrets_allowed: false
 verification:
-  status: fixture-product-proven-live-transport-pending
+  status: real-research-projection-map-commissioned-capability-gated
   completed_proofs:
     - W2 deterministic 24-jurisdiction synthetic poverty release and consumer projection
-    - exact IGN 24-province parent pinned from argentina-geography at ef315a4ca7e53eb98d9adf106b0cee190a6c5cd3
-    - W4 exact-ID runtime data join with one Mapbox Standard map and feature-state choropleth architecture
-    - W4 interaction and responsive map UX
-    - W5 editorial homepage, explorer and province-detail product surface
+    - governed province and department Mapbox MTS transports with exact identity proofs (24/24 and 525/525 at the identity gate)
+    - W4 browser exact-ID runtime join, responsive lifecycle and restricted public-token commissioning
+    - W5 editorial homepage, explorer and detail product surface
+    - real governed research-release static projections consumed without importing Poverty producer code
+    - capability-v2 ingest verifier and deny-by-default browser presentation adapter
     - build, typecheck, tests and secret-scan gates on merged product waves
   remaining_proofs:
-    - governed Mapbox provider write and exact tileset/source-layer identity
-    - 24/24 geography_id proof from published vector tiles
-    - restricted public browser token and live browser proof
-    - consume first consequential real poverty-estimate-release@2 without producer-code import
+    - re-project consequential real releases from current poverty-estimate-capabilities/v2 bundles so permissions are declared rather than legacy_fail_closed
+    - ordinary public statistical presentation only after an upstream release explicitly authorizes research_public
+    - any future geography level (for example public agglomerate maps) must separately satisfy its governed transport/identity proof
 maintenance:
   cadence: active-development
