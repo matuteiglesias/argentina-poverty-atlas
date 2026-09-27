@@ -20,6 +20,7 @@ import {
 import {
   createRuntimeJoin,
   getLegendModelFromMax,
+  MAP_LAYERS,
   MAP_SOURCE_ID,
   NO_DATA_COLOR,
   type MapLayerEvent,
@@ -38,6 +39,47 @@ import { loadedGeographyIds } from "@/map/sourceReadiness"
 
 const MAPBOX_GL_VERSION = "3.29.0"
 const MAP_LOAD_TIMEOUT_MS = 15_000
+const MAP_CONTAINER_WAIT_MS = 5_000
+
+function waitForNonZeroBox(element: HTMLElement): Promise<{ width: number; height: number }> {
+  const immediate = {
+    width: element.clientWidth,
+    height: element.clientHeight,
+  }
+  if (immediate.width > 0 && immediate.height > 0) return Promise.resolve(immediate)
+
+  return new Promise((resolve, reject) => {
+    let settled = false
+    const finish = (width: number, height: number) => {
+      if (settled || width <= 0 || height <= 0) return
+      settled = true
+      observer.disconnect()
+      window.clearTimeout(timeout)
+      resolve({ width, height })
+    }
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = Math.round(entry.contentRect.width)
+        const height = Math.round(entry.contentRect.height)
+        finish(width, height)
+      }
+    })
+    const timeout = window.setTimeout(() => {
+      if (settled) return
+      settled = true
+      observer.disconnect()
+      reject(
+        new Error(
+          `El contenedor del mapa siguió sin tamaño después de ${MAP_CONTAINER_WAIT_MS / 1000}s`,
+        ),
+      )
+    }, MAP_CONTAINER_WAIT_MS)
+    observer.observe(element)
+    window.requestAnimationFrame(() => {
+      finish(element.clientWidth, element.clientHeight)
+    })
+  })
+}
 
 const LIGHTWEIGHT_STYLE: StyleSpecification = {
   version: 8,
@@ -199,6 +241,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [retryKey, setRetryKey] = useState(0)
   const [renderMode, setRenderMode] = useState<"standard" | "lite">("lite")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
+  const effectRunRef = useRef(0)
+  const [probe, setProbe] = useState({
+    effectRun: 0,
+    canvas: "—",
+    source: "absent",
+    layers: "absent",
+    sourceEvents: 0,
+  })
   const manifest = geometryTransportManifestForLevel(state.level)
   const transport = runtimeGeometryTransportForLevel(state.level)
   const release = getReleaseForLevel(state.level)
@@ -266,6 +316,14 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   useEffect(() => {
     setHoveredId(null)
     setLoadedFeatureCount(null)
+    effectRunRef.current += 1
+    setProbe({
+      effectRun: effectRunRef.current,
+      canvas: "—",
+      source: "absent",
+      layers: "absent",
+      sourceEvents: 0,
+    })
     setStatus(
       transport
         ? { kind: "loading", message: "Preparando transporte cartográfico…" }
@@ -294,6 +352,18 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     let runtime: RuntimeJoin | null = null
     let loadTimeout: ReturnType<typeof window.setTimeout> | null = null
     let ready = false
+    let tryReadyAfterRestore: (() => void) | null = null
+    let resizeObserver: ResizeObserver | null = null
+    let lastObservedSize = ""
+
+    const armLoadTimeout = () => {
+      if (loadTimeout !== null) window.clearTimeout(loadTimeout)
+      loadTimeout = window.setTimeout(() => {
+        failMap(
+          "Mapbox no terminó de cargar una geometría utilizable en 15 segundos; la red respondió, así que revisá WebGL/GPU y el estado de la fuente",
+        )
+      }, MAP_LOAD_TIMEOUT_MS)
+    }
 
     const failMap = (message: string) => {
       if (disposed || ready) return
@@ -312,6 +382,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       const mapboxgl = (await import("mapbox-gl")).default
       if (disposed || !container) return
       mapboxgl.accessToken = token
+      setStatus({ kind: "loading", message: "Esperando una superficie visible para el mapa…" })
+      const initialBox = await waitForNonZeroBox(container)
+      if (disposed) return
+      setProbe((current) => ({
+        ...current,
+        canvas: `${initialBox.width}×${initialBox.height}`,
+      }))
       setStatus({ kind: "loading", message: "Inicializando WebGL y el estilo base…" })
       map = new mapboxgl.Map({
         container,
@@ -337,6 +414,28 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
         renderWorldCopies: false,
       })
+      lastObservedSize = `${initialBox.width}×${initialBox.height}`
+      const syncContainerSize = () => {
+        if (disposed || !map) return
+        const width = container.clientWidth
+        const height = container.clientHeight
+        if (width <= 0 || height <= 0) return
+        const size = `${width}×${height}`
+        if (size !== lastObservedSize) {
+          lastObservedSize = size
+          setProbe((current) => ({ ...current, canvas: size }))
+        }
+        map.resize()
+        map.triggerRepaint()
+        tryReadyAfterRestore?.()
+      }
+
+      resizeObserver = new ResizeObserver(() => {
+        window.requestAnimationFrame(syncContainerSize)
+      })
+      resizeObserver.observe(container)
+      syncContainerSize()
+
       map.on("error", (event) => {
         const detail =
           event.error instanceof Error
@@ -347,49 +446,36 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       map.on("webglcontextlost", () => {
         if (disposed) return
         ready = false
+        runtimeRef.current = null
         if (loadTimeout !== null) {
           window.clearTimeout(loadTimeout)
           loadTimeout = null
         }
         setStatus({
-          kind: "error",
+          kind: "loading",
           message:
-            "El navegador perdió el contexto WebGL. La red y la unión de datos ya habían avanzado; probá el modo liviano o liberá otras pestañas WebGL antes de reintentar. La tabla territorial sigue disponible.",
+            "Firefox perdió temporalmente el contexto WebGL; esperando la restauración antes de volver a habilitar el mapa…",
         })
       })
       map.on("webglcontextrestored", () => {
         if (disposed || !map) return
+        ready = false
+        runtimeRef.current = null
         setStatus({
           kind: "loading",
-          message: "El contexto WebGL se restauró; reanudando el mapa…",
+          message:
+            "WebGL fue restaurado; verificando de nuevo la fuente y las geometrías antes de habilitar el mapa…",
         })
+        armLoadTimeout()
         window.requestAnimationFrame(() => {
           if (disposed || !map) return
-          try {
-            map.resize()
-            runtime?.applyState(stateRef.current)
-            map.triggerRepaint()
-            ready = true
-            setStatus({
-              kind: "ready",
-              message: "Mapa listo",
-              transport: publishedTransport,
-            })
-          } catch (error: unknown) {
-            failMap(
-              error instanceof Error
-                ? `No se pudo reanudar el mapa: ${error.message}`
-                : "No se pudo reanudar el mapa",
-            )
-          }
+          map.resize()
+          map.triggerRepaint()
+          tryReadyAfterRestore?.()
         })
       })
 
-      loadTimeout = window.setTimeout(() => {
-        failMap(
-          "Mapbox no terminó de cargar el estilo en 15 segundos; la red respondió, así que revisá WebGL/GPU y el estado del estilo",
-        )
-      }, MAP_LOAD_TIMEOUT_MS)
+      armLoadTimeout()
 
       map.scrollZoom.disable()
       map.dragRotate.disable()
@@ -398,7 +484,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         new mapboxgl.NavigationControl({ showCompass: false, visualizePitch: false }),
         "top-right",
       )
-      window.requestAnimationFrame(() => map?.resize())
+      window.requestAnimationFrame(syncContainerSize)
 
       map.once("load", () => {
         if (disposed || !map) return
@@ -424,10 +510,24 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             },
           )
 
+          setProbe((current) => ({
+            ...current,
+            source: map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
+            layers:
+              map?.getLayer(MAP_LAYERS.fill) && map?.getLayer(MAP_LAYERS.boundary)
+                ? "fill+border"
+                : "missing",
+          }))
+
           const expectedIds = new Set(publishedTransport.expected_geography_ids)
           const tryReady = (failIfEmpty = false) => {
             if (disposed || !map || !runtime || ready) return
-            if (!map.isSourceLoaded(MAP_SOURCE_ID)) return
+            const sourceLoaded = map.isSourceLoaded(MAP_SOURCE_ID)
+            setProbe((current) => ({
+              ...current,
+              source: sourceLoaded ? "loaded" : map?.getSource(MAP_SOURCE_ID) ? "present" : "absent",
+            }))
+            if (!sourceLoaded) return
 
             try {
               const features = map.querySourceFeatures(MAP_SOURCE_ID, {
@@ -474,10 +574,16 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
             }
           }
 
+          tryReadyAfterRestore = () => tryReady(false)
           map.on("sourcedata", (event) => {
-            if (event.sourceId === MAP_SOURCE_ID) tryReady(false)
+            if (event.sourceId !== MAP_SOURCE_ID) return
+            setProbe((current) => ({
+              ...current,
+              sourceEvents: current.sourceEvents + 1,
+            }))
+            tryReady(false)
           })
-          map.once("idle", () => tryReady(true))
+          map.on("idle", () => tryReady(true))
           tryReady(false)
         } catch (error: unknown) {
           runtime?.destroy()
@@ -499,6 +605,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
     return () => {
       disposed = true
       if (loadTimeout !== null) window.clearTimeout(loadTimeout)
+      tryReadyAfterRestore = null
+      resizeObserver?.disconnect()
+      resizeObserver = null
       runtime?.destroy()
       runtimeRef.current = null
       map?.remove()
@@ -518,6 +627,9 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
           <p className="mt-1 text-sm text-slate-600">
             {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
           </p>
+          <p className="mt-1 font-mono text-[10px] leading-4 text-slate-400">
+            probe · status={status.kind} · effect={probe.effectRun} · canvas={probe.canvas} · source={probe.source} · layers={probe.layers} · source-events={probe.sourceEvents} · features={loadedFeatureCount ?? "—"}
+          </p>
         </div>
         {selectedGeography && selectedValue !== null ? (
           <div className="rounded-xl border border-slate-900/10 bg-slate-50 px-3 py-2 text-sm sm:text-right">
@@ -533,10 +645,20 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         )}
       </div>
 
-      <div className="relative h-[26rem] bg-slate-100 sm:h-[34rem] lg:h-[40rem]">
+      <div
+        className="relative bg-slate-100"
+        style={{ height: "clamp(26rem, 62vh, 40rem)" }}
+      >
         <div
           ref={containerRef}
           className="absolute inset-0"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            minHeight: "1px",
+          }}
           aria-label={`Mapa coroplético de ${geographyLevelLabels[state.level].toLowerCase()}`}
         />
 
