@@ -85,10 +85,6 @@ function normalizedDimension(value, fallback) {
   return [...value].map(String).sort()
 }
 
-function canonicalJson(value) {
-  return JSON.stringify(value, Object.keys(value).sort())
-}
-
 function validateCapabilityContract(capabilities, manifest, rows) {
   if (capabilities.schema_version !== CAPABILITY_SCHEMA) {
     fail("unsupported capabilities schema")
