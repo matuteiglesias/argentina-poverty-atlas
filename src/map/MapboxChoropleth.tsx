@@ -259,7 +259,7 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
   const [renderMode, setRenderMode] = useState<"light" | "blank" | "standard">("light")
   const [loadedFeatureCount, setLoadedFeatureCount] = useState<number | null>(null)
   const effectRunRef = useRef(0)
-  const [probe, setProbe] = useState({
+  const [, setProbe] = useState({
     effectRun: 0,
     canvas: "—",
     source: "absent",
