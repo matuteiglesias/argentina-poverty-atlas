@@ -11,6 +11,33 @@ export type GeographyLevel = (typeof geographyLevels)[number]
 export type AggregateGeographyLevel = (typeof aggregateGeographyLevels)[number]
 export type PeriodId = string
 
+export type InterpretationPermission =
+  | "demo_only"
+  | "commissioning_only"
+  | "research_public"
+export type PointEstimatePermission = "authorized" | "demo_only"
+export type TemporalComparisonPermission = "descriptive_only" | "demo_only"
+
+export interface EstimandContract {
+  measure: "proportion"
+  universes: Universe[]
+  analysis_weight_semantics: string
+  design_ids: string[]
+  population_mass_authority: null
+  household_total_authority: false
+}
+
+export interface ReleasePermissions {
+  interpretation: InterpretationPermission
+  operations: {
+    point_estimates: PointEstimatePermission
+    population_counts: "not_authorized"
+    uncertainty_intervals: "not_authorized"
+    inferential_ranking: "not_authorized"
+    temporal_comparison: TemporalComparisonPermission
+  }
+}
+
 export interface ReleasePeriod {
   id: PeriodId
   label: string
@@ -48,6 +75,10 @@ export interface AtlasReleaseMetadata {
   release_id: string
   scientific_status: string
   not_for_interpretation: boolean
+  /** Optional only for pre-capability-contract static projections; consumers fail closed. */
+  estimand_contract?: EstimandContract
+  /** Optional only for pre-capability-contract static projections; consumers fail closed. */
+  permissions?: ReleasePermissions
   periods: ReleasePeriod[]
   universes: Universe[]
   concepts: Concept[]
@@ -117,6 +148,52 @@ export function validateAtlasRelease(release: AtlasRelease) {
   )
   assert(metadata.periods.length > 0, "at least one period is required")
   const aggregate = aggregateGeography(metadata)
+
+  if (metadata.permissions !== undefined || metadata.estimand_contract !== undefined) {
+    assert(
+      metadata.permissions !== undefined && metadata.estimand_contract !== undefined,
+      "estimand_contract and permissions must travel together",
+    )
+    assert(metadata.estimand_contract.measure === "proportion", "only proportion capability is supported")
+    assert(
+      metadata.estimand_contract.population_mass_authority === null,
+      "current Atlas contract does not accept population-mass authority",
+    )
+    assert(
+      metadata.estimand_contract.household_total_authority === false,
+      "current Atlas contract does not accept household-total authority",
+    )
+    assert(
+      metadata.permissions.operations.population_counts === "not_authorized",
+      "population counts are not authorized",
+    )
+    assert(
+      metadata.permissions.operations.uncertainty_intervals === "not_authorized",
+      "uncertainty intervals are not authorized",
+    )
+    assert(
+      metadata.permissions.operations.inferential_ranking === "not_authorized",
+      "inferential ranking is not authorized",
+    )
+    if (metadata.scientific_status === "synthetic_fixture") {
+      assert(
+        metadata.not_for_interpretation === true &&
+          metadata.permissions.interpretation === "demo_only",
+        "synthetic fixture permissions are inconsistent",
+      )
+    } else if (metadata.not_for_interpretation) {
+      assert(
+        metadata.permissions.interpretation === "commissioning_only",
+        "not_for_interpretation research release must be commissioning_only",
+      )
+    } else {
+      assert(
+        metadata.permissions.interpretation === "research_public",
+        "interpretable research release must be research_public",
+      )
+    }
+  }
+
   assert(
     aggregateGeographyLevels.includes(aggregate.level),
     `unsupported aggregate geography level ${aggregate.level}`,
