@@ -3,6 +3,7 @@ import { ResearchTrustPanel } from "@/components/ResearchTrustPanel"
 import { Selectors } from "@/components/Selectors"
 import { Button } from "@/components/ui/button"
 import { labels } from "@/data/releaseCatalog"
+import { derivePresentationPermissions } from "@/data/releasePermissions"
 import {
   getGeography,
   getReleaseForLevel,
@@ -25,6 +26,7 @@ function formatPointDifference(value: number) {
 
 export function HomePage({ state, onChange, onExplore }: HomePageProps) {
   const release = getReleaseForLevel(state.level)
+  const presentation = derivePresentationPermissions(release.metadata)
   const periodLabel =
     release.metadata.periods.find((period) => period.id === state.period)?.label ??
     state.period
@@ -87,29 +89,55 @@ export function HomePage({ state, onChange, onExplore }: HomePageProps) {
 
         <div className="relative lg:pl-8">
           <div className="absolute -inset-10 -z-10 rounded-full bg-white/55 blur-3xl" aria-hidden="true" />
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-            Argentina · {periodLabel}
-          </p>
-          <p className="mt-3 text-[6rem] font-semibold leading-none tracking-[-0.075em] text-slate-950 sm:text-[8rem] lg:text-[9rem]">
-            {formatPercent(headline)}
-          </p>
-          <p className="mt-4 max-w-md text-base font-semibold leading-6 text-slate-800">
-            {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
-          </p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
-            Valor nacional explícito del release seleccionado. No se calcula agregando territorios en el navegador.
-          </p>
+          {presentation.ordinaryHeadline ? (
+            <>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Argentina · {periodLabel}
+              </p>
+              <p className="mt-3 text-[6rem] font-semibold leading-none tracking-[-0.075em] text-slate-950 sm:text-[8rem] lg:text-[9rem]">
+                {formatPercent(headline)}
+              </p>
+              <p className="mt-4 max-w-md text-base font-semibold leading-6 text-slate-800">
+                {labels.concepts[state.concept]} · {labels.universes[state.universe]} · {labels.estimands[state.estimand]}
+              </p>
+              <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
+                Valor nacional explícito del release seleccionado. No se calcula agregando territorios en el navegador.
+              </p>
 
-          <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 border-t border-slate-900/10 pt-5">
-            <div>
-              <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Indigencia</dt>
-              <dd className="mt-1 text-2xl font-semibold tabular-nums">{formatPercent(indigence)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Brecha de pobreza</dt>
-              <dd className="mt-1 text-2xl font-semibold tabular-nums">{formatPercent(gap)}</dd>
-            </div>
-          </dl>
+              <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 border-t border-slate-900/10 pt-5">
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Indigencia</dt>
+                  <dd className="mt-1 text-2xl font-semibold tabular-nums">{formatPercent(indigence)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Brecha de pobreza</dt>
+                  <dd className="mt-1 text-2xl font-semibold tabular-nums">{formatPercent(gap)}</dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-800">
+                Modo de comisión · {periodLabel}
+              </p>
+              <p className="mt-4 max-w-xl font-serif text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-slate-950 sm:text-6xl">
+                Release disponible para inspección.
+              </p>
+              <p className="mt-6 max-w-lg text-base leading-7 text-slate-600">
+                El productor todavía no autoriza una lectura pública ordinaria de estos valores. El atlas conserva mapas, tablas y trazabilidad para inspección, pero suprime el titular estadístico.
+              </p>
+              <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 border-t border-slate-900/10 pt-5">
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Modo</dt>
+                  <dd className="mt-1 text-sm font-semibold">commissioning</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.12em] text-slate-500">Permisos</dt>
+                  <dd className="mt-1 text-sm font-semibold">sin conteos ni inferencia</dd>
+                </div>
+              </dl>
+            </>
+          )}
         </div>
       </section>
 
@@ -182,7 +210,7 @@ export function HomePage({ state, onChange, onExplore }: HomePageProps) {
                   <p className="mt-2 text-6xl font-semibold tracking-[-0.055em] tabular-nums">{formatPercent(selectedValue)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-slate-500">Diferencia con Argentina</p>
+                  <p className="text-xs text-slate-500">{presentation.ordinaryHeadline ? "Diferencia con Argentina" : "Diferencia descriptiva · inspección"}</p>
                   <p className="mt-1 text-2xl font-semibold tabular-nums">{formatPointDifference(selectedValue - headline)}</p>
                 </div>
               </div>
@@ -214,7 +242,7 @@ export function HomePage({ state, onChange, onExplore }: HomePageProps) {
         </div>
         <div>
           <h3 className="font-semibold text-slate-950">Estado de esta versión</h3>
-          <p className="mt-2">{release.metadata.scientific_status}; <span className="font-mono text-xs">nivel={state.level}; not_for_interpretation={String(release.metadata.not_for_interpretation)}</span>.</p>
+          <p className="mt-2">{release.metadata.scientific_status}; <span className="font-mono text-xs">nivel={state.level}; presentation={presentation.mode}; permissions={presentation.source}</span>.</p>
         </div>
       </section>
     </div>
