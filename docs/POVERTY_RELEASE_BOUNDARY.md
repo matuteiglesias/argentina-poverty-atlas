@@ -38,7 +38,7 @@ A future Atlas adapter should perform these steps outside React components:
 1. receive/copy one exact Poverty release directory;
 2. verify file inventory and `checksums.sha256`;
 3. read `release_manifest.json` and require `poverty-estimate-release/v2`;
-4. read `capabilities.json` and build selector availability from declared cells;
+4. read `poverty-estimate-capabilities/v2`, verify the estimand contract and downstream operation permissions, and build selector availability from declared cells;
 5. read `geography_join_contract.json` and require exact governed-ID semantics;
 6. parse `poverty_estimates.csv` with string-preserving geography IDs;
 7. reject duplicate fact keys or unsupported unit/uncertainty semantics;
@@ -62,6 +62,9 @@ Do not assume every release contains:
 - uncertainty.
 
 A UI state is valid only if the exact tuple is present in the release availability matrix.
+Presentation is separately constrained by the declared permission object. Missing or legacy
+permission metadata fails closed to commissioning presentation; Atlas does not infer a more
+permissive state.
 
 This gives us a clean migration path: the current Atlas can use a rich synthetic 24-province fixture while the first real scientific release may initially expose a smaller supported surface. The UI adapts to declared capability rather than requiring producer-specific code.
 
@@ -83,9 +86,26 @@ Atlas must display an unmistakable persistent demo/synthetic label. Values are n
 
 ### `research_estimate`
 
-Atlas may present the values as project research estimates with release lineage and limitations, but must state that they are not official INDEC poverty statistics.
+Scientific status alone does not authorize presentation.
 
-Unknown statuses are rejected until the consumer profile evolves.
+Atlas combines:
+
+```text
+scientific_status
++ not_for_interpretation
++ capabilities.permissions
+→ presentation mode
+```
+
+A research release with `not_for_interpretation=true` must resolve to
+`commissioning_only`: point values may remain inspectable, but the ordinary national
+headline is suppressed.
+
+Only a producer-declared `research_public` permission may enable ordinary research
+presentation. Even then, the result remains a project research estimate and must not be
+presented as an official INDEC statistic.
+
+Unknown/inconsistent statuses or permissions fail closed.
 
 ## Geography compatibility
 
@@ -114,11 +134,16 @@ If a Poverty release and Geography Release do not match, the adapter reports the
 
 `national` is a non-spatial level. It may feed headline cards/time-series but must not be joined to Mapbox geometry.
 
-A national headline comes from a released national fact, not from browser-side averaging of provinces.
+A national headline comes from a released national fact, not from browser-side averaging of provinces, **and it is rendered only when the release permission contract authorizes ordinary presentation**.
 
 ## Time-series rule
 
-A time series shown by the Atlas must be backed by explicit released observations for each period and should preserve release/method lineage needed to identify comparability breaks.
+A time series shown by the Atlas must be backed by explicit released observations for each
+period and must also respect the release's temporal-comparison permission.
+
+`descriptive_only` authorizes a descriptive series but not significance/change-certainty
+claims. `not_authorized` leaves the period selector available for one-period inspection
+while suppressing a connecting trajectory and comparative numeric framing.
 
 Do not interpolate or fill missing scientific periods merely for visual continuity.
 
@@ -130,9 +155,19 @@ The first Atlas consumer profile supports:
 uncertainty_status = not_supplied
 ```
 
-It may show the explicit limitation but cannot manufacture intervals.
+It may show the explicit limitation but cannot manufacture intervals, inferential ranking,
+significance or precision language.
 
-When Poverty P5 introduces a justified uncertainty representation, Atlas support should be added by versioning this consumer profile and adding tests before exposing uncertainty UI.
+When Poverty P5 introduces a justified uncertainty representation, Atlas support should be
+added by versioning the producer/consumer capability schema and tests before exposing
+uncertainty UI.
+
+## Counts
+
+The current capability contract has no population-mass or household-total authority.
+Therefore Atlas must not derive poor-person or poor-household counts by multiplying released
+proportions by an external total. Counts remain disabled until a future upstream estimand
+contract explicitly authorizes them.
 
 ## Compatibility test target
 
