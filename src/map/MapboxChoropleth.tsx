@@ -39,6 +39,47 @@ import { loadedGeographyIds } from "@/map/sourceReadiness"
 
 const MAPBOX_GL_VERSION = "3.29.0"
 const MAP_LOAD_TIMEOUT_MS = 15_000
+const MAP_CONTAINER_WAIT_MS = 5_000
+
+function waitForNonZeroBox(element: HTMLElement): Promise<{ width: number; height: number }> {
+  const immediate = {
+    width: element.clientWidth,
+    height: element.clientHeight,
+  }
+  if (immediate.width > 0 && immediate.height > 0) return Promise.resolve(immediate)
+
+  return new Promise((resolve, reject) => {
+    let settled = false
+    const finish = (width: number, height: number) => {
+      if (settled || width <= 0 || height <= 0) return
+      settled = true
+      observer.disconnect()
+      window.clearTimeout(timeout)
+      resolve({ width, height })
+    }
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = Math.round(entry.contentRect.width)
+        const height = Math.round(entry.contentRect.height)
+        finish(width, height)
+      }
+    })
+    const timeout = window.setTimeout(() => {
+      if (settled) return
+      settled = true
+      observer.disconnect()
+      reject(
+        new Error(
+          `El contenedor del mapa siguió sin tamaño después de ${MAP_CONTAINER_WAIT_MS / 1000}s`,
+        ),
+      )
+    }, MAP_CONTAINER_WAIT_MS)
+    observer.observe(element)
+    window.requestAnimationFrame(() => {
+      finish(element.clientWidth, element.clientHeight)
+    })
+  })
+}
 
 const LIGHTWEIGHT_STYLE: StyleSpecification = {
   version: 8,
@@ -341,6 +382,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
       const mapboxgl = (await import("mapbox-gl")).default
       if (disposed || !container) return
       mapboxgl.accessToken = token
+      setStatus({ kind: "loading", message: "Esperando una superficie visible para el mapa…" })
+      const initialBox = await waitForNonZeroBox(container)
+      if (disposed) return
+      setProbe((current) => ({
+        ...current,
+        canvas: `${initialBox.width}×${initialBox.height}`,
+      }))
       setStatus({ kind: "loading", message: "Inicializando WebGL y el estilo base…" })
       map = new mapboxgl.Map({
         container,
@@ -366,16 +414,17 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
         renderWorldCopies: false,
       })
+      lastObservedSize = `${initialBox.width}×${initialBox.height}`
       const syncContainerSize = () => {
         if (disposed || !map) return
         const width = container.clientWidth
         const height = container.clientHeight
+        if (width <= 0 || height <= 0) return
         const size = `${width}×${height}`
         if (size !== lastObservedSize) {
           lastObservedSize = size
           setProbe((current) => ({ ...current, canvas: size }))
         }
-        if (width <= 0 || height <= 0) return
         map.resize()
         map.triggerRepaint()
         tryReadyAfterRestore?.()
@@ -603,6 +652,13 @@ export function MapboxChoropleth({ state, onSelect }: MapboxChoroplethProps) {
         <div
           ref={containerRef}
           className="absolute inset-0"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            minHeight: "1px",
+          }}
           aria-label={`Mapa coroplético de ${geographyLevelLabels[state.level].toLowerCase()}`}
         />
 
