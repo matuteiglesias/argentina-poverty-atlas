@@ -121,14 +121,34 @@ async function makeDetached(root, level, period, options = {}) {
     estimation_period: period,
     frame_vintage: "2010",
     scientific_status: "research_estimate",
+    not_for_interpretation: true,
     uncertainty_status: "not_supplied",
     geography_level: level,
     parents: {},
   }
   const capabilities = {
-    schema_version: "poverty-estimate-capabilities/v1",
+    schema_version: "poverty-estimate-capabilities/v2",
     release_id: releaseId,
     scientific_status: "research_estimate",
+    not_for_interpretation: true,
+    estimand_contract: {
+      measure: "proportion",
+      universes: ["households", "persons"],
+      analysis_weight_semantics: "unit_analysis_weight",
+      design_ids: ["unit_weight_target_year_sample_research_v1"],
+      population_mass_authority: null,
+      household_total_authority: false,
+    },
+    permissions: {
+      interpretation: "commissioning_only",
+      operations: {
+        point_estimates: "authorized",
+        population_counts: "not_authorized",
+        uncertainty_intervals: "not_authorized",
+        inferential_ranking: "not_authorized",
+        temporal_comparison: "descriptive_only",
+      },
+    },
     universes: ["persons", "households"],
     concepts: ["poverty", "indigence"],
     estimands: ["fgt0", "fgt1", "fgt2"],
@@ -137,6 +157,14 @@ async function makeDetached(root, level, period, options = {}) {
     geographies: options.omitConvenienceInventories
       ? undefined
       : geographyIds.map((id) => ({ id, name: id, short_name: id })),
+  }
+  if (options.authorizeCounts) {
+    capabilities.permissions.operations.population_counts = "authorized"
+  }
+  if (options.legacyCapabilities) {
+    capabilities.schema_version = "poverty-estimate-capabilities/v1"
+    delete capabilities.estimand_contract
+    delete capabilities.permissions
   }
   const geography = {
     schema_version: "poverty-geography-join/v1",
@@ -176,6 +204,8 @@ describe("detached poverty release-set verification", () => {
     const release = await verifyDetachedRelease(directory)
     expect(release.geographyIds).toHaveLength(24)
     expect(release.rows).toHaveLength(300)
+    expect(release.permissions.interpretation).toBe("commissioning_only")
+    expect(release.permissions.operations.population_counts).toBe("not_authorized")
   })
 
   it("accepts canonical producer v2 without convenience geography arrays", async () => {
@@ -186,6 +216,27 @@ describe("detached poverty release-set verification", () => {
     const release = await verifyDetachedRelease(directory)
     expect(release.geographyIds).toHaveLength(525)
     expect(release.rows).toHaveLength(6312)
+  })
+
+
+  it("rejects releases that attempt to authorize population counts", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "atlas-counts-"))
+    const directory = await makeDetached(root, "province_2010", "2024-Q3", {
+      authorizeCounts: true,
+    })
+    await expect(verifyDetachedRelease(directory)).rejects.toThrow(
+      /population_counts permission|population counts require/,
+    )
+  })
+
+  it("rejects legacy capability bundles at ingest instead of guessing permissions", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "atlas-legacy-capabilities-"))
+    const directory = await makeDetached(root, "province_2010", "2024-Q3", {
+      legacyCapabilities: true,
+    })
+    await expect(verifyDetachedRelease(directory)).rejects.toThrow(
+      /unsupported capabilities schema/,
+    )
   })
 
   it("projects eight verified department releases without recomputation", async () => {
