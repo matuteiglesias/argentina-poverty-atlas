@@ -1,38 +1,19 @@
 # W4 — Runtime choropleth/data join
 
+Status: **complete and browser-commissioned**.
+
 ## Mission
 
-Prove that one Mapbox instance can render every W2 fixture selection by joining facts at runtime through exact governed geography IDs. W4 consumes W3 geometry transport; it does not publish, alter, repair or choose geometry.
-
-## Exact W3 contract
-
-W4 consumes W3's checked-in manifest directly:
-
-```text
-mapbox/manifests/province-w3.json
-schema = argentina-poverty-atlas.geometry-transport/v1
-```
-
-The authoritative W3 validator remains `src/map/geometryTransport.ts`. W4 does not maintain a second looser parser. A runtime transport exists only when that manifest has:
-
-```text
-status = published
-parent_release = exact province Geography Release
-mapbox.tileset_id = non-empty
-mapbox.source_layer = non-empty
-mapbox.feature_id_property = geography_id
-mapbox.published_feature_count = 24
-fixture_geography_ids = exactly the W2 24 IDs
-```
-
-As of 2026-08-26 the W3 manifest is intentionally `blocked_upstream`: the inspected `argentina-geography` main had exact radio releases but no independently released 24-feature province Geography Release. W3 correctly refuses to manufacture that parent by dissolving radios. Therefore W4's runtime seam is implemented and testable, but the live Mapbox/browser proof remains gated on the upstream release and W3 publication.
+Render governed poverty facts over governed geography with one stable browser map runtime. W4 consumes published W3 geometry transports; it does not republish geometry or calculate poverty.
 
 ## Runtime model
 
 ```text
-one Mapbox Standard instance
+Mapbox Light v11 basemap
+        +
+published geometry-only MTS source
         ↓
-one governed vector source with promoteId = geography_id
+promoteId = geography_id
         ↓
 poverty-fill
 poverty-border
@@ -42,43 +23,64 @@ poverty-selected
 feature-state { estimate, qualityStatus, warningCount, selected, hovered }
 ```
 
-Changing period, persons/households, poverty/indigence, or FGT estimand updates feature state on the same 24 features. It does not add another source, layer set, style, or map instance.
+Changing period, persons/households, poverty/indigence, or FGT estimand updates feature state on the existing governed features. It does not create another Mapbox style or poverty-specific tileset.
 
-## Legend
+## Geography readiness gate
 
-W4 uses one sequential palette and explicit no-data color. The numerical domain is computed across the entire selected concept + estimand in the release, so period and persons/households changes remain comparable. Values outside the domain clamp through the Mapbox interpolation expression rather than silently changing the domain.
+The app does not declare `Mapa listo` merely because the base style loaded.
 
-## Selection and URL state
+Readiness requires:
 
-The existing atlas URL parser remains authoritative for public state. On map load, the current parsed state is immediately written into feature state, so a URL containing `place=06` restores Buenos Aires as selected. Map clicks call the same `onChange({ place })` path used by the table/detail sheet.
+1. a nonzero map container;
+2. full Mapbox `load`;
+3. the manifested vector source to be loaded;
+4. `querySourceFeatures()` to expose at least one valid governed `geography_id`;
+5. only then may feature-state be applied and the runtime become interactive.
 
-The province detail sheet continues reading the same W2 fact index as the map. There is no second calculation path for the selected value.
+Context loss also returns the runtime to the same readiness gate instead of treating `webglcontextrestored` as proof that the source recovered.
 
-## Mapbox runtime loading
+## Canvas lifecycle
 
-W4 reuses W3's locked `mapbox-gl@3.29.0` dependency and dynamically imports the runtime only when W3 is published and a browser token exists. The app expects:
+Commissioning identified a production-specific failure where Mapbox initialized while its container was `806×0`. All geometry, layers and IDs were present, but the canvas could not draw.
 
-```text
-VITE_MAPBOX_PUBLIC_TOKEN
-```
+The runtime now:
 
-Only a dedicated, URL-restricted public `pk.*` token belongs there. No token is required for CI, unit tests, build, or the accessible table fallback.
+- waits for nonzero width and height before constructing Mapbox;
+- gives the map surface explicit inline dimensions independent of stylesheet timing;
+- observes later container changes with `ResizeObserver`;
+- calls `resize()` / repaint after real size changes.
 
-If W3 is blocked, the map surface exposes W3's blocker and issue instead of substituting geometry. If W3 is published but the token is absent, the map fails closed with a token-specific message. In both cases the table remains usable.
+This invariant should remain protected during future layout refactors.
 
-## Tests
+## Basemap policy
 
-The runtime join is tested through a narrow adapter around the Mapbox instance rather than requiring WebGL in CI. Tests prove:
+Default: **Mapbox Light v11**, optimized as a lightweight 2D contextual basemap.
 
-- exactly four stable atlas layers are installed;
-- exact two-character IDs are used as feature identity;
-- URL-restored selection writes the exact W2 fact value;
-- period / universe / concept / estimand changes update state without adding layers;
-- legend domain is stable across periods/universes;
-- W4 inherits W3's exact 24-ID compatibility gate;
-- `blocked_upstream` cannot be converted into a runtime transport;
-- click selection returns the promoted string ID.
+The poverty overlay remains atlas-owned and is inserted so roads/boundaries/labels can remain legible around the choropleth.
 
-## Completion gate
+Fallback: a minimal blank style containing only the atlas background and scientific overlay. If the basemap provider/style path degrades, the poverty map can remain usable without changing geometry or scientific data.
 
-The code/contract portion of W4 is complete when CI is green. The full W4 DoD additionally requires W3 to become `published`, a dedicated public token to be configured, and one browser proof showing all 24 governed features with selections/recoloring on the same map instance. Until then W4 must remain explicit about the upstream block rather than calling the map end-to-end complete.
+Mapbox Standard is retained only as a non-default compatibility/experimentation path; it is not a dependency of the public scientific surface.
+
+## Browser commissioning surface
+
+`/diagnostics/mapbox` deliberately bypasses poverty state, selectors and feature-state. It proves the lower browser stack independently:
+
+- exact known tile via public token;
+- byte/SHA equality to provider proof;
+- canonical vector source;
+- source-layer;
+- feature IDs;
+- solid-fill rendering.
+
+That page should remain small and stable so future Mapbox/token/browser incidents can be classified before production code is edited.
+
+## Tests and deterministic CI
+
+CI does not require a Mapbox token or WebGL. Adapter-level tests cover stable runtime layers, exact string IDs, state changes, click/hover behavior and legend semantics. The public-token/provider layer is commissioned separately through the checked-in proof artifacts and browser diagnostic.
+
+## Completion
+
+Province and department geometry render in the deployed browser, update from governed poverty facts, preserve URL/selection semantics and have an independent non-map/table fallback. W4 is closed.
+
+Future cartographic tuning should change presentation only; it should not reopen transport, geography identity or scientific-release architecture.
